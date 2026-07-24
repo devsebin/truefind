@@ -14,6 +14,12 @@ const regionSchema = new Schema<IRegion>(
             ref: tableName.Countries,
             required: true,
         },
+        district_ids: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: tableName.Districts,
+            },
+        ],
         ...CommonServiceFieldsModel,
     },
     { timestamps: true },

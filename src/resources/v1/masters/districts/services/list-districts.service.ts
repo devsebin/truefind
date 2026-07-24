@@ -1,5 +1,5 @@
-import { IRegion } from "@/database/regions/regions-db-interface";
-import RegionModel from "@/database/regions/regions-db-model";
+import IDistrict from "@/database/districts/districts-db-interface";
+import DistrictModel from "@/database/districts/districts-db-model";
 import { apiMethods } from "@/utils/definitions/constants/api-methods";
 import { operationTypes } from "@/utils/definitions/constants/operation-types";
 import { tableName } from "@/utils/definitions/constants/table-names";
@@ -13,15 +13,15 @@ import {
 import { listResponse } from "@/utils/responses/success.response";
 import { Request } from "express";
 import mongoose, { Model } from "mongoose";
-import { populateFields, regionPayload } from "../regions.helper";
-import { regionListResponse } from "../regions.response";
-import { regionErrorsMessages } from "../regions.messages";
+import { districtPayload, populateFields } from "../districts.helper";
+import { districtListResponse } from "../districts.response";
+import { districtErrorsMessages } from "../districts.messages";
 
-class listRegionService {
-  private readonly regionRepository: Model<IRegion>;
+class listDistrictsService {
+  private readonly districtRepository: Model<IDistrict>;
 
   constructor() {
-    this.regionRepository = RegionModel;
+    this.districtRepository = DistrictModel;
   }
 
   async execute(
@@ -39,22 +39,22 @@ class listRegionService {
     const DbTransactions: DbTransaction[] = [];
 
     try {
-      const [regions, totalCount] = await Promise.all([
+      const [districts, totalCount] = await Promise.all([
         query
           .sort({
             [conditions.order_by as string || "createdAt"]:
               conditions.order_direction === "asc" ? 1 : -1,
           })
           .exec(),
-        this.regionRepository.countDocuments(where),
+        this.districtRepository.countDocuments(where),
       ]);
 
       DbTransactions.push(
         await createDbTransaction(
-          tableName.Regions,
+          tableName.Districts,
           apiMethods.GET,
           operationTypes.Read,
-          regions,
+          districts,
         ),
       );
 
@@ -64,17 +64,17 @@ class listRegionService {
         rows_per_page: limit,
         last_page: Math.ceil(totalCount / limit),
         from: 1 + offset,
-        rows: regionListResponse(regions),
+        rows: districtListResponse(districts),
       };
-      return regionPayload("region_listed", data, DbTransactions);
+      return districtPayload("district_listed", data, DbTransactions);
     } catch (error) {
       const err = error as Error & { data?: any };
-      return buildErrorResult(err.message, regionErrorsMessages, err.data);
+      return buildErrorResult(err.message, districtErrorsMessages, err.data);
     }
   }
 
   private buildQuery(where: any, conditions: any, offset: number): any {
-    const query = this.regionRepository.find(where);
+    const query = this.districtRepository.find(where);
     const orderBy: any = {};
 
     if (conditions.populate) {
@@ -105,4 +105,4 @@ class listRegionService {
   }
 }
 
-export default new listRegionService();
+export default new listDistrictsService();

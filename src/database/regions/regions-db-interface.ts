@@ -5,6 +5,7 @@ export interface IRegion extends CommonServiceFieldsInterface {
     name: string; // Name of the region
     code: string; // Short code for the region
     country_id: Types.ObjectId; // Link to country (mandatory)
+    district_ids?: Types.ObjectId[];
 }
 
 export interface IRegionDocument extends IRegion, Document { }
