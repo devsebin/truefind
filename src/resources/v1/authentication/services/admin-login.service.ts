@@ -19,7 +19,7 @@ class loginAdminService {
     public async execute(
         req: Request,
     ): Promise<SingleResponse | ErrorResponse> {
-        const { email, password, device_id } = req.body;
+        const { email, password } = req.body;
         const session = await mongoose.startSession();
         const DbTransactions: DbTransaction[] = [];
 

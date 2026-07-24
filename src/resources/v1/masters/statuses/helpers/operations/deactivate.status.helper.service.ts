@@ -32,7 +32,7 @@ class deactivateStatusHelperService {
             is_active: false,
           },
         },
-        { session, new: true },
+        { session, returnDocument: "after" },
       );
       const changes = updatedFields(updatedDocument, snapshot);
 

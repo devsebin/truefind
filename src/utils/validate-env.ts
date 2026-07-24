@@ -12,6 +12,8 @@ function validateEnv(): void {
     MONGO_PATH: str(),
     MONGO_USER: str(),
     PORT: port({ default: 3000 }),
+    AUTHENTICATION_TOKEN_EXPIRY: str(),
+    AUTHENTICATION_REFRESH_TOKEN_EXPIRY: str(),
   });
 }
 

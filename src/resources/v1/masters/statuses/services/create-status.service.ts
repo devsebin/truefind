@@ -47,6 +47,7 @@ class createStatusService {
         statusesErrorsMessages,
         { setDefault: true, session },
       );
+      bodyWithDefault.created_by = request.user?.id;
       // create new status
       const newStatus = await createStatusHelperService.execute(
         bodyWithDefault,

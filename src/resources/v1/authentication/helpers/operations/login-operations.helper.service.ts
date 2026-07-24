@@ -38,7 +38,7 @@ class loginOperationsHelperService {
                     email: user.email,
                     role: user.role,
                 },
-                "7d",
+                process.env.AUTHENTICATION_TOKEN_EXPIRY as string,
             );
 
             const refreshToken = signRefresh(
@@ -46,7 +46,7 @@ class loginOperationsHelperService {
                     jti: tokenId,
                     id: user.id,
                 },
-                "7d",
+                process.env.AUTHENTICATION_REFRESH_TOKEN_EXPIRY as string,
             );
 
             const decoded = await verifyToken(accessToken);
@@ -154,7 +154,7 @@ class loginOperationsHelperService {
             const doc = await RefreshSessionModel.findOneAndUpdate(
                 { userId: user._id, deviceId },
                 { $set: sessionData },
-                { upsert: true, new: true, runValidators: true, session }
+                { upsert: true, returnDocument: "after", runValidators: true, session }
             ).exec();
 
             DbTransactions.push(

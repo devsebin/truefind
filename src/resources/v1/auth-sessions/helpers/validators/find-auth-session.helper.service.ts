@@ -3,45 +3,41 @@ import mongoose, { HydratedDocument, Model, Types } from "mongoose";
 import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 import { rethrowIfKnown } from "@/utils/responses/error.response";
 
-import StatusModel from "@/database/status/status-db-model";
-import { IStatus } from "@/database/status/status-db-interface";
+import RefreshSessionModel from "@/database/auth-sessions/auth-session-db-model";
+import { IAuthSession } from "@/database/auth-sessions/auth-session-db-interface";
 
-import { throwError } from "../../statuses.helper";
+import { throwError } from "../../auth-sessions.helper";
 import { IBaseFindOptions } from "@/utils/interfaces/base-find-query.interface";
 import StrictFilterQuery from "@/utils/helpers/query-filter";
 
-export type IFindStatus = StrictFilterQuery<IStatus & { _id: Types.ObjectId }>;
+export type IFindAuthSession = StrictFilterQuery<IAuthSession & { _id: Types.ObjectId }>;
 
-class findStatusHelperService {
-  private readonly statusRepository: Model<IStatus>;
+class findAuthSessionHelperService {
+  private readonly authSessionRepository: Model<IAuthSession>;
 
   constructor() {
-    this.statusRepository = StatusModel;
+    this.authSessionRepository = RefreshSessionModel;
   }
 
   public async execute(
-    query: IFindStatus,
+    query: IFindAuthSession,
     errorMap: Record<string, { message: string; status: number }>,
     options: IBaseFindOptions & {
       session?: mongoose.ClientSession;
     } = {},
-  ): Promise<HydratedDocument<IStatus>[]> {
+  ): Promise<HydratedDocument<IAuthSession>[]> {
     const {
       throwIfExists = false,
       throwIfNotFound = false,
       returnDocument = true,
       lean = false,
       select,
-      populate,
       session,
     } = options;
 
     try {
-      let dbQuery: any = this.statusRepository.find(query).session(session || null);
+      let dbQuery: any = this.authSessionRepository.find(query).session(session || null);
 
-      if (populate) {
-        dbQuery = dbQuery.populate(populate);
-      }
       if (select) {
         dbQuery = dbQuery.select(select);
       }
@@ -50,14 +46,12 @@ class findStatusHelperService {
         dbQuery = dbQuery.lean();
       }
 
-
       const documents = await dbQuery;
 
       if (throwIfExists && documents.length > 0) {
         const response = ResponseBuilder.error(ErrorTypes.CONFLICT, {
-          message: "status already exists",
+          message: "Session already exists",
           data: query,
-          filler: { 0: documents[0].label },
         });
 
         throwError("already_exists", response);
@@ -65,22 +59,22 @@ class findStatusHelperService {
 
       if (throwIfNotFound && documents.length === 0) {
         const response = ResponseBuilder.error(ErrorTypes.NOT_FOUND, {
-          message: "status not found",
+          message: "Session not found",
           data: query,
         });
 
-        throwError("status_not_found", response);
+        throwError("session_not_found", response);
       }
 
       if (!returnDocument) {
         return [];
       }
 
-      return documents as HydratedDocument<IStatus>[];
+      return documents as HydratedDocument<IAuthSession>[];
     } catch (error) {
-      rethrowIfKnown(error, "Error while finding status", errorMap);
+      rethrowIfKnown(error, "Error while finding session", errorMap);
     }
   }
 }
 
-export default new findStatusHelperService();
+export default new findAuthSessionHelperService();

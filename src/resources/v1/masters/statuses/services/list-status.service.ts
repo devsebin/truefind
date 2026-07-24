@@ -13,7 +13,7 @@ import {
 import { listResponse } from "@/utils/responses/success.response";
 import { Request } from "express";
 import mongoose, { Model } from "mongoose";
-import { statusPayload } from "../statuses.helper";
+import { populateFields, statusPayload } from "../statuses.helper";
 import { statusListResponse } from "../statuses.response";
 import { statusesErrorsMessages } from "../statuses.messages";
 
@@ -29,6 +29,7 @@ class listStatusService {
     is_export = false,
   ): Promise<listResponse | ErrorResponse> {
     const conditions = request.query;
+    conditions.populate = populateFields;
     const page = parseInt(conditions.page as string, 10) || 1;
     const limit = parseInt(conditions.limit as string, 10) || 10;
     const offset = limit * (page - 1);
