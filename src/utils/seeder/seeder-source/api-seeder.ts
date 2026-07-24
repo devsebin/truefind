@@ -3,6 +3,7 @@ import authenticationApiData from "../data-source/apis/authentication-api-data";
 import statusesApiData from "../data-source/apis/statuses-apis";
 import authenticationSessionsApiData from "../data-source/apis/authentication-sessions-api-data";
 import userApiData from "../data-source/apis/user-api-data";
+import countriesApiData from "../data-source/apis/countries-api-data";
 
 export const seedActivity = async () => {
   await api.deleteMany({});
@@ -12,6 +13,7 @@ export const seedActivity = async () => {
     ...statusesApiData,
     ...authenticationSessionsApiData,
     ...userApiData,
+    ...countriesApiData,
   ];
 
   if (allApis.length > 0) {

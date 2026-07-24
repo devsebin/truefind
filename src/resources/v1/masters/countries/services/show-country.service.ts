@@ -5,21 +5,21 @@ import {
 } from "@/utils/responses/error.response";
 import { SingleResponse } from "@/utils/responses/success.response";
 import mongoose from "mongoose";
-import { statusesErrorsMessages } from "../statuses.messages";
-import findStatusHelperService from "../helpers/validators/find-status.helper.service";
-import { populateFields, statusPayload } from "../statuses.helper";
-import { statusResponse } from "../statuses.response";
+import { countryErrorsMessages } from "../countries.messages";
+import findCountryHelperService from "../helpers/validators/find-country.helper.service";
+import { populateFields, countryPayload } from "../countries.helper";
+import { countryResponse } from "../countries.response";
 
-class showStatusesService {
+class showCountryService {
   public async execute(
     id: mongoose.Types.ObjectId,
   ): Promise<SingleResponse | ErrorResponse> {
     const dbTransactions: DbTransaction[] = [];
 
     try {
-      const status = await findStatusHelperService.execute(
+      const country = await findCountryHelperService.execute(
         { _id: id },
-        statusesErrorsMessages,
+        countryErrorsMessages,
         {
           lean: true,
           throwIfNotFound: true,
@@ -28,17 +28,17 @@ class showStatusesService {
         },
       );
 
-      return statusPayload(
-        "status_fetched",
-        statusResponse(status[0]),
+      return countryPayload(
+        "country_fetched",
+        countryResponse(country[0]),
         dbTransactions,
       );
     } catch (error) {
       const err = error as Error & { data?: any };
 
-      return buildErrorResult(err.message, statusesErrorsMessages, err.data);
+      return buildErrorResult(err.message, countryErrorsMessages, err.data);
     }
   }
 }
 
-export default new showStatusesService();
+export default new showCountryService();

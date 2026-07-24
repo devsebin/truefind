@@ -11,10 +11,8 @@ import routes from "./routes/index.routes";
 import masterRoutes from "./routes/master.routes";
 import { geoMiddleware } from "./middlewares/user-location-fetching.middleware";
 import { COOKIE_SECRET } from "./utils/validate-env";
+import { contextMiddleware } from "./middlewares/context.middleware";
 // import "./resources/v1/masters/providers/helpers/handler.startup";
-import { AsyncLocalStorage } from "async_hooks";
-
-const asyncLocalStorage = new AsyncLocalStorage();
 
 class Index {
     public express: Application;
@@ -33,8 +31,10 @@ class Index {
         this.express.use("/api/v1/masters", masterRoutes);
     }
     private initializeMiddleware(): void {
+        this.express.use(contextMiddleware);
         this.express.set("trust proxy", true); // If behind a proxy like Nginx
         this.express.use(cookieParser(COOKIE_SECRET));
+
         this.express.use(geoMiddleware);
 
         // this.express.use(activityLog);

@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import UserModel from "@/database/users/users-db-model";
+import { requestContext } from "@/utils/context/request-context";
 import Token from "@/utils/interfaces/token.interface";
 import jwt from "jsonwebtoken";
 import {
@@ -90,6 +91,11 @@ async function authenticate(
         }
 
         req.user = user;
+
+        const store = requestContext.getStore();
+        if (store) {
+            store.userId = user.id;
+        }
 
         return next();
     } catch (error) {
