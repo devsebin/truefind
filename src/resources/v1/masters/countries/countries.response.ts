@@ -44,7 +44,12 @@ export const countryResponse = (country: any): any => ({
 });
 
 export const countryListResponse = (data: any): any =>
-    data?.map((country: any) => countryResponse(country)) ?? [];
+    data?.map((country: any) => {
+        const res = countryResponse(country);
+        res.regions = country.region_ids?.length ?? 0;
+        // delete res.regions;
+        return res;
+    }) ?? [];
 
 export const countryErrorResponse = (country: any): any => ({
     id: country._id,
