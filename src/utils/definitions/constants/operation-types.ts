@@ -1,0 +1,17 @@
+export enum operationTypes {
+  Create = "create",
+  Read = "read",
+  Update = "update",
+  Delete = "delete",
+  Import = "import",
+  Export = "export",
+  Check = "check",
+  Approve = "approve",
+  Reject = "reject",
+  Cancel = "cancel",
+  Login = "login",
+  Logout = "logout",
+  Validate = "validate",
+  activate = "activate",
+  deactivate = "deactivate",
+}

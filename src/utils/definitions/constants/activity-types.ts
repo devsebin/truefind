@@ -1,0 +1,17 @@
+export enum activityTypes {
+  Create = "create",
+  Update = "update",
+  List = "list",
+  Delete = "delete",
+  Activate = "activate",
+  Deactivate = "deactivate",
+  Show = "show",
+  Import = "import",
+  Export = "export",
+  Log = "log",
+  Send = "send",
+  Login = "login",
+  Logout = "logout",
+  ForgotPassword = "forgot_password",
+  Refresh = "refresh",
+}
