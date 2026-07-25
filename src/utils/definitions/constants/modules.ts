@@ -15,4 +15,5 @@ export enum moduleTypes {
   Services = "services",
   Declaimers = "declaimers",
   Priorities = "priorities",
+  Suburbs = "suburbs",
 }

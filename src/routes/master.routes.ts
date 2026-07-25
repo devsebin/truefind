@@ -6,11 +6,13 @@ import v1CountryRoutes from "../resources/v1/masters/countries/countries.routes"
 import v1StatusRoutes from "../resources/v1/masters/statuses/statuses.routes";
 import v1RegionRoutes from "../resources/v1/masters/regions/regions.routes"
 import v1DistrictRoutes from "../resources/v1/masters/districts/districts.routes";
+import v1SuburbRoutes from "../resources/v1/masters/suburbs/suburbs.routes";
 const router = Router();
 
 router.use("/statuses", authentication, authorizationApi, v1StatusRoutes);
 router.use("/countries", authentication, authorizationApi, v1CountryRoutes);
 router.use("/regions", authentication, authorizationApi, v1RegionRoutes);
 router.use("/districts", authentication, authorizationApi, v1DistrictRoutes);
+router.use("/suburbs", authentication, authorizationApi, v1SuburbRoutes);
 
 export default router;
