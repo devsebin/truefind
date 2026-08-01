@@ -7,6 +7,7 @@ import countriesApiData from "../data-source/apis/countries-api-data";
 import regionsApiData from "../data-source/apis/region-api-data";
 import districtsApiData from "../data-source/apis/district-api-data";
 import suburbsApiData from "../data-source/apis/suburb-api-data";
+import providerApiData from "../data-source/apis/provider-api-data";
 
 export const seedActivity = async () => {
   await api.deleteMany({});
@@ -20,6 +21,7 @@ export const seedActivity = async () => {
     ...regionsApiData,
     ...districtsApiData,
     ...suburbsApiData,
+    ...providerApiData,
   ];
 
   if (allApis.length > 0) {
