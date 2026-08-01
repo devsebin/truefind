@@ -2,18 +2,25 @@ import { describe, it, expect, beforeEach, beforeAll } from "@jest/globals";
 import deactivateRegionService from "@/resources/v1/masters/regions/services/deactivate-region.service";
 import CountryModel from "@/database/countries/countries-db-model";
 import RegionModel from "@/database/regions/regions-db-model";
+import DistrictModel from "@/database/districts/districts-db-model";
+import SuburbModel from "@/database/suburbs/suburbs-db-model";
 import UserModel from "@/database/users/users-db-model";
 import StatusModel from "@/database/status/status-db-model";
 import PriorityModel from "@/database/priority/priority-db-model";
 import { requestContext } from "@/utils/context/request-context";
 import { buildCountryPayload } from "../../factories/country.factory";
 import { buildRegionPayload } from "../../factories/region.factory";
+import { buildDistrictPayload } from "../../factories/district.factory";
+import { buildSuburbPayload } from "../../factories/suburb.factory";
 import mongoose from "mongoose";
 
 describe("DeactivateRegionService (Integration)", () => {
   let testUser: any;
   let country: any;
   let region: any;
+  let district: any;
+  let suburb: any;
+  let parentDisabledStatus: any;
 
   beforeAll(async () => {
     await RegionModel.ensureIndexes();
@@ -21,6 +28,8 @@ describe("DeactivateRegionService (Integration)", () => {
     await UserModel.ensureIndexes();
     await StatusModel.ensureIndexes();
     await PriorityModel.ensureIndexes();
+    await DistrictModel.ensureIndexes();
+    await SuburbModel.ensureIndexes();
   });
 
   beforeEach(async () => {
@@ -30,6 +39,16 @@ describe("DeactivateRegionService (Integration)", () => {
       label: "Active status",
       color: "#000000",
       is_default: true,
+      is_active: true,
+      is_deleted: false,
+    });
+
+    // Seed parent disabled status
+    parentDisabledStatus = await StatusModel.create({
+      title: "Parent disabled",
+      label: "parent_disabled",
+      color: "#FF0000",
+      is_default: false,
       is_active: true,
       is_deleted: false,
     });
@@ -64,6 +83,15 @@ describe("DeactivateRegionService (Integration)", () => {
     region = await RegionModel.create(
       buildRegionPayload({ name: "Tuscany", code: "TUS", country_id: country._id, is_active: true, is_deleted: false })
     );
+
+    // Seed related child entities
+    district = await DistrictModel.create(
+      buildDistrictPayload({ country_id: country._id, region_id: region._id, is_active: true, is_deleted: false })
+    );
+
+    suburb = await SuburbModel.create(
+      buildSuburbPayload({ country_id: country._id, region_id: region._id, district_id: district._id, is_active: true, is_deleted: false })
+    );
   });
 
   it("should successfully deactivate an active region", async () => {
@@ -79,6 +107,15 @@ describe("DeactivateRegionService (Integration)", () => {
     const inactiveDb = await RegionModel.findOne({ _id: region._id, is_deleted: false });
     expect(inactiveDb).toBeDefined();
     expect(inactiveDb!.is_active).toBe(false);
+
+    // Verify related entities are deactivated and status is updated to parent_disabled
+    const districtDb = await DistrictModel.findOne({ _id: district._id, is_deleted: false, is_active: false });
+    expect(districtDb!.is_active).toBe(false);
+    expect(districtDb!.status_id.toString()).toBe(parentDisabledStatus._id.toString());
+
+    const suburbDb = await SuburbModel.findOne({ _id: suburb._id, is_deleted: false, is_active: false });
+    expect(suburbDb!.is_active).toBe(false);
+    expect(suburbDb!.status_id.toString()).toBe(parentDisabledStatus._id.toString());
   });
 
   it("should fail when trying to deactivate an already inactive region", async () => {

@@ -10,6 +10,7 @@ import { districtErrorsMessages } from "../districts.messages";
 import enableDistrictHelperService from "../helpers/operations/enable-district.helper.service";
 import { districtPayload } from "../districts.helper";
 import findDistrictStateHelperService from "../helpers/validators/find-state.helper.service";
+import updateRelatedEntitiesHelperService from "../helpers/operations/update-related-entities.helper.service";
 
 class enableDistrictsService {
   public async execute(
@@ -42,6 +43,13 @@ class enableDistrictsService {
         userId,
         dbTransactions,
         districtErrorsMessages,
+      );
+
+      await updateRelatedEntitiesHelperService.activate(
+        district[0],
+        session,
+        userId,
+        dbTransactions,
       );
 
       await session.commitTransaction();

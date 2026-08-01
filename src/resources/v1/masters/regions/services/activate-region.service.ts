@@ -10,6 +10,7 @@ import { regionErrorsMessages } from "../regions.messages";
 import activateRegionHelperService from "../helpers/operations/activate-region.helper.service";
 import { regionPayload } from "../regions.helper";
 import findRegionStateHelperService from "../helpers/validators/find-state.helper.service";
+import updateRelatedEntitiesHelperService from "../helpers/operations/update-related-entities.helper.service";
 
 class activateRegionService {
   public async execute(
@@ -42,6 +43,13 @@ class activateRegionService {
         userId,
         dbTransactions,
         regionErrorsMessages,
+      );
+
+      await updateRelatedEntitiesHelperService.activate(
+        region[0],
+        session,
+        userId,
+        dbTransactions,
       );
 
       await session.commitTransaction();

@@ -3,6 +3,7 @@ import deleteDistrictsService from "@/resources/v1/masters/districts/services/de
 import CountryModel from "@/database/countries/countries-db-model";
 import RegionModel from "@/database/regions/regions-db-model";
 import DistrictModel from "@/database/districts/districts-db-model";
+import SuburbModel from "@/database/suburbs/suburbs-db-model";
 import UserModel from "@/database/users/users-db-model";
 import StatusModel from "@/database/status/status-db-model";
 import PriorityModel from "@/database/priority/priority-db-model";
@@ -10,6 +11,7 @@ import { requestContext } from "@/utils/context/request-context";
 import { buildCountryPayload } from "../../factories/country.factory";
 import { buildRegionPayload } from "../../factories/region.factory";
 import { buildDistrictPayload } from "../../factories/district.factory";
+import { buildSuburbPayload } from "../../factories/suburb.factory";
 import mongoose from "mongoose";
 
 describe("DeleteDistrictService (Integration)", () => {
@@ -17,6 +19,8 @@ describe("DeleteDistrictService (Integration)", () => {
   let testCountry: any;
   let testRegion: any;
   let district: any;
+  let suburb: any;
+  let parentDeletedStatus: any;
 
   beforeAll(async () => {
     await DistrictModel.ensureIndexes();
@@ -25,6 +29,7 @@ describe("DeleteDistrictService (Integration)", () => {
     await UserModel.ensureIndexes();
     await StatusModel.ensureIndexes();
     await PriorityModel.ensureIndexes();
+    await SuburbModel.ensureIndexes();
   });
 
   beforeEach(async () => {
@@ -33,6 +38,15 @@ describe("DeleteDistrictService (Integration)", () => {
       label: "Active status",
       color: "#000000",
       is_default: true,
+      is_active: true,
+      is_deleted: false,
+    });
+
+    parentDeletedStatus = await StatusModel.create({
+      title: "Parent deleted",
+      label: "parent_deleted",
+      color: "#FF0000",
+      is_default: false,
       is_active: true,
       is_deleted: false,
     });
@@ -71,6 +85,10 @@ describe("DeleteDistrictService (Integration)", () => {
     );
     testRegion.district_ids.push(district._id);
     await testRegion.save();
+
+    suburb = await SuburbModel.create(
+      buildSuburbPayload({ country_id: testCountry._id, region_id: testRegion._id, district_id: district._id, is_active: true, is_deleted: false })
+    );
   });
 
   it("should successfully soft delete a district with force flag and pull ID from region", async () => {
@@ -90,5 +108,10 @@ describe("DeleteDistrictService (Integration)", () => {
     // Verify pulled from Region
     const updatedRegion = await RegionModel.findById(testRegion._id);
     expect(updatedRegion!.district_ids).not.toContainEqual(district._id);
+
+    // Verify related suburb is deactivated and status is updated to parent_deleted
+    const suburbDb = await SuburbModel.findOne({ _id: suburb._id, is_deleted: false, is_active: false });
+    expect(suburbDb!.is_active).toBe(false);
+    expect(suburbDb!.status_id.toString()).toBe(parentDeletedStatus._id.toString());
   });
 });

@@ -3,6 +3,7 @@ import disableDistrictsService from "@/resources/v1/masters/districts/services/d
 import CountryModel from "@/database/countries/countries-db-model";
 import RegionModel from "@/database/regions/regions-db-model";
 import DistrictModel from "@/database/districts/districts-db-model";
+import SuburbModel from "@/database/suburbs/suburbs-db-model";
 import UserModel from "@/database/users/users-db-model";
 import StatusModel from "@/database/status/status-db-model";
 import PriorityModel from "@/database/priority/priority-db-model";
@@ -10,6 +11,7 @@ import { requestContext } from "@/utils/context/request-context";
 import { buildCountryPayload } from "../../factories/country.factory";
 import { buildRegionPayload } from "../../factories/region.factory";
 import { buildDistrictPayload } from "../../factories/district.factory";
+import { buildSuburbPayload } from "../../factories/suburb.factory";
 import mongoose from "mongoose";
 
 describe("DisableDistrictService (Integration)", () => {
@@ -17,6 +19,8 @@ describe("DisableDistrictService (Integration)", () => {
   let testCountry: any;
   let testRegion: any;
   let district: any;
+  let suburb: any;
+  let parentDisabledStatus: any;
 
   beforeAll(async () => {
     await DistrictModel.ensureIndexes();
@@ -25,6 +29,7 @@ describe("DisableDistrictService (Integration)", () => {
     await UserModel.ensureIndexes();
     await StatusModel.ensureIndexes();
     await PriorityModel.ensureIndexes();
+    await SuburbModel.ensureIndexes();
   });
 
   beforeEach(async () => {
@@ -33,6 +38,15 @@ describe("DisableDistrictService (Integration)", () => {
       label: "Active status",
       color: "#000000",
       is_default: true,
+      is_active: true,
+      is_deleted: false,
+    });
+
+    parentDisabledStatus = await StatusModel.create({
+      title: "Parent disabled",
+      label: "parent_disabled",
+      color: "#FF0000",
+      is_default: false,
       is_active: true,
       is_deleted: false,
     });
@@ -69,6 +83,10 @@ describe("DisableDistrictService (Integration)", () => {
     district = await DistrictModel.create(
       buildDistrictPayload({ name: "Mohandessin", code: "MOH", country_id: testCountry._id, region_id: testRegion._id, is_active: true })
     );
+
+    suburb = await SuburbModel.create(
+      buildSuburbPayload({ country_id: testCountry._id, region_id: testRegion._id, district_id: district._id, is_active: true, is_deleted: false })
+    );
   });
 
   it("should disable a district successfully", async () => {
@@ -79,5 +97,10 @@ describe("DisableDistrictService (Integration)", () => {
     expect(disableResult.result.code).toBe(200);
     const disabledDb = await DistrictModel.findOne({ _id: district._id, is_deleted: false });
     expect(disabledDb!.is_active).toBe(false);
+
+    // Verify related suburb is deactivated and status is updated to parent_disabled
+    const suburbDb = await SuburbModel.findOne({ _id: suburb._id, is_deleted: false, is_active: false });
+    expect(suburbDb!.is_active).toBe(false);
+    expect(suburbDb!.status_id.toString()).toBe(parentDisabledStatus._id.toString());
   });
 });

@@ -1,16 +1,26 @@
 import { describe, it, expect, beforeEach, beforeAll } from "@jest/globals";
 import deleteCountryService from "@/resources/v1/masters/countries/services/delete-country.service";
 import CountryModel from "@/database/countries/countries-db-model";
+import RegionModel from "@/database/regions/regions-db-model";
+import DistrictModel from "@/database/districts/districts-db-model";
+import SuburbModel from "@/database/suburbs/suburbs-db-model";
 import UserModel from "@/database/users/users-db-model";
 import StatusModel from "@/database/status/status-db-model";
 import PriorityModel from "@/database/priority/priority-db-model";
 import { requestContext } from "@/utils/context/request-context";
 import { buildCountryPayload } from "../../factories/country.factory";
+import { buildRegionPayload } from "../../factories/region.factory";
+import { buildDistrictPayload } from "../../factories/district.factory";
+import { buildSuburbPayload } from "../../factories/suburb.factory";
 import mongoose from "mongoose";
 
 describe("DeleteCountryService (Integration)", () => {
   let testUser: any;
   let country: any;
+  let region: any;
+  let district: any;
+  let suburb: any;
+  let parentDeletedStatus: any;
 
   beforeAll(async () => {
     // Ensure all indexes are fully built before starting tests to avoid lock timeouts
@@ -18,6 +28,9 @@ describe("DeleteCountryService (Integration)", () => {
     await UserModel.ensureIndexes();
     await StatusModel.ensureIndexes();
     await PriorityModel.ensureIndexes();
+    await RegionModel.ensureIndexes();
+    await DistrictModel.ensureIndexes();
+    await SuburbModel.ensureIndexes();
   });
 
   beforeEach(async () => {
@@ -27,6 +40,16 @@ describe("DeleteCountryService (Integration)", () => {
       label: "Active status",
       color: "#000000",
       is_default: true,
+      is_active: true,
+      is_deleted: false,
+    });
+
+    // Seed parent deleted status
+    parentDeletedStatus = await StatusModel.create({
+      title: "Parent deleted",
+      label: "parent_deleted",
+      color: "#FF0000",
+      is_default: false,
       is_active: true,
       is_deleted: false,
     });
@@ -56,6 +79,19 @@ describe("DeleteCountryService (Integration)", () => {
     country = await CountryModel.create(
       buildCountryPayload({ name: "Italy", iso_code: "IT", iso_code_3: "ITA", is_active: true, is_deleted: false })
     );
+
+    // Seed related child entities
+    region = await RegionModel.create(
+      buildRegionPayload({ country_id: country._id, is_active: true, is_deleted: false })
+    );
+
+    district = await DistrictModel.create(
+      buildDistrictPayload({ country_id: country._id, region_id: region._id, is_active: true, is_deleted: false })
+    );
+
+    suburb = await SuburbModel.create(
+      buildSuburbPayload({ country_id: country._id, region_id: region._id, district_id: district._id, is_active: true, is_deleted: false })
+    );
   });
 
   it("should fail to delete an active country without force flag", async () => {
@@ -84,6 +120,19 @@ describe("DeleteCountryService (Integration)", () => {
     expect(deletedDb!.is_active).toBe(false);
     expect(deletedDb!.deleted_by!.toString()).toBe(testUser._id.toString());
     expect(deletedDb!.deleted_at).toBeDefined();
+
+    // Verify related entities are deactivated and status is updated to parent_deleted
+    const regionDb = await RegionModel.findOne({ _id: region._id, is_deleted: false, is_active: false });
+    expect(regionDb!.is_active).toBe(false);
+    expect(regionDb!.status_id.toString()).toBe(parentDeletedStatus._id.toString());
+
+    const districtDb = await DistrictModel.findOne({ _id: district._id, is_deleted: false, is_active: false });
+    expect(districtDb!.is_active).toBe(false);
+    expect(districtDb!.status_id.toString()).toBe(parentDeletedStatus._id.toString());
+
+    const suburbDb = await SuburbModel.findOne({ _id: suburb._id, is_deleted: false, is_active: false });
+    expect(suburbDb!.is_active).toBe(false);
+    expect(suburbDb!.status_id.toString()).toBe(parentDeletedStatus._id.toString());
   });
 
   it("should fail when trying to delete an already deleted country", async () => {

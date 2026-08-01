@@ -290,6 +290,15 @@ export async function generateStatusData() {
       created_by: user._id,
     },
     {
+      title: "Parent disabled",
+      label: "parent_disabled",
+      color: "#FF0000", // Red
+      is_active: true,
+      is_deleted: false,
+      is_default: false,
+      created_by: user._id,
+    },
+    {
       title: "Child deleted",
       label: "child_deleted",
       color: "#FF0000", // Red

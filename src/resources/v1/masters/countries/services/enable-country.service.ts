@@ -10,6 +10,7 @@ import { countryErrorsMessages } from "../countries.messages";
 import activateCountryHelperService from "../helpers/operations/activate-country.helper.service";
 import { countryPayload } from "../countries.helper";
 import findCountryStateHelperService from "../helpers/validators/find-state.helper.service";
+import updateRelatedEntitiesHelperService from "../helpers/operations/update-related-entities.helper.service";
 
 class enableCountryService {
   public async execute(
@@ -43,6 +44,13 @@ class enableCountryService {
         userId,
         dbTransactions,
         countryErrorsMessages,
+      );
+
+      await updateRelatedEntitiesHelperService.activate(
+        country[0],
+        session,
+        userId,
+        dbTransactions,
       );
 
       await session.commitTransaction();

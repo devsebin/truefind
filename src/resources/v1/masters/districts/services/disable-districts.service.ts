@@ -10,6 +10,7 @@ import { districtErrorsMessages } from "../districts.messages";
 import disableDistrictHelperService from "../helpers/operations/disable-district.helper.service";
 import { districtPayload } from "../districts.helper";
 import findDistrictStateHelperService from "../helpers/validators/find-state.helper.service";
+import updateRelatedEntitiesHelperService from "../helpers/operations/update-related-entities.helper.service";
 
 class disableDistrictsService {
   public async execute(
@@ -42,6 +43,14 @@ class disableDistrictsService {
         userId,
         dbTransactions,
         districtErrorsMessages,
+      );
+
+      await updateRelatedEntitiesHelperService.deactivate(
+        district[0],
+        session,
+        userId,
+        dbTransactions,
+        "parent_disabled",
       );
 
       await session.commitTransaction();

@@ -10,8 +10,11 @@ import { countryErrorsMessages } from "../countries.messages";
 import deleteCountryHelperService from "../helpers/operations/delete-country.helper.service";
 import { countryPayload } from "../countries.helper";
 import findCountryStateHelperService from "../helpers/validators/find-state.helper.service";
+import updateRelatedEntitiesHelperService from "../helpers/operations/update-related-entities.helper.service";
 
 class deleteCountryService {
+  constructor() {}
+
   public async execute(
     id: mongoose.Types.ObjectId,
     userId: mongoose.Types.ObjectId,
@@ -45,6 +48,14 @@ class deleteCountryService {
         is_force,
         dbTransactions,
         countryErrorsMessages,
+      );
+
+      await updateRelatedEntitiesHelperService.deactivate(
+        country[0],
+        session,
+        userId,
+        dbTransactions,
+        "parent_deleted",
       );
 
       await session.commitTransaction();

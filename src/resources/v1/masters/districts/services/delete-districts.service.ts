@@ -10,6 +10,7 @@ import { districtErrorsMessages } from "../districts.messages";
 import deleteDistrictHelperService from "../helpers/operations/delete-district.helper.service";
 import { districtPayload } from "../districts.helper";
 import findDistrictStateHelperService from "../helpers/validators/find-state.helper.service";
+import updateRelatedEntitiesHelperService from "../helpers/operations/update-related-entities.helper.service";
 
 class deleteDistrictsService {
   public async execute(
@@ -46,6 +47,14 @@ class deleteDistrictsService {
         is_force,
         dbTransactions,
         districtErrorsMessages,
+      );
+
+      await updateRelatedEntitiesHelperService.deactivate(
+        district[0],
+        session,
+        userId,
+        dbTransactions,
+        "parent_deleted",
       );
 
       await session.commitTransaction();

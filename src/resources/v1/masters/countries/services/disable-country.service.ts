@@ -10,6 +10,7 @@ import { countryErrorsMessages } from "../countries.messages";
 import deactivateCountryHelperService from "../helpers/operations/deactivate-country.helper.service";
 import { countryPayload } from "../countries.helper";
 import findCountryStateHelperService from "../helpers/validators/find-state.helper.service";
+import updateRelatedEntitiesHelperService from "../helpers/operations/update-related-entities.helper.service";
 
 class disableCountryService {
   public async execute(
@@ -43,6 +44,14 @@ class disableCountryService {
         userId,
         dbTransactions,
         countryErrorsMessages,
+      );
+
+      await updateRelatedEntitiesHelperService.deactivate(
+        country[0],
+        session,
+        userId,
+        dbTransactions,
+        "parent_disabled",
       );
 
       await session.commitTransaction();
