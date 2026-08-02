@@ -49,6 +49,42 @@ export const providerErrorsMessages = {
         message: "No change detected in provider with name: {0} and id: {1}",
         status: statusCodes.BadRequest,
     },
+    duplicate_country_code: {
+        message: "Duplicate country code: {0}",
+        status: statusCodes.BadRequest,
+    },
+    invalid_country_id: {
+        message: "Invalid country id: {0}",
+        status: statusCodes.BadRequest,
+    },
+    country_must_have_at_least_one_type: {
+        message: "Country must have at least one type",
+        status: statusCodes.BadRequest,
+    },
+    duplicate_provider_type: {
+        message: "Duplicate provider type: {0}",
+        status: statusCodes.BadRequest,
+    },
+    only_one_default_allowed_per_country: {
+        message: "Only one default type allowed per country: {0}",
+        status: statusCodes.BadRequest,
+    },
+    invalid_country_id_format: {
+        message: "Invalid country id format: {0}",
+        status: statusCodes.BadRequest,
+    },
+    country_not_found: {
+        message: "Country not found with id: {0}",
+        status: statusCodes.NotFound,
+    },
+    country_code_mismatch: {
+        message: "Country code mismatch: {0}",
+        status: statusCodes.BadRequest,
+    },
+    cannot_remove_linked_countries: {
+        message: "Cannot remove linked countries: {0}",
+        status: statusCodes.BadRequest,
+    },
 };
 
 export const providerSuccessMessages = {

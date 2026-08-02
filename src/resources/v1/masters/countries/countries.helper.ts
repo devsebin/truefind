@@ -49,7 +49,7 @@ export const populateFields = [
         select: "title",
     },
     {
-        path: "provider",
+        path: "providers.provider_id",
         select: "name is_active supportedCountries",
     },
     {

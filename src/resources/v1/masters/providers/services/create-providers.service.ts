@@ -31,6 +31,7 @@ class createProvidersService {
         {
           name: body.name,
           is_deleted: false,
+          is_active: true
         },
         providerErrorsMessages,
         {

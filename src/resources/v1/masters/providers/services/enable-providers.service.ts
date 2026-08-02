@@ -25,6 +25,7 @@ class enableProvidersService {
       const existing = await findProviderHelperService.execute(
         {
           _id: id,
+          is_deleted: { $in: [true, false] },
         },
         providerErrorsMessages,
         {
