@@ -15,6 +15,7 @@ const countryProviderSchema = new Schema<ICountryProviders>(
             required: true,
         },
         is_default: { type: Boolean, required: true, default: false },
+        is_tested: { type: Boolean, required: true, default: false },
     },
     { _id: false },
 );

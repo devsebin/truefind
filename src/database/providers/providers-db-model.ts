@@ -39,6 +39,20 @@ const SupportedCountrySchema = new Schema<ISupportedCountry>({
         required: true,
     },
     countryCode: { type: String, required: true }, // ISO code for reference
+    config: {
+        type: {
+            apiKey: { type: String, default: null },
+            apiSecret: { type: String, default: null },
+            authToken: { type: String, default: null },
+            senderId: { type: String, default: null },
+            username: { type: String, default: null },
+            password: { type: String, default: null },
+            baseUrl: { type: String, default: null },
+            apiVersion: { type: String, default: null },
+            additionalConfig: { type: Schema.Types.Mixed, default: {} },
+        },
+        default: {},
+    },
     type: { type: [TypeSchema], default: [] },
     supportFrom: { type: Date, required: true },
     supportUntil: { type: Date }, // optional

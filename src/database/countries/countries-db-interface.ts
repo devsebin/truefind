@@ -4,6 +4,7 @@ import { Types } from "mongoose";
 export interface ICountryProviders {
     provider_id: Types.ObjectId;
     is_default: boolean;
+    is_tested: boolean;
 }
 interface ICountry extends CommonServiceFieldsInterface {
     name: string; // Name of the country

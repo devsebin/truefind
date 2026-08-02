@@ -85,6 +85,14 @@ export const providerErrorsMessages = {
         message: "Cannot remove linked countries: {0}",
         status: statusCodes.BadRequest,
     },
+    unsupported_message_type: {
+        message: "Unsupported message type: {0}",
+        status: statusCodes.BadRequest,
+    },
+    handler_not_found: {
+        message: "Handler not found",
+        status: statusCodes.NotFound,
+    },
 };
 
 export const providerSuccessMessages = {

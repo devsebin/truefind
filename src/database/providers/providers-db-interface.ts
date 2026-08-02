@@ -29,17 +29,35 @@ export interface IType {
 }
 
 /**
+ * Universal config for each supporting country.
+ * Stores setup keys for external API providers.
+ */
+export interface ISupportedCountryConfig {
+    apiKey?: string;
+    apiSecret?: string;
+    authToken?: string;
+    senderId?: string;
+    username?: string;
+    password?: string;
+    baseUrl?: string;
+    apiVersion?: string;
+    additionalConfig?: Record<string, any>;
+}
+
+/**
  * Represents country-level support configuration.
  */
 export interface ISupportedCountry {
     countryId: mongoose.Types.ObjectId;
     countryCode: string;
+    config?: ISupportedCountryConfig;
     type: IType[];
     supportFrom: Date;
     supportUntil?: Date;
     is_tested?: boolean;
     is_active?: boolean;
 }
+
 
 export interface IProviderDocument extends Document {
     name: string;
@@ -61,6 +79,7 @@ export interface IInputProvider {
     supportedCountries: Array<{
         countryId: Types.ObjectId;
         countryCode: string; // ✅ ISO (NZ, US, IN, etc.)
+        config?: ISupportedCountryConfig;
         type: IType[];
         supportFrom: Date;
         supportUntil?: Date;

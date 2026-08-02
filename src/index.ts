@@ -12,7 +12,7 @@ import masterRoutes from "./routes/master.routes";
 import { geoMiddleware } from "./middlewares/user-location-fetching.middleware";
 import { COOKIE_SECRET } from "./utils/validate-env";
 import { contextMiddleware } from "./middlewares/context.middleware";
-// import "./resources/v1/masters/providers/helpers/handler.startup";
+import "./resources/v1/masters/providers/helpers/support/handler.startup";
 
 class Index {
     public express: Application;

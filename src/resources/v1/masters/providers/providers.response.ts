@@ -55,6 +55,17 @@ export const ProviderResponse = (data: any[]): any => {
                     is_tested: country.is_tested,
                     support_from: country.supportFrom,
                     support_until: country.supportUntil,
+                    config: country.config ? {
+                        api_key: country.config.apiKey,
+                        api_secret: country.config.apiSecret,
+                        auth_token: country.config.authToken,
+                        sender_id: country.config.senderId,
+                        username: country.config.username,
+                        password: country.config.password,
+                        base_url: country.config.baseUrl,
+                        api_version: country.config.apiVersion,
+                        additional_config: country.config.additionalConfig,
+                    } : null,
 
                     // Type counts
                     ...typeSummary,

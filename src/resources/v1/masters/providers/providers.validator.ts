@@ -77,6 +77,18 @@ const typeSchema = Joi.object({
     is_active: Joi.forbidden(),
 });
 
+const supportedCountryConfigSchema = Joi.object({
+    apiKey: Joi.string().trim().allow(null, "").optional(),
+    apiSecret: Joi.string().trim().allow(null, "").optional(),
+    authToken: Joi.string().trim().allow(null, "").optional(),
+    senderId: Joi.string().trim().allow(null, "").optional(),
+    username: Joi.string().trim().allow(null, "").optional(),
+    password: Joi.string().trim().allow(null, "").optional(),
+    baseUrl: Joi.string().trim().allow(null, "").optional(),
+    apiVersion: Joi.string().trim().allow(null, "").optional(),
+    additionalConfig: Joi.object().unknown(true).optional(),
+}).optional();
+
 const supportedCountrySchema = Joi.object({
     countryId: Joi.string()
         .custom((value, helpers) => {
@@ -88,6 +100,8 @@ const supportedCountrySchema = Joi.object({
         .required(),
 
     countryCode: Joi.string().trim().uppercase().required(),
+
+    config: supportedCountryConfigSchema,
 
     type: Joi.array().items(typeSchema).min(1).required(),
 
