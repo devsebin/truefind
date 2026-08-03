@@ -2,30 +2,45 @@ import { IProvider } from "@/database/providers/providers-db-interface";
 import { objectIdValidator } from "@/utils/responses/error.response";
 import Joi from "joi";
 import mongoose from "mongoose";
+import { parsePhoneNumberFromString, CountryCode } from "libphonenumber-js";
 
 
 const phoneValidator = Joi.string().custom((value, helpers) => {
     console.log("Phone validator called with value:", value);
-    const { countryCode } = helpers.state.ancestors[0];
-    if (!countryCode) {
-        return helpers.error("any.invalid", {
-            message: "countryCode is required for phone validation",
-        });
+
+    // Find countryCode in ancestors if present
+    let countryCode: string | undefined;
+    for (const ancestor of helpers.state.ancestors) {
+        if (ancestor && ancestor.countryCode) {
+            countryCode = ancestor.countryCode;
+            break;
+        }
     }
 
     let phoneNumber;
 
     try {
-        phoneNumber = value.startsWith("+")
-            ? parsePhoneNumberFromString(value)
-            : parsePhoneNumberFromString(value, countryCode);
+        if (value.startsWith("+")) {
+            phoneNumber = parsePhoneNumberFromString(value);
+        } else {
+            if (!countryCode) {
+                return helpers.error("any.invalid", {
+                    message: "countryCode is required for phone validation when the number does not start with +",
+                });
+            }
+            phoneNumber = parsePhoneNumberFromString(value, countryCode as CountryCode);
+        }
     } catch (err) {
-        return helpers.error("Invalid phone format");
+        return helpers.error("any.invalid", {
+            message: "Invalid phone format",
+        });
     }
 
     if (!phoneNumber || !phoneNumber.isValid()) {
         return helpers.error("any.invalid", {
-            message: `Invalid phone number for country ${countryCode}`,
+            message: countryCode
+                ? `Invalid phone number for country ${countryCode}`
+                : "Invalid international phone number (must start with +)",
         });
     }
 
@@ -38,20 +53,18 @@ const testLogSchema = Joi.object({
     details: Joi.string().optional(),
 });
 
-const smsPayloadSchema = Joi.object({
-    countryCode: Joi.string().trim().uppercase().required(),
+export const smsPayloadSchema = Joi.object({
     phone: phoneValidator.required(),
     message: Joi.string().required(),
 });
 
-const whatsappPayloadSchema = Joi.object({
-    countryCode: Joi.string().trim().uppercase().required(),
+export const whatsappPayloadSchema = Joi.object({
     phone: phoneValidator.required(),
     templateId: Joi.string().required(),
     variables: Joi.object().required(),
 });
 
-const emailPayloadSchema = Joi.object({
+export const emailPayloadSchema = Joi.object({
     email: Joi.string().email().required(),
     subject: Joi.string().required(),
     body: Joi.string().required(),
@@ -69,7 +82,7 @@ const typeSchema = Joi.object({
             { is: "EMAIL", then: emailPayloadSchema },
         ],
         otherwise: Joi.forbidden(),
-    }),
+    }).required(),
 
     is_tested: Joi.forbidden(),
     test_log: Joi.array().items(testLogSchema).default([]),
@@ -124,4 +137,29 @@ export const updateProviderInputValidator = Joi.object<IProvider>({
 
 export const deleteProviderInputValidator = Joi.object({
     force_action: Joi.boolean().optional(),
+});
+
+export const linkCountryParamsValidator = Joi.object({
+    provider_id: Joi.string().custom(objectIdValidator).required(),
+    country_id: Joi.string().custom(objectIdValidator).required(),
+});
+
+export const linkCountryBodyValidator = Joi.object({
+    config: supportedCountryConfigSchema.required(),
+    type: Joi.array().items(typeSchema).min(1).required(),
+    supportFrom: Joi.date().optional(),
+    supportUntil: Joi.date().optional(),
+});
+
+export const updateLinkCountryBodyValidator = Joi.object({
+    config: supportedCountryConfigSchema.optional(),
+    type: Joi.array().items(typeSchema).min(1).optional(),
+    supportFrom: Joi.date().optional(),
+    supportUntil: Joi.date().optional(),
+});
+
+export const testTypeParamsValidator = Joi.object({
+    provider_id: Joi.string().custom(objectIdValidator).required(),
+    country_id: Joi.string().custom(objectIdValidator).required(),
+    type_id: Joi.string().custom(objectIdValidator).required(),
 });

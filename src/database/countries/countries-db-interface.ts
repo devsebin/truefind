@@ -18,7 +18,7 @@ interface ICountry extends CommonServiceFieldsInterface {
     created_at?: Date;
     updated_at?: Date;
     flags?: Types.ObjectId;
-    providers?: [ICountryProviders];
+    providers?: ICountryProviders[];
 }
 
 export interface ICountryDocument extends ICountry, Document { }

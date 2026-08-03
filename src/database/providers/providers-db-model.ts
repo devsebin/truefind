@@ -24,7 +24,7 @@ const TestLogSchema = new Schema<ITestLog>(
 const TypeSchema = new Schema<IType>({
     name: { type: String, required: true },
     description: { type: String, required: true },
-    payloadSchema: { type: Schema.Types.Mixed },
+    payloadSchema: { type: Schema.Types.Mixed, required: true },
     is_tested: { type: Boolean, default: false },
     test_log: { type: [TestLogSchema], default: [] },
     is_default: { type: Boolean, default: false },

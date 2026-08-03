@@ -93,6 +93,26 @@ export const providerErrorsMessages = {
         message: "Handler not found",
         status: statusCodes.NotFound,
     },
+    provider_inactive: {
+        message: "Provider is inactive with id: {0}",
+        status: statusCodes.BadRequest,
+    },
+    country_inactive: {
+        message: "Country is inactive with id: {0}",
+        status: statusCodes.BadRequest,
+    },
+    country_already_linked: {
+        message: "Country with id {0} is already linked to this provider",
+        status: statusCodes.Conflict,
+    },
+    country_not_linked: {
+        message: "Country with id {0} is not linked to this provider",
+        status: statusCodes.BadRequest,
+    },
+    type_not_found: {
+        message: "Provider type with id {0} is not found",
+        status: statusCodes.NotFound,
+    },
 };
 
 export const providerSuccessMessages = {
@@ -122,6 +142,18 @@ export const providerSuccessMessages = {
     },
     provider_updated: {
         message: "Provider updated successfully.",
+        status: statusCodes.OK,
+    },
+    country_linked: {
+        message: "Country linked to provider successfully.",
+        status: statusCodes.OK,
+    },
+    country_link_updated: {
+        message: "Country link details updated successfully.",
+        status: statusCodes.OK,
+    },
+    type_test_completed: {
+        message: "Provider type test completed.",
         status: statusCodes.OK,
     },
 };

@@ -73,6 +73,7 @@ export const ProviderResponse = (data: any[]): any => {
                     types: types.map((type: any) => ({
                         id: type._id,
                         name: type.name,
+                        payload_schema: type.payloadSchema,
                         description: type.description,
                         is_active: type.is_active,
                         is_tested: type.is_tested,

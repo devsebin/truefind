@@ -14,6 +14,9 @@ import updateProvidersService from "./services/update-providers.service";
 import deleteProvidersService from "./services/delete-providers.service";
 import enableProvidersService from "./services/enable-providers.service";
 import disableProvidersService from "./services/disable-providers.service";
+import linkCountryService from "./services/link-country.service";
+import updateLinkCountryService from "./services/update-link-country.service";
+import testProviderTypeService from "./services/test-provider-type.service";
 
 class providersController {
     async Index(req: Request, res: Response): Promise<JsonResponse | void> {
@@ -172,6 +175,88 @@ class providersController {
             response = await disableProvidersService.execute(
                 new mongoose.Types.ObjectId(req.params.id as string),
                 new mongoose.Types.ObjectId(),
+            );
+            return res.status(response.result.code).json(response.result);
+        } catch (error: any) {
+            const message = (error as Error).message;
+            response = {
+                result: errorResponse(
+                    errorMessages.SomethingWentWrong,
+                    statusCodes.InternalServerError,
+                    [message],
+                ),
+                DbTransactions: [],
+            };
+            res.status(statusCodes.InternalServerError).json(response.result);
+        } finally {
+            const end = new Date().getTime();
+            createActivityLogService.execute(req, res, start, end, response);
+        }
+    }
+
+    async linkCountry(req: Request, res: Response): Promise<JsonResponse | void> {
+        let response: any;
+        const start = new Date().getTime();
+        try {
+            response = await linkCountryService.execute(
+                new mongoose.Types.ObjectId(req.params.provider_id as string),
+                new mongoose.Types.ObjectId(req.params.country_id as string),
+                req,
+            );
+            return res.status(response.result.code).json(response.result);
+        } catch (error: any) {
+            const message = (error as Error).message;
+            response = {
+                result: errorResponse(
+                    errorMessages.SomethingWentWrong,
+                    statusCodes.InternalServerError,
+                    [message],
+                ),
+                DbTransactions: [],
+            };
+            res.status(statusCodes.InternalServerError).json(response.result);
+        } finally {
+            const end = new Date().getTime();
+            createActivityLogService.execute(req, res, start, end, response);
+        }
+    }
+
+    async updateLinkCountry(req: Request, res: Response): Promise<JsonResponse | void> {
+        let response: any;
+        const start = new Date().getTime();
+        try {
+            response = await updateLinkCountryService.execute(
+                new mongoose.Types.ObjectId(req.params.provider_id as string),
+                new mongoose.Types.ObjectId(req.params.country_id as string),
+                req,
+            );
+            return res.status(response.result.code).json(response.result);
+        } catch (error: any) {
+            const message = (error as Error).message;
+            response = {
+                result: errorResponse(
+                    errorMessages.SomethingWentWrong,
+                    statusCodes.InternalServerError,
+                    [message],
+                ),
+                DbTransactions: [],
+            };
+            res.status(statusCodes.InternalServerError).json(response.result);
+        } finally {
+            const end = new Date().getTime();
+            createActivityLogService.execute(req, res, start, end, response);
+        }
+    }
+
+    async testType(req: Request, res: Response): Promise<JsonResponse | void> {
+        let response: any;
+        const start = new Date().getTime();
+        try {
+            response = await testProviderTypeService.execute(
+                new mongoose.Types.ObjectId(req.params.provider_id as string),
+                new mongoose.Types.ObjectId(req.params.country_id as string),
+                new mongoose.Types.ObjectId(req.params.type_id as string),
+                req,
             );
             return res.status(response.result.code).json(response.result);
         } catch (error: any) {

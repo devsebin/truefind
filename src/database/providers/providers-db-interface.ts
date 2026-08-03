@@ -21,7 +21,7 @@ export interface ITestLog {
 export interface IType {
     name: string;
     description: string;
-    payloadSchema?: Record<string, any>; // keep for admin validation if needed
+    payloadSchema: Record<string, any>; // keep for admin validation if needed
     is_tested: boolean;
     test_log?: ITestLog[]; // optional if is_tested = false
     is_default: boolean;

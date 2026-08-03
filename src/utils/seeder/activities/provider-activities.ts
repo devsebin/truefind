@@ -7,6 +7,9 @@ export enum activityName {
     deactivateProvider = "Deactivate Provider",
     showProvider = "Show Provider",
     logProvider = "Log Provider",
+    linkCountryProvider = "Link Country Provider",
+    updateLinkCountryProvider = "Update Link Country Provider",
+    testProviderType = "Test Provider Type",
 }
 
 export enum activityCode {
@@ -18,4 +21,7 @@ export enum activityCode {
     deactivateProvider = "deactivate_provider",
     showProvider = "show_provider",
     logProvider = "log_provider",
+    linkCountryProvider = "link_country_provider",
+    updateLinkCountryProvider = "update_link_country_provider",
+    testProviderType = "test_provider_type",
 }
