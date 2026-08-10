@@ -1,7 +1,7 @@
 import validationMiddleware from "@/middlewares/request-validation.middleware";
 import express from "express";
 import authenticationController from "./authentication.controller";
-import { adminLoginValidation, refreshTokenValidation } from "./authentication.validator";
+import { adminLoginValidation, refreshTokenValidation, sendOtpValidation } from "./authentication.validator";
 import authenticate from "@/middlewares/authentication-validation.middleware";
 const router = express.Router();
 
@@ -17,6 +17,8 @@ router.post(
 router.get("/logout", authenticate, authenticationController.Logout);
 
 router.post("/logout-all", authenticate, authenticationController.LogoutAll);
+
+router.post("/sent-otp", validationMiddleware(sendOtpValidation), authenticationController.SentOtp);
 
 
 

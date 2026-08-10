@@ -7,6 +7,7 @@ import LoginAdminService from "./services/admin-login.service";
 import refreshTokenService from "./services/refresh-token.service";
 import logoutService from "./services/logout.service";
 import logoutAllService from "./services/logout-all.service";
+import sentOtpService from "./services/sent-otp.service";
 
 class authenticationController {
     async AdminLogin(req: Request, res: Response): Promise<JsonResponse | void> {
@@ -97,6 +98,30 @@ class authenticationController {
             createActivityLogService.execute(req, res, start, end, response);
         }
     }
+
+    async SentOtp(req: Request, res: Response): Promise<JsonResponse | void> {
+        let response: any;
+        const start = new Date().getTime();
+        try {
+            const object = { ...req.body };
+            response = await sentOtpService.execute(object);
+            res.status(response.result.code).json(response.result);
+        } catch (error: any) {
+            const message = (error as Error).message;
+            response = {
+                result: errorResponse(
+                    errorMessages.SomethingWentWrong,
+                    statusCodes.InternalServerError,
+                    [message],
+                ),
+                DbTransactions: [],
+            };
+            res.status(error.status as number).json(response.result);
+        } finally {
+            const end = new Date().getTime();
+            createActivityLogService.execute(req, res, start, end, response);
+        }
+    };
 
 }
 
