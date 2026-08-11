@@ -1,16 +1,15 @@
-import mongoose, { HydratedDocument, Model, Types } from "mongoose";
-
+import mongoose, { HydratedDocument, Model } from "mongoose";
 import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 import { rethrowIfKnown } from "@/utils/responses/error.response";
-
-import RefreshSessionModel from "@/database/auth-sessions/auth-session-db-model";
-import { IAuthSession } from "@/database/auth-sessions/auth-session-db-interface";
-
-import { throwError } from "../../auth-sessions.helper";
 import { IBaseFindOptions } from "@/utils/interfaces/base-find-query.interface";
 import StrictFilterQuery from "@/utils/helpers/query-filter";
+import { IAuthSession } from "@/database/auth-sessions/auth-session-db-interface";
+import RefreshSessionModel from "@/database/auth-sessions/auth-session-db-model";
+import { throwError } from "../../auth-sessions.helper";
 
-export type IFindAuthSession = StrictFilterQuery<IAuthSession & { _id: Types.ObjectId }>;
+export type IFindAuthSession = StrictFilterQuery<
+  IAuthSession & { _id: mongoose.Types.ObjectId }
+>;
 
 class findAuthSessionHelperService {
   private readonly authSessionRepository: Model<IAuthSession>;
@@ -24,6 +23,8 @@ class findAuthSessionHelperService {
     errorMap: Record<string, { message: string; status: number }>,
     options: IBaseFindOptions & {
       session?: mongoose.ClientSession;
+      limit?: number;
+      skip?: number;
     } = {},
   ): Promise<HydratedDocument<IAuthSession>[]> {
     const {
@@ -32,7 +33,11 @@ class findAuthSessionHelperService {
       returnDocument = true,
       lean = false,
       select,
+      populate,
       session,
+      sort,
+      limit,
+      skip,
     } = options;
 
     try {
@@ -46,31 +51,41 @@ class findAuthSessionHelperService {
         dbQuery = dbQuery.lean();
       }
 
+      if (populate) {
+        dbQuery = dbQuery.populate(populate);
+      }
+
+      if (sort) {
+        dbQuery = dbQuery.sort(sort);
+      }
+
+      if (limit) {
+        dbQuery = dbQuery.limit(limit);
+      }
+
+      if (skip) {
+        dbQuery = dbQuery.skip(skip);
+      }
+
       const documents = await dbQuery;
 
       if (throwIfExists && documents.length > 0) {
         const response = ResponseBuilder.error(ErrorTypes.CONFLICT, {
-          message: "Session already exists",
+          message: "session already exists",
           data: query,
         });
-
-        throwError("already_exists", response);
+        return throwError("already_exists", response);
       }
 
       if (throwIfNotFound && documents.length === 0) {
         const response = ResponseBuilder.error(ErrorTypes.NOT_FOUND, {
-          message: "Session not found",
+          message: "session not found",
           data: query,
         });
-
-        throwError("session_not_found", response);
+        return throwError("session_not_found", response);
       }
 
-      if (!returnDocument) {
-        return [];
-      }
-
-      return documents as HydratedDocument<IAuthSession>[];
+      return documents;
     } catch (error) {
       rethrowIfKnown(error, "Error while finding session", errorMap);
     }

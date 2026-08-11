@@ -14,7 +14,16 @@ async function getDefaultStatusId() {
   }).lean();
 
   if (!defaultStatus) {
-    throw new Error("Default status not found");
+    const newPriority = await PriorityModel.create({
+      title: "medium",
+      label: "Medium",
+      color: "#808080",
+      is_default: true,
+      is_deleted: false,
+      is_active: true,
+    });
+    cachedDefaultStatusId = newPriority._id;
+    return cachedDefaultStatusId;
   }
 
   cachedDefaultStatusId = defaultStatus._id;

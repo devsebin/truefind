@@ -89,3 +89,9 @@ export const sendOtpValidation = Joi.object({
     "any.required": "{{#label}} is required",
 });
 
+export const verifyOtpValidation = Joi.object({
+    otp: Joi.string().length(6).required().messages({
+        "string.length": "OTP must be 6 digits",
+    }),
+});
+

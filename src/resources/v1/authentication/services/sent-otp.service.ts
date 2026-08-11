@@ -23,7 +23,7 @@ import { HandlerRegistry } from "@/resources/v1/masters/providers/helpers/suppor
 // Helper Services
 import findUserHelperService from "../helpers/validators/find-user.helper.service";
 import otpValidationHelperService from "../helpers/validators/otp-validation.helper.service";
-import otpOperationsHelperService from "../helpers/operations/otp-operations.helper.service";
+import otpOperationsHelperService from "@/resources/v1/otps/helpers/otp-operations.helper.service";
 import findCountryHelperService from "../../masters/countries/helpers/validators/find-country.helper.service";
 
 interface Options {
@@ -128,7 +128,7 @@ class OtpService {
                 throwError("otp_not_supported", response);
             }
 
-            // Apply OTP rate limits & cooldown using helper validation service
+            // Apply OTP rate limits & cool-down using helper validation service
             await otpValidationHelperService.checkOtpRateLimits(phoneE164, session);
 
             // Expire old OTPs using helper operations service

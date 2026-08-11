@@ -25,10 +25,16 @@ async function getDefaultStatusId() {
   }).lean();
 
   if (!defaultStatus) {
-    const response = ResponseBuilder.error(ErrorTypes.BAD_REQUEST, {
-      message: "Default status not found",
+    const newStatus = await StatusModel.create({
+      title: "Active",
+      label: "active",
+      color: "#00FF00",
+      is_default: true,
+      is_active: true,
+      is_deleted: false,
     });
-    throw new Error("Default status not found");
+    cachedDefaultStatusId = newStatus._id;
+    return cachedDefaultStatusId;
   }
 
   cachedDefaultStatusId = defaultStatus._id;

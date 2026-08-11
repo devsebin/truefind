@@ -64,20 +64,24 @@ class OtpValidationHelperService {
         session: ClientSession,
     ): Promise<void> {
         try {
-            const ids = declaimers.map((d) => d.declaimer_id);
+            const ids = declaimers.map((d) => d.declaimer_id.toString());
 
             const dbDeclaimers = await this.declaimerRepository
                 .find({
-                    _id: { $in: ids },
+                    _id: { $in: ids.map(id => new mongoose.Types.ObjectId(id)) },
                     is_active: true,
                 })
-                .session(session);
+                .session(session)
+                .select("_id");
+
+            const existingIds = new Set(dbDeclaimers.map((d) => d._id.toString()));
+            const invalidIds = ids.filter((id) => !existingIds.has(id));
 
             // Check if all exist
-            if (dbDeclaimers.length !== ids.length) {
+            if (invalidIds.length > 0) {
                 const response = ResponseBuilder.error(ErrorTypes.BAD_REQUEST, {
                     message: "One or more declaimer IDs are invalid",
-                    data: { provided: ids },
+                    data: { invalidDeclaimerIds: invalidIds },
                 });
                 throwError("invalid_declaimer_ids", response);
             }
