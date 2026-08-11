@@ -10,10 +10,11 @@ import { throwError } from "../users.helper";
 import { usersErrorsMessages } from "../users.messages";
 import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 import { rethrowIfKnown } from "@/utils/responses/error.response";
+import { IInputUserPayload } from "../payloads/user-input.interface";
 
 class CreateUserService {
     public async execute(
-        user: any,
+        user: IInputUserPayload,
         session: ClientSession,
         dbTransactions: DbTransaction[],
     ): Promise<HydratedDocument<IUser>> {

@@ -9,7 +9,19 @@ export const usersErrorsMessages = {
     message: "User already exists.",
     status: statusCodes.Conflict,
   },
+  declaimer_not_found: {
+    message: "Declaimer not found.",
+    status: statusCodes.NotFound,
+  },
+  forbidden: {
+    message: "You are not authorized to perform this action.",
+    status: statusCodes.Forbidden,
+  },
 };
 
 export const usersSuccessMessages = {
+  basic_details_updated: {
+    message: "User basic details stored successfully.",
+    status: statusCodes.OK,
+  },
 };

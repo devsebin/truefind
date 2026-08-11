@@ -1,6 +1,21 @@
 import { ApiResponse } from "@/utils/responses/api.response";
 import { CustomError } from "@/utils/responses/error.response";
-import { usersErrorsMessages } from "./users.messages";
+import { usersErrorsMessages, usersSuccessMessages } from "./users.messages";
+import { successResponse } from "@/utils/responses/success.response";
+import { DbTransaction } from "@/utils/interfaces/activity-log.interface";
+
+export function userPayload(
+  type: keyof typeof usersSuccessMessages,
+  data: any = [],
+  DbTransaction: DbTransaction[] = [],
+) {
+  const { message, status } = usersSuccessMessages[type];
+  return {
+    result: successResponse(message, status, data),
+    DbTransaction: DbTransaction,
+  };
+}
+
 
 export function throwError<T = any>(
   message: keyof typeof usersErrorsMessages,
