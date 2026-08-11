@@ -26,19 +26,29 @@ function validationMiddleware(
         try {
             const value = await schema.validateAsync(req[source], validationOptions);
 
-            req[source] = value;
+            Object.defineProperty(req, source, {
+                value,
+                writable: true,
+                configurable: true,
+                enumerable: true,
+            });
 
             next();
         } catch (e: any) {
-            const errors: Record<string, string> = {};
+            if (e.isJoi && Array.isArray(e.details)) {
+                const errors: Record<string, string> = {};
 
-            e.details.forEach((error: Joi.ValidationErrorItem) => {
-                const errorMessage = error.context?.message || error.message;
+                e.details.forEach((error: Joi.ValidationErrorItem) => {
+                    const errorMessage = error.context?.message || error.message;
 
-                errors[error.context?.key || error.path.join(".")] = errorMessage;
-            });
+                    errors[error.context?.key || error.path.join(".")] = errorMessage;
+                });
 
-            res.status(400).json({ errors });
+                res.status(400).json({ errors });
+                return;
+            }
+
+            next(e);
         }
     };
 }

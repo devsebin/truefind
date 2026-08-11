@@ -12,7 +12,7 @@ const ROLE_ACCESS_MAP = {
 } as const;
 
 export async function buildWhereClause(request: Request) {
-  const where: any = {};
+  const where: any = { is_deleted: false, is_active: true };
   const conditions = request.query;
 
   const apiData = await api.findOne({

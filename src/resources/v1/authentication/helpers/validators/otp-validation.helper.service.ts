@@ -2,7 +2,7 @@ import mongoose, { ClientSession, Model } from "mongoose";
 import { parsePhoneNumberFromString } from "libphonenumber-js";
 import OtpModel from "@/database/otps/otps-db-model";
 import { IOtp, IDeclaimerInput } from "@/database/otps/otps-db-interface";
-import { DeclaimerModel } from "@/database/declaimers/declaimers-db-model";
+import DeclaimerModel from "@/database/declaimers/declaimers-db-model";
 import { IDeclaimer } from "@/database/declaimers/declaimers-db-interface";
 import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 import { throwError } from "../../authentication.helper";

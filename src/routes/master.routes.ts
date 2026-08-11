@@ -9,6 +9,7 @@ import v1DistrictRoutes from "../resources/v1/masters/districts/districts.routes
 import v1SuburbRoutes from "../resources/v1/masters/suburbs/suburbs.routes";
 import v1ProviderRoutes from "../resources/v1/masters/providers/providers.routes";
 import v1DocumentRoutes from "../resources/v1/masters/documents/documents.routes"
+import v1DeclaimerRoutes from "../resources/v1/masters/declaimers/declaimers.routes";
 const router = Router();
 
 router.use("/statuses", authentication, authorizationApi, v1StatusRoutes);
@@ -18,5 +19,6 @@ router.use("/districts", authentication, authorizationApi, v1DistrictRoutes);
 router.use("/suburbs", authentication, authorizationApi, v1SuburbRoutes);
 router.use("/providers", authentication, authorizationApi, v1ProviderRoutes);
 router.use("/documents", authentication, authorizationApi, v1DocumentRoutes);
+router.use("/declaimers", authentication, authorizationApi, v1DeclaimerRoutes);
 
 export default router;

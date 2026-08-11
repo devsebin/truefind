@@ -6,6 +6,8 @@ import { defaultStatusPlugin } from "@/utils/plugins/defaultStatus.plugin";
 import { auditPlugin } from "@/utils/plugins/audit.plugin";
 import "@/database/regions/regions-db-model";
 import "@/database/users/users-db-model";
+import "@/database/providers/providers-db-model";
+import "@/database/documents/documents-db-model";
 
 const countryProviderSchema = new Schema<ICountryProviders>(
     {
