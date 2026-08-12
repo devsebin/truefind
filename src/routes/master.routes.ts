@@ -12,6 +12,7 @@ import v1DocumentRoutes from "../resources/v1/masters/documents/documents.routes
 import v1DeclaimerRoutes from "../resources/v1/masters/declaimers/declaimers.routes";
 import v1AuthSessionRoutes from "../resources/v1/auth-sessions/auth-sessions.routes";
 import v1ServiceRoutes from "../resources/v1/masters/services/services.routes";
+import v1PrioritiesRoutes from "../resources/v1/masters/priorities/priorities.routes";
 
 const router = Router();
 
@@ -25,5 +26,6 @@ router.use("/documents", authentication, authorizationApi, v1DocumentRoutes);
 router.use("/declaimers", authentication, authorizationApi, v1DeclaimerRoutes);
 router.use("/auth-sessions", authentication, authorizationApi, v1AuthSessionRoutes);
 router.use("/services", authentication, authorizationApi, v1ServiceRoutes);
+router.use("/priorities", authentication, authorizationApi, v1PrioritiesRoutes);
 
 export default router;

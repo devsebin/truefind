@@ -18,4 +18,5 @@ export enum tableName {
   Units = "units",
   Services = "services",
   ServiceLocations = "service_locations",
+  Priorities = "priorities",
 }
