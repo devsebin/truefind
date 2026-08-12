@@ -12,6 +12,7 @@ import documentApiData from "../data-source/apis/document-api-data";
 import declaimerApiData from "../data-source/apis/declaimer-api-data";
 import servicesApiData from "../data-source/apis/services-api-data";
 import prioritiesApiData from "../data-source/apis/priorities-api-data";
+import unitsApiData from "../data-source/apis/units-api-data";
 
 export const seedActivity = async () => {
   await api.deleteMany({});
@@ -30,6 +31,7 @@ export const seedActivity = async () => {
     ...declaimerApiData,
     ...servicesApiData,
     ...prioritiesApiData,
+    ...unitsApiData,
   ];
 
   if (allApis.length > 0) {

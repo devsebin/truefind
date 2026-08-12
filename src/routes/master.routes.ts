@@ -13,6 +13,7 @@ import v1DeclaimerRoutes from "../resources/v1/masters/declaimers/declaimers.rou
 import v1AuthSessionRoutes from "../resources/v1/auth-sessions/auth-sessions.routes";
 import v1ServiceRoutes from "../resources/v1/masters/services/services.routes";
 import v1PrioritiesRoutes from "../resources/v1/masters/priorities/priorities.routes";
+import v1UnitsRoutes from "../resources/v1/masters/units/units.routes";
 
 const router = Router();
 
@@ -27,5 +28,6 @@ router.use("/declaimers", authentication, authorizationApi, v1DeclaimerRoutes);
 router.use("/auth-sessions", authentication, authorizationApi, v1AuthSessionRoutes);
 router.use("/services", authentication, authorizationApi, v1ServiceRoutes);
 router.use("/priorities", authentication, authorizationApi, v1PrioritiesRoutes);
+router.use("/units", authentication, authorizationApi, v1UnitsRoutes);
 
 export default router;

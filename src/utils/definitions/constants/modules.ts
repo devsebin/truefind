@@ -16,4 +16,5 @@ export enum moduleTypes {
   Declaimers = "declaimers",
   Priorities = "priorities",
   Suburbs = "suburbs",
+  Units = "units",
 }
