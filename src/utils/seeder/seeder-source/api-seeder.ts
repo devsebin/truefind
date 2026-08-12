@@ -10,6 +10,7 @@ import suburbsApiData from "../data-source/apis/suburb-api-data";
 import providerApiData from "../data-source/apis/provider-api-data";
 import documentApiData from "../data-source/apis/document-api-data";
 import declaimerApiData from "../data-source/apis/declaimer-api-data";
+import servicesApiData from "../data-source/apis/services-api-data";
 
 export const seedActivity = async () => {
   await api.deleteMany({});
@@ -26,6 +27,7 @@ export const seedActivity = async () => {
     ...providerApiData,
     ...documentApiData,
     ...declaimerApiData,
+    ...servicesApiData,
   ];
 
   if (allApis.length > 0) {

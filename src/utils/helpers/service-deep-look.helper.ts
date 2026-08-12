@@ -7,6 +7,7 @@ export interface WithChildren {
   type?: string;
   children?: (Types.ObjectId | WithChildren)[];
   is_active?: boolean;
+  is_deleted?: boolean;
 
   // NEW FIELD
   is_selected?: boolean;
@@ -17,8 +18,10 @@ export async function deepPopulate<T extends WithChildren>(
   model: Model<any>,
   session: ClientSession,
   activeServiceIds?: Set<string>,
-  showInactive: boolean = true,
+  showInactiveSubcategories: boolean = true,
+  showInactiveServices: boolean = true,
   removeEmptyCategories: boolean = true,
+  removeEmptySubCategory: boolean = true,
   selectedServiceIds?: Set<string>, // NEW PARAM
   is_admin?: boolean,
 ): Promise<T[]> {
@@ -50,20 +53,22 @@ export async function deepPopulate<T extends WithChildren>(
             model,
             session,
             activeServiceIds,
-            showInactive,
+            showInactiveSubcategories,
+            showInactiveServices,
             removeEmptyCategories,
+            removeEmptySubCategory,
             selectedServiceIds,
             is_admin,
           );
 
           // Filter + enrich data
           recursiveChildren = recursiveChildren.filter((child) => {
-            // TASK TYPE
-            if (child.type === serviceTypes.Task) {
-              const isActive =
-                activeServiceIds?.has(child._id.toString()) ?? false;
+            // TASK TYPE (Service)
+            if (child.type === serviceTypes.Service) {
+              const isActiveInDb = child.is_active !== false && child.is_deleted !== true;
+              const isActiveInLocations = activeServiceIds?.has(child._id.toString()) ?? false;
 
-              child.is_active = isActive;
+              child.is_active = isActiveInLocations;
 
               if (is_admin === false) {
                 if (selectedServiceIds) {
@@ -74,14 +79,38 @@ export async function deepPopulate<T extends WithChildren>(
                   child.is_selected = false;
                 }
               }
-              // Add user selected flag
 
-              // Show inactive or not
-              return showInactive ? true : isActive;
+              if (!showInactiveServices) {
+                return isActiveInDb;
+              }
+              return true;
             }
 
-            // CATEGORY / SUBCATEGORY
-            return child.children && child.children.length > 0;
+            // SUBCATEGORY
+            if (child.type === serviceTypes.Subcategory) {
+              const isActiveInDb = child.is_active !== false && child.is_deleted !== true;
+              if (!showInactiveSubcategories && !isActiveInDb) {
+                return false;
+              }
+              if (removeEmptySubCategory && (!child.children || child.children.length === 0)) {
+                return false;
+              }
+              return true;
+            }
+
+            // CATEGORY (Nested categories if any)
+            if (child.type === serviceTypes.Category) {
+              const isActiveInDb = child.is_active !== false && child.is_deleted !== true;
+              if (!showInactiveSubcategories && !isActiveInDb) {
+                return false;
+              }
+              if (removeEmptyCategories && (!child.children || child.children.length === 0)) {
+                return false;
+              }
+              return true;
+            }
+
+            return true;
           });
 
           doc.children = recursiveChildren;
@@ -91,19 +120,19 @@ export async function deepPopulate<T extends WithChildren>(
       }),
     );
 
-    // Remove empty categories if enabled
-    if (!removeEmptyCategories) {
-      return populatedDocs;
-    }
-
+    // Filter out empty categories/subcategories based on their respective flags
     return populatedDocs.filter((doc) => {
-      // Always keep tasks
-      if (doc.type === serviceTypes.Task) {
-        return true;
+      if (doc.type === serviceTypes.Category) {
+        if (removeEmptyCategories && (!doc.children || doc.children.length === 0)) {
+          return false;
+        }
       }
-
-      // Keep categories only if they contain children
-      return doc.children && doc.children.length > 0;
+      if (doc.type === serviceTypes.Subcategory) {
+        if (removeEmptySubCategory && (!doc.children || doc.children.length === 0)) {
+          return false;
+        }
+      }
+      return true;
     });
   } catch (error) {
     rethrowIfKnown(error, "Error while deep populating", {});

@@ -1,7 +1,6 @@
 import { IAuthSession } from "@/database/auth-sessions/auth-session-db-interface";
 import RefreshSessionModel from "@/database/auth-sessions/auth-session-db-model";
 import { IUser } from "@/database/users/users-db-interface";
-import findAuthSessionHelperService from "../../auth-sessions/helpers/validators/find-auth-session.helper.service";
 import findUserHelperService from "../../users/helpers/validators/find-user.helper.service";
 import {
     compareToken,
@@ -30,6 +29,7 @@ import { tableName } from "@/utils/definitions/constants/table-names";
 import { apiMethods } from "@/utils/definitions/constants/api-methods";
 import { operationTypes } from "@/utils/definitions/constants/operation-types";
 import { Request } from "express";
+import findAuthSessionHelperService from "../../auth-sessions/helpers/validators/find-auth-session.helper.service";
 class RefreshTokenService {
     private readonly authSessionRepository: Model<IAuthSession>;
 
