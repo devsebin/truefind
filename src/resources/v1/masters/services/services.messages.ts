@@ -57,7 +57,6 @@ export const servicesErrorsMessages = {
     message: "Service already disabled.",
     status: statusCodes.BadRequest,
   },
-
 };
 
 export const serviceSuccessMessages = {

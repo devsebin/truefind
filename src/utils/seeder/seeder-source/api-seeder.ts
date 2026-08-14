@@ -11,6 +11,9 @@ import providerApiData from "../data-source/apis/provider-api-data";
 import documentApiData from "../data-source/apis/document-api-data";
 import declaimerApiData from "../data-source/apis/declaimer-api-data";
 import servicesApiData from "../data-source/apis/services-api-data";
+import serviceCountryApiData from "../data-source/apis/service-country-api-data";
+import serviceAreaApiData from "../data-source/apis/service-area-api-data";
+import currenciesApiData from "../data-source/apis/currencies-api-data";
 import prioritiesApiData from "../data-source/apis/priorities-api-data";
 import unitsApiData from "../data-source/apis/units-api-data";
 
@@ -30,6 +33,9 @@ export const seedActivity = async () => {
     ...documentApiData,
     ...declaimerApiData,
     ...servicesApiData,
+    ...serviceCountryApiData,
+    ...serviceAreaApiData,
+    ...currenciesApiData,
     ...prioritiesApiData,
     ...unitsApiData,
   ];

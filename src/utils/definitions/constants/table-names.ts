@@ -19,4 +19,7 @@ export enum tableName {
   Services = "services",
   ServiceLocations = "service_locations",
   Priorities = "priorities",
+  Currencies = "currencies",
+  ServiceCountryConfigurations = "service_country_configurations",
+  ServiceAreaConfigurations = "service_area_configurations",
 }

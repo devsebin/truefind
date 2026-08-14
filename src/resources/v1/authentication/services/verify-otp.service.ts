@@ -51,7 +51,7 @@ class VerifyOtpService {
                 await findUserHelperService.ensureUserDoesNotExist(otpDoc.phoneNumber, session);
 
                 // b. validate the declaimer ids from otp collections is valid or not. 
-                // is any of the declaimer ids are not valid return an error response with specifing which declaimer ids are not valid
+                // is any of the declaimer ids are not valid return an error response with specifying which declaimer ids are not valid
                 await otpValidationHelperService.validateDeclaimers(otpDoc.declaimers, session);
 
                 // c. create a user object with a common helper function

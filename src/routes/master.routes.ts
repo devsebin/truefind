@@ -12,8 +12,11 @@ import v1DocumentRoutes from "../resources/v1/masters/documents/documents.routes
 import v1DeclaimerRoutes from "../resources/v1/masters/declaimers/declaimers.routes";
 import v1AuthSessionRoutes from "../resources/v1/auth-sessions/auth-sessions.routes";
 import v1ServiceRoutes from "../resources/v1/masters/services/services.routes";
+import v1ServiceCountryConfigRoutes from "../resources/v1/masters/service-country-configurations/service-country-configurations.routes";
+import v1ServiceAreaConfigRoutes from "../resources/v1/masters/service-area-configurations/service-area-configurations.routes";
 import v1PrioritiesRoutes from "../resources/v1/masters/priorities/priorities.routes";
 import v1UnitsRoutes from "../resources/v1/masters/units/units.routes";
+import v1CurrenciesRoutes from "../resources/v1/masters/currencies/currencies.routes";
 
 const router = Router();
 
@@ -27,7 +30,10 @@ router.use("/documents", authentication, authorizationApi, v1DocumentRoutes);
 router.use("/declaimers", authentication, authorizationApi, v1DeclaimerRoutes);
 router.use("/auth-sessions", authentication, authorizationApi, v1AuthSessionRoutes);
 router.use("/services", authentication, authorizationApi, v1ServiceRoutes);
+router.use("/service-country-configurations", authentication, authorizationApi, v1ServiceCountryConfigRoutes);
+router.use("/service-area-configurations", authentication, authorizationApi, v1ServiceAreaConfigRoutes);
 router.use("/priorities", authentication, authorizationApi, v1PrioritiesRoutes);
 router.use("/units", authentication, authorizationApi, v1UnitsRoutes);
+router.use("/currencies", authentication, authorizationApi, v1CurrenciesRoutes);
 
 export default router;

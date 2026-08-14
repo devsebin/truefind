@@ -4,25 +4,6 @@ import { CommonServiceFieldsModel } from "@/utils/definitions/constants/db-const
 import { serviceTypes } from "@/utils/definitions/constants/service-types";
 import { IBaseServiceDocument, ICategoryDocument, ISubcategoryDocument, ITaskServiceDocument, timeUnits } from "./services-db-interface";
 
-/*---------------- Pricing ----------------*/
-const PricingSchema = new Schema(
-    {
-        region_id: {
-            type: mongoose.Types.ObjectId,
-            ref: tableName.Suburbs,
-            required: true,
-        },
-        country_id: {
-            type: mongoose.Types.ObjectId,
-            ref: tableName.Countries,
-            required: true,
-        },
-        price: { type: Number, required: true },
-        currency: { type: String, required: true },
-    },
-    { _id: false },
-);
-
 /*---------------- Task ----------------*/
 const TaskSchema = new Schema<ITaskServiceDocument>(
     {
@@ -33,29 +14,11 @@ const TaskSchema = new Schema<ITaskServiceDocument>(
             ref: tableName.Documents,
             required: true,
         },
-        requiredLicenses: { type: Boolean, default: false },
-        is_callout_service: { type: Boolean, default: false },
-        is_fixed_price: { type: Boolean, default: false },
-        task_unit: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: tableName.Units,
-            required: false,
-            default: null,
-        },
-        task_unit_price: { type: Number, default: 0 },
-        maximum_unit_price: { type: Number, default: 0 },
-        minimum_unit_price: { type: Number, default: 0 },
         estimated_time: { type: Number, default: 0 },
         estimated_time_unit: {
             type: String,
             enum: timeUnits,
             default: timeUnits.hours,
-        },
-        priority_id: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: tableName.Priority,
-            required: false,
-            default: null,
         },
         ...CommonServiceFieldsModel,
     },

@@ -29,14 +29,6 @@ export interface ITaskServiceDocument extends IBaseServiceDocument {
     type: typeof serviceTypes.Service;
     description: string;
     icon: Types.ObjectId;
-    requiredLicenses: boolean;
-    is_callout_service: boolean;
-    is_fixed_price: boolean;
-    task_unit: Types.ObjectId;
-    task_unit_price: number;
-    maximum_unit_price: number;
-    minimum_unit_price: number;
     estimated_time: number;
     estimated_time_unit: timeUnits;
-    priority_id: Types.ObjectId;
 }

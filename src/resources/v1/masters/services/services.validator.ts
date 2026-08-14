@@ -32,21 +32,13 @@ export const serviceTaskValidationSchema = Joi.object({
     "string.custom": "parent_id must be a valid MongoDB ObjectId",
   }),
   name: Joi.string().required(),
-  description: Joi.string().optional().allow(""),
+  description: Joi.string().required().min(2),
   icon: Joi.string().required().custom(objectIdValidator).messages({
     "any.required": "icon is required",
     "string.custom": "icon must be a valid MongoDB ObjectId",
   }),
-  estimated_time: Joi.number().optional(),
-  estimated_time_unit: Joi.string().optional(),
-  task_unit: Joi.string().optional().custom(objectIdValidator),
-  task_unit_price: Joi.number().optional(),
-  is_callout_service: Joi.boolean().optional().default(false),
-  is_fixed_price: Joi.boolean().optional().default(false),
-  maximum_unit_price: Joi.number().optional(),
-  minimum_unit_price: Joi.number().optional(),
-  priority_id: Joi.string().optional().custom(objectIdValidator),
-  requiredLicenses: Joi.boolean().optional().default(false),
+  estimated_time: Joi.number().required(),
+  estimated_time_unit: Joi.string().required(),
 });
 
 export const categoryParamValidation = Joi.object({
@@ -90,13 +82,7 @@ export const serviceTaskUpdateValidationSchema = Joi.object({
   estimated_time: Joi.number().optional(),
   estimated_time_unit: Joi.string().optional(),
   task_unit: Joi.string().optional().custom(objectIdValidator),
-  task_unit_price: Joi.number().optional(),
-  is_callout_service: Joi.boolean().optional(),
-  is_fixed_price: Joi.boolean().optional(),
-  maximum_unit_price: Joi.number().optional(),
-  minimum_unit_price: Joi.number().optional(),
   priority_id: Joi.string().optional().custom(objectIdValidator),
-  requiredLicenses: Joi.boolean().optional(),
 });
 
 /* Dynamic update validator middleware */

@@ -17,4 +17,7 @@ export enum moduleTypes {
   Priorities = "priorities",
   Suburbs = "suburbs",
   Units = "units",
+  ServiceCountryConfigurations = "service_country_configurations",
+  ServiceAreaConfigurations = "service_area_configurations",
+  Currencies = "currencies",
 }

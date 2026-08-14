@@ -1,0 +1,70 @@
+import { activityTypes } from "../../../../utils/definitions/constants/activity-types";
+import { AccessType, IAPI } from "../../../../utils/interfaces/api.interface";
+import { moduleTypes } from "../../../../utils/definitions/constants/modules";
+import { activityCode, activityName } from "../../activities/service-area-activities";
+import { apiMethods } from "../../../../utils/definitions/constants/api-methods";
+
+const serviceAreaApiData: IAPI[] = [
+    {
+        activity_type: activityTypes.Create,
+        module: moduleTypes.ServiceAreaConfigurations,
+        activity_name: activityName.createServiceArea,
+        activity_code: activityCode.createServiceArea,
+        activity_method: apiMethods.POST,
+        url: "/api/v1/masters/service-area-configurations/:serviceId",
+        status: true,
+        form_params: [],
+        search_params: [],
+        access_params: {
+            admin_access: { type: AccessType.ALL, keys: [] },
+        },
+        control_params: [],
+        payload_params: [],
+        admin_access: true,
+        user_access: false,
+        employee_access: false,
+        required_authentication: true,
+    },
+    {
+        activity_type: activityTypes.Show,
+        module: moduleTypes.ServiceAreaConfigurations,
+        activity_name: activityName.showEffectiveServiceArea,
+        activity_code: activityCode.showEffectiveServiceArea,
+        activity_method: apiMethods.GET,
+        url: "/api/v1/masters/service-area-configurations/:serviceId/effective",
+        status: true,
+        form_params: [],
+        search_params: [],
+        access_params: {
+            admin_access: { type: AccessType.ALL, keys: [] },
+        },
+        control_params: [],
+        payload_params: [],
+        admin_access: true,
+        user_access: false,
+        employee_access: false,
+        required_authentication: true,
+    },
+    {
+        activity_type: activityTypes.List,
+        module: moduleTypes.ServiceAreaConfigurations,
+        activity_name: activityName.listAvailableServiceArea,
+        activity_code: activityCode.listAvailableServiceArea,
+        activity_method: apiMethods.GET,
+        url: "/api/v1/masters/service-area-configurations/available",
+        status: true,
+        form_params: [],
+        search_params: [],
+        access_params: {
+            admin_access: { type: AccessType.ALL, keys: [] },
+        },
+        control_params: [],
+        payload_params: [],
+        admin_access: true,
+        user_access: false,
+        employee_access: false,
+        required_authentication: true,
+    },
+];
+
+export default serviceAreaApiData;

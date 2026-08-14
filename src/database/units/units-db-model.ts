@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Model, model, Schema } from "mongoose";
 import IUnits from "./units-db-interface";
 import { tableName } from "@/utils/definitions/constants/table-names";
 import { CommonServiceFieldsModel } from "@/utils/definitions/constants/db-constants";
@@ -32,10 +32,10 @@ unitsSchema.methods.toJSON = function () {
     return unitsObject;
 };
 
-const UnitsModel = mongoose.model<IUnits>(
-    "UnitsMaster",
-    unitsSchema,
+export const UnitsModel: Model<IUnits> = model<IUnits>(
     tableName.Units,
+    unitsSchema
 );
 
 export default UnitsModel;
+
