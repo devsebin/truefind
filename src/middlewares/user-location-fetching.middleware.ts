@@ -50,7 +50,11 @@ export const geoMiddleware = async (
             }
         }
 
-        const ip = req.ip || "127.0.0.1";
+        let ip = req.ip || "127.0.0.1";
+
+        if (process.env.NODE_ENV === "development" && isLocalIp(ip)) {
+            ip = "103.135.130.250";
+        }
 
         // Fetch new geo data if cookie missing or IP changed
         if (!geoData || geoData.query !== ip) {

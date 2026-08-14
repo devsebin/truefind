@@ -26,9 +26,8 @@ import {
   WithChildren,
 } from "@/utils/helpers/service-deep-look.helper";
 import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
-import { IServiceLocations } from "@/database/service-location/service-locations.interface";
-import { ServiceLocationModel } from "@/database/service-location/service-locations.model";
 import { serviceTypes } from "@/utils/definitions/constants/service-types";
+import { IServiceAreaBulkOverrideDTO } from "../../service-area-configurations/dto/service-area-configuration.dto";
 
 interface CategoryQuery {
   show_inactive_categories: boolean;
@@ -40,12 +39,11 @@ interface CategoryQuery {
 class listServiceCategoryService {
   private categoryServiceModel: Model<ICategoryDocument>;
   private baseServiceModel: Model<IBaseServiceDocument>;
-  private readonly serviceLocationRepository = Model<IServiceLocations>;
+  private readonly serviceLocationRepository = Model<IServiceAreaBulkOverrideDTO>;
 
   constructor() {
     this.categoryServiceModel = CategoryServiceModel;
     this.baseServiceModel = BaseServiceModel;
-    this.serviceLocationRepository = ServiceLocationModel;
   }
 
   async execute(req: Request): Promise<SingleResponse | ErrorResponse> {

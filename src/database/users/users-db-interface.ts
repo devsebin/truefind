@@ -37,10 +37,10 @@ export interface IUser extends Document {
   phoneVerified: boolean;
   phoneVerifiedAt?: Date;
   icon?: Types.ObjectId;
-  user_location?: string;
-  user_country?: string;
-  user_region?: string;
-  user_city?: string;
+  country_id?: Types.ObjectId | null;
+  region_id?: Types.ObjectId | null;
+  district_id?: Types.ObjectId | null;
+  suburb_id?: Types.ObjectId | null;
   referral_code?: string;
   is_active: boolean;
   is_deleted: boolean;

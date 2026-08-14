@@ -28,6 +28,7 @@ class listCountryService {
         request: Request,
         is_export = false,
     ): Promise<listResponse | ErrorResponse> {
+
         const conditions = request.query;
         conditions.populate = populateFields;
         const page = parseInt(conditions.page as string, 10) || 1;
