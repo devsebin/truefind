@@ -11,4 +11,6 @@ router.post(
     usersController.StoreBasicDetails,
 );
 
+router.get("/services", usersController.ListServices)
+
 export default router;
