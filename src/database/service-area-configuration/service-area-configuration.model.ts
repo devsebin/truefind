@@ -71,6 +71,7 @@ serviceAreaConfigurationSchema.index(
   { service_id: 1, suburb_id: 1 },
   { unique: true }
 );
+serviceAreaConfigurationSchema.index({ suburb_id: 1, service_id: 1 });
 
 serviceAreaConfigurationSchema.plugin(defaultStatusPlugin);
 serviceAreaConfigurationSchema.plugin(auditPlugin);

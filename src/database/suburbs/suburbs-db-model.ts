@@ -73,6 +73,7 @@ suburbSchema.index(
     { country_id: 1, region_id: 1, district_id: 1, code: 1 },
     { unique: true },
 );
+suburbSchema.index({ region_id: 1 });
 
 suburbSchema.plugin(defaultStatusPlugin);
 suburbSchema.pre(/^find/, function (this: mongoose.Query<any, any>) {

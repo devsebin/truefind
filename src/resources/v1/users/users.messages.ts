@@ -24,4 +24,8 @@ export const usersSuccessMessages = {
     message: "User basic details stored successfully.",
     status: statusCodes.OK,
   },
+  services_fetched: {
+    message: "User services fetched successfully.",
+    status: statusCodes.OK,
+  },
 };

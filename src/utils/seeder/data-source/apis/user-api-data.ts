@@ -118,6 +118,30 @@ const userApiData: IAPI[] = [
     employee_access: false,
     required_authentication: true,
   },
+  {
+    activity_type: activityTypes.Create,
+    module: moduleTypes.Users,
+    activity_name: activityName.ListAvailableUserServices,
+    activity_code: activityCode.ListAvailableUserServices,
+    activity_method: apiMethods.GET,
+    url: "/api/v1/users/:id/services",
+    status: true,
+    form_params: [],
+    search_params: [],
+
+    access_params: {
+      admin_access: { type: AccessType.ALL, keys: [] },
+      user_access: { type: AccessType.ALL, keys: [] },
+    },
+
+    control_params: [],
+    payload_params: [
+    ],
+    admin_access: true,
+    user_access: true,
+    employee_access: false,
+    required_authentication: true,
+  },
 ];
 
 export default userApiData;
