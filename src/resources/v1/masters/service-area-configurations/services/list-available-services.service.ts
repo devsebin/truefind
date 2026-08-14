@@ -4,11 +4,12 @@ import mongoose from "mongoose";
 import { returnAreaConfigSuccess, throwAreaConfigError } from "../service-area-configurations.helper";
 import { serviceAreaConfigErrorsMessages } from "../service-area-configurations.messages";
 import SuburbModel from "@/database/suburbs/suburbs-db-model";
+import CountryModel from "@/database/countries/countries-db-model";
+import CurrencyModel from "@/database/currencies/currencies-db-model";
 import ServiceCountryConfigurationModel from "@/database/service-country-configuration/service-country-configuration.model";
 import ServiceAreaConfigurationModel from "@/database/service-area-configuration/service-area-configuration.model";
-import { BaseServiceModel } from "@/database/services/services-db-model";
+import { ServiceModel } from "@/database/services/services-db-model";
 import { ResponseBuilder, ErrorTypes } from "@/utils/helpers/response-builder";
-import { serviceTypes } from "@/utils/definitions/constants/service-types";
 
 class ListAvailableServicesService {
   public async execute(
@@ -32,8 +33,18 @@ class ListAvailableServicesService {
 
       const countryId = suburb.country_id;
 
-      const services = (await BaseServiceModel.find({
-        type: serviceTypes.Service,
+      const suburbCountry = await CountryModel.findOne({ _id: countryId }).lean();
+      const countryCurrencyCode = suburbCountry?.currency;
+
+      let countryCurrencyDoc = null;
+      if (countryCurrencyCode) {
+        countryCurrencyDoc = await CurrencyModel.findOne({
+          code: countryCurrencyCode,
+          is_deleted: false,
+        }).populate("symbol");
+      }
+
+      const services = (await ServiceModel.find({
         is_active: true,
         is_deleted: false,
       }).populate("icon")) as any[];
@@ -84,8 +95,8 @@ class ListAvailableServicesService {
         const countryConfig = countryConfigMap.get(serviceIdStr);
         const areaConfig = areaConfigMap.get(serviceIdStr);
 
-        // Suburb must have country configuration to enable this service
-        if (!countryConfig) {
+        // Suburb must have country configuration OR area configuration to enable this service
+        if (!countryConfig && !areaConfig) {
           continue;
         }
 
@@ -101,6 +112,12 @@ class ListAvailableServicesService {
             id: cur.code,
             code: cur.code,
             symbol: cur.symbol,
+          };
+        } else if (countryCurrencyDoc) {
+          currencyObj = {
+            id: countryCurrencyDoc.code,
+            code: countryCurrencyDoc.code,
+            symbol: countryCurrencyDoc.symbol,
           };
         }
 

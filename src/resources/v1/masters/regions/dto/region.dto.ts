@@ -9,7 +9,7 @@ export interface IRegionDTO {
 
 export function toRegionDTO(body: IInputRegionPayloadStrict): IRegionDTO {
   return {
-    name: body.name.trim(),
+    name: body.name.charAt(0).toUpperCase() + body.name.slice(1).toLowerCase().trim(),
     code: body.code.trim().toUpperCase(),
     country_id: new mongoose.Types.ObjectId(body.country_id),
   };

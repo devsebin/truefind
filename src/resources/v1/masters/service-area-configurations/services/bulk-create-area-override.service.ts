@@ -4,100 +4,132 @@ import mongoose from "mongoose";
 import { DbTransaction } from "@/utils/interfaces/activity-log.interface";
 import { returnAreaConfigSuccess, throwAreaConfigError, populateFields } from "../service-area-configurations.helper";
 import { serviceAreaConfigErrorsMessages } from "../service-area-configurations.messages";
-import ServiceAreaConfigurationModel from "@/database/service-area-configuration/service-area-configuration.model";
-import { BaseServiceModel } from "@/database/services/services-db-model";
-import { createDbTransaction } from "@/utils/helpers/db-transaction.helper";
-import { tableName } from "@/utils/definitions/constants/table-names";
-import { apiMethods } from "@/utils/definitions/constants/api-methods";
-import { operationTypes } from "@/utils/definitions/constants/operation-types";
-import { ResponseBuilder, ErrorTypes } from "@/utils/helpers/response-builder";
 import { getContextUserId } from "@/utils/context/request-context";
-import { toServiceAreaBulkOverrideDTO } from "../dto/service-area-configuration.dto";
 import { serviceAreaConfigListResponse } from "../service-area-configurations.response";
+import createServiceAreaHelperService from "../helpers/operations/create-service-area.helper.service";
+
+import findServiceHelperService from "@/resources/v1/masters/services/helpers/validators/find-service.helper.service";
+import findSuburbHelperService from "@/resources/v1/masters/suburbs/helpers/validators/find-suburb.helper.service";
+import findUnitsHelperService from "@/resources/v1/masters/units/helpers/validators/find-units.helper.service";
+
+import { suburbErrorsMessages } from "@/resources/v1/masters/suburbs/suburbs.messages";
+import { unitsErrorsMessages } from "@/resources/v1/masters/units/units.messages";
+
+import { ResponseBuilder, ErrorTypes } from "@/utils/helpers/response-builder";
+import { serviceTypes } from "@/utils/definitions/constants/service-types";
 
 class BulkCreateAreaOverrideService {
   public async execute(
     serviceId: mongoose.Types.ObjectId,
-    suburbIds: string[],
-    overrides: any
+    suburbs: any[]
   ): Promise<SingleResponse | ErrorResponse> {
     const dbTransactions: DbTransaction[] = [];
     const session = await mongoose.startSession();
-    const dto = toServiceAreaBulkOverrideDTO(serviceId, { suburb_ids: suburbIds, overrides });
 
     try {
       session.startTransaction();
 
-      const serviceExists = await BaseServiceModel.findOne({
-        _id: dto.service_id,
-        is_deleted: false,
-      }).session(session);
-
-      if (!serviceExists) {
+      // 1. Validate service
+      const service = await findServiceHelperService.findOne(
+        { _id: serviceId, is_deleted: false },
+        session
+      );
+      if (!service) {
         throwAreaConfigError(
-          "category_not_found",
+          "service_not_found",
           ResponseBuilder.error(ErrorTypes.NOT_FOUND, {
-            message: `Service not found with id ${dto.service_id}`,
-            data: { serviceId: dto.service_id },
+            message: "Service not found",
+            data: { service_id: serviceId },
+          })
+        );
+      }
+      if (service.type !== serviceTypes.Service) {
+        throwAreaConfigError(
+          "invalid_service_type",
+          ResponseBuilder.error(ErrorTypes.BAD_REQUEST, {
+            message: "Service type must be 'service'",
+            data: { service_id: serviceId },
           })
         );
       }
 
+      // Check for duplicate suburb_ids in the payload
+      const payloadSuburbIds = suburbs.map((s: any) => s.suburb_id);
+      const uniqueSuburbIds = Array.from(new Set(payloadSuburbIds));
+      if (payloadSuburbIds.length !== uniqueSuburbIds.length) {
+        const duplicates = payloadSuburbIds.filter((item, index) => payloadSuburbIds.indexOf(item) !== index);
+        throwAreaConfigError(
+          "duplicate_suburbs_in_payload",
+          ResponseBuilder.error(ErrorTypes.VALIDATION_ERROR, {
+            message: "Duplicate suburb_id found in the payload",
+            data: { duplicate_suburb_ids: Array.from(new Set(duplicates)) },
+          })
+        );
+      }
+
+      // 2. Validate all suburbs and units in the payload in bulk
+      const suburbIds = uniqueSuburbIds;
+      const unitIds = Array.from(new Set(suburbs.map((s: any) => s.unit_id)));
+
+      // 2.1 Suburbs
+      const suburbDocs = await findSuburbHelperService.execute(
+        { _id: { $in: suburbIds }, is_deleted: false, is_active: true } as any,
+        suburbErrorsMessages,
+        {
+          lean: true,
+          session,
+        }
+      );
+      if (suburbDocs.length !== suburbIds.length) {
+        const foundIds = suburbDocs.map(d => d._id.toString());
+        const missingIds = suburbIds.filter(id => !foundIds.includes(id));
+        throwAreaConfigError(
+          "suburb_not_found",
+          ResponseBuilder.error(ErrorTypes.NOT_FOUND, {
+            message: "Some suburbs were not found or are inactive",
+            data: { missing_suburb_ids: missingIds },
+          })
+        );
+      }
+
+      // 2.2 Units
+      const unitDocs = await findUnitsHelperService.execute(
+        { _id: { $in: unitIds }, is_deleted: false, is_active: true } as any,
+        unitsErrorsMessages,
+        {
+          lean: true,
+          session,
+        }
+      );
+      if (unitDocs.length !== unitIds.length) {
+        const foundIds = unitDocs.map(d => d._id.toString());
+        const missingIds = unitIds.filter(id => !foundIds.includes(id));
+        throwAreaConfigError(
+          "units_not_found",
+          ResponseBuilder.error(ErrorTypes.NOT_FOUND, {
+            message: "Some units were not found or are inactive",
+            data: { missing_unit_ids: missingIds },
+          })
+        );
+      }
+
+      // 3. Upsert service area configurations
       const userIdStr = getContextUserId();
       const userId = userIdStr ? new mongoose.Types.ObjectId(userIdStr) : undefined;
 
-      const ops = dto.suburb_ids.map((suburbId: mongoose.Types.ObjectId) => {
-        const updateFields: any = {
-          service_id: dto.service_id,
-          suburb_id: suburbId,
-          is_deleted: false,
-          is_active: dto.overrides.is_active ?? true,
-          ...dto.overrides,
-        };
-
-        if (userId) {
-          updateFields.updated_by = userId;
-        }
-
-        const updateDoc: any = {
-          $set: updateFields,
-        };
-
-        if (userId) {
-          updateDoc.$setOnInsert = {
-            created_by: userId,
-          };
-        }
-
-        return {
-          updateOne: {
-            filter: { service_id: dto.service_id, suburb_id: suburbId },
-            update: updateDoc,
-            upsert: true,
-          },
-        };
-      });
-
-      const writeResult = await ServiceAreaConfigurationModel.bulkWrite(ops, { session });
-
-      const updatedRecords = await ServiceAreaConfigurationModel.find({
-        service_id: dto.service_id,
-        suburb_id: { $in: dto.suburb_ids },
-      })
-        .populate(populateFields)
-        .session(session);
-
-      dbTransactions.push(
-        await createDbTransaction(
-          tableName.ServiceAreaConfigurations,
-          apiMethods.POST,
-          operationTypes.Create,
-          {
-            writeResult,
-            updatedRecords,
-          }
-        )
+      const updatedRecords = await createServiceAreaHelperService.execute(
+        serviceId,
+        suburbs,
+        userId,
+        session,
+        dbTransactions,
+        serviceAreaConfigErrorsMessages
       );
+
+      // Populate populated fields
+      for (const rec of updatedRecords) {
+        await rec.populate(populateFields);
+      }
 
       await session.commitTransaction();
 

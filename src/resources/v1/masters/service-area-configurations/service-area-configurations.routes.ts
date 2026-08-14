@@ -4,6 +4,7 @@ import { paramsValidator } from "@/middlewares/request-url-object-id.validation.
 import serviceAreaConfigurationsController from "./service-area-configurations.controller";
 import {
   serviceAreaBulkOverrideSchema,
+  serviceAreaConfigUpdateSchema,
 } from "./service-area-configurations.validator";
 
 const router = express.Router();
@@ -14,16 +15,35 @@ router.get(
 );
 
 router.post(
-  "/:serviceId",
+  "/:id",
   paramsValidator,
   validationMiddleware(serviceAreaBulkOverrideSchema),
   serviceAreaConfigurationsController.BulkCreateAreaOverride
 );
 
 router.get(
-  "/:serviceId/effective",
+  "/:id/effective",
   paramsValidator,
   serviceAreaConfigurationsController.ShowEffectiveConfig
+);
+
+router.put(
+  "/:id",
+  paramsValidator,
+  validationMiddleware(serviceAreaConfigUpdateSchema),
+  serviceAreaConfigurationsController.Update
+);
+
+router.patch(
+  "/:id/enable",
+  paramsValidator,
+  serviceAreaConfigurationsController.Activate
+);
+
+router.patch(
+  "/:id/disable",
+  paramsValidator,
+  serviceAreaConfigurationsController.Deactivate
 );
 
 export default router;

@@ -23,6 +23,9 @@ import deleteCountryConfigurationService from "@/resources/v1/masters/service-co
 import bulkCreateAreaOverrideService from "@/resources/v1/masters/service-area-configurations/services/bulk-create-area-override.service";
 import showEffectiveConfigService from "@/resources/v1/masters/service-area-configurations/services/show-effective-config.service";
 import listAvailableServicesService from "@/resources/v1/masters/service-area-configurations/services/list-available-services.service";
+import updateServiceAreaConfigurationService from "@/resources/v1/masters/service-area-configurations/services/update-service-area-configuration.service";
+import enableServiceAreaConfigurationService from "@/resources/v1/masters/service-area-configurations/services/enable-service-area-configuration.service";
+import disableServiceAreaConfigurationService from "@/resources/v1/masters/service-area-configurations/services/disable-service-area-configuration.service";
 import { serviceTypes } from "@/utils/definitions/constants/service-types";
 import { timeUnits } from "@/database/services/services-db-interface";
 
@@ -348,23 +351,77 @@ describe("Service Location Config Refactor (Integration)", () => {
     });
 
     // 2. Perform bulk area overrides for multiple suburbs
-    const overrides = {
-      call_out_fee: 450,
-      minimum_unit_price: 600,
-    };
-    const suburbIds = [kakkanadSuburb._id.toString(), edappallySuburb._id.toString()];
+    const suburbsPayload = [
+      {
+        suburb_id: kakkanadSuburb._id.toString(),
+        required_licenses: true,
+        is_callout_service: true,
+        is_fixed_price: false,
+        unit_id: testUnit._id.toString(),
+        minimum_unit_price: 600,
+        maximum_unit_price: 5000,
+        call_out_fee: 450,
+        is_active: true,
+      },
+      {
+        suburb_id: edappallySuburb._id.toString(),
+        required_licenses: true,
+        is_callout_service: true,
+        is_fixed_price: false,
+        unit_id: testUnit._id.toString(),
+        minimum_unit_price: 600,
+        maximum_unit_price: 5000,
+        call_out_fee: 450,
+        is_active: true,
+      }
+    ];
 
     let bulkResult: any;
     await requestContext.run({ userId: testUser._id.toString() }, async () => {
       bulkResult = await bulkCreateAreaOverrideService.execute(
         plumbingService._id,
-        suburbIds,
-        overrides
+        suburbsPayload
       );
     });
 
     expect(bulkResult.result.code).toBe(201);
     expect(bulkResult.result.data[0].result.length).toBe(2);
+
+    // 2.5 Test duplicate suburb check in bulk payload
+    const duplicatePayload = [
+      {
+        suburb_id: kakkanadSuburb._id.toString(),
+        required_licenses: true,
+        is_callout_service: true,
+        is_fixed_price: false,
+        unit_id: testUnit._id.toString(),
+        minimum_unit_price: 600,
+        maximum_unit_price: 5000,
+        call_out_fee: 450,
+        is_active: true,
+      },
+      {
+        suburb_id: kakkanadSuburb._id.toString(), // Duplicate!
+        required_licenses: true,
+        is_callout_service: true,
+        is_fixed_price: false,
+        unit_id: testUnit._id.toString(),
+        minimum_unit_price: 600,
+        maximum_unit_price: 5000,
+        call_out_fee: 450,
+        is_active: true,
+      }
+    ];
+
+    let duplicateBulkResult: any;
+    await requestContext.run({ userId: testUser._id.toString() }, async () => {
+      duplicateBulkResult = await bulkCreateAreaOverrideService.execute(
+        plumbingService._id,
+        duplicatePayload
+      );
+    });
+    expect(duplicateBulkResult.result.code).toBe(400);
+    expect(duplicateBulkResult.result.message).toBe("Duplicate suburbs found in the payload.");
 
     // Verify Kakkanad override
     const kknConfig = await ServiceAreaConfigurationModel.findOne({
@@ -513,5 +570,48 @@ describe("Service Location Config Refactor (Integration)", () => {
     const activeEdappallyServices = deactivatedResult.result.data[0].result.services;
     expect(activeEdappallyServices.length).toBe(1);
     expect(activeEdappallyServices[0].id.toString()).toBe(plumbingService._id.toString());
+  });
+
+  it("should support updating, enabling, and disabling single service area configurations", async () => {
+    // 1. Create a configuration record
+    const config = await ServiceAreaConfigurationModel.create({
+      service_id: plumbingService._id,
+      suburb_id: kakkanadSuburb._id,
+      required_licenses: true,
+      is_callout_service: true,
+      is_fixed_price: false,
+      unit_id: testUnit._id,
+      minimum_unit_price: 500,
+      maximum_unit_price: 5000,
+      call_out_fee: 300,
+      is_active: true,
+      status_id: activeStatus._id,
+    });
+
+    // 2. Update config
+    let updateResult: any;
+    await requestContext.run({ userId: testUser._id.toString() }, async () => {
+      updateResult = await updateServiceAreaConfigurationService.execute(config._id, {
+        body: { call_out_fee: 420 },
+      } as any);
+    });
+    expect(updateResult.result.code).toBe(200);
+    expect(updateResult.result.data[0].result.call_out_fee).toBe(420);
+
+    // 3. Disable config
+    let disableResult: any;
+    await requestContext.run({ userId: testUser._id.toString() }, async () => {
+      disableResult = await disableServiceAreaConfigurationService.execute(config._id);
+    });
+    expect(disableResult.result.code).toBe(200);
+    expect(disableResult.result.data[0].result.is_active).toBe(false);
+
+    // 4. Enable config
+    let enableResult: any;
+    await requestContext.run({ userId: testUser._id.toString() }, async () => {
+      enableResult = await enableServiceAreaConfigurationService.execute(config._id);
+    });
+    expect(enableResult.result.code).toBe(200);
+    expect(enableResult.result.data[0].result.is_active).toBe(true);
   });
 });
