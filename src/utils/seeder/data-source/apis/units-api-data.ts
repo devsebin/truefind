@@ -1,3 +1,4 @@
+import { getRoleId } from "../../seeder-cookie";
 import { activityTypes } from "../../../../utils/definitions/constants/activity-types";
 import { AccessType, IAPI } from "../../../../utils/interfaces/api.interface";
 import { moduleTypes } from "../../../../utils/definitions/constants/modules";
@@ -7,7 +8,7 @@ import { datatypes } from "../../../../utils/definitions/constants/data-types";
 import { searchTypes } from "../../../../utils/definitions/constants/search-types";
 import { defaultSearchParams } from "../../../../utils/helpers/seeder.helper";
 
-const unitsApiData: IAPI[] = [
+const unitsApiData = (): IAPI[] => [
     // create unit
     {
         activity_type: activityTypes.Create,
@@ -21,7 +22,6 @@ const unitsApiData: IAPI[] = [
         search_params: [],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
@@ -59,10 +59,11 @@ const unitsApiData: IAPI[] = [
                 parent_key: "",
             },
         ],
-        admin_access: true,
-        user_access: false,
-        employee_access: false,
         required_authentication: true,
+      admin_access: true,
+      user_access: false,
+      employee_access: false,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
 
     // list units
@@ -84,9 +85,6 @@ const unitsApiData: IAPI[] = [
                 datatype: datatypes.String,
                 search_type: searchTypes.Partial,
                 is_active: true,
-                admin_access: true,
-                user_access: true,
-                employee_access: true,
             },
             {
                 title: "label",
@@ -95,24 +93,19 @@ const unitsApiData: IAPI[] = [
                 datatype: datatypes.String,
                 search_type: searchTypes.Exact,
                 is_active: true,
-                admin_access: true,
-                user_access: true,
-                employee_access: true,
             },
         ],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
-            user_access: { type: AccessType.ALL, keys: [] },
-            employee_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
         payload_params: [],
-        admin_access: true,
-        user_access: true,
-        employee_access: true,
         required_authentication: true,
+      admin_access: true,
+      user_access: true,
+      employee_access: true,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("user"), getRoleId("employee")],
     },
 
     // update unit
@@ -128,9 +121,6 @@ const unitsApiData: IAPI[] = [
         search_params: [],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
-            user_access: { type: AccessType.ALL, keys: [] },
-            employee_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
@@ -168,10 +158,11 @@ const unitsApiData: IAPI[] = [
                 parent_key: "",
             },
         ],
-        admin_access: true,
-        user_access: true,
-        employee_access: true,
         required_authentication: true,
+      admin_access: true,
+      user_access: true,
+      employee_access: true,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("user"), getRoleId("employee")],
     },
 
     // delete unit
@@ -192,22 +183,19 @@ const unitsApiData: IAPI[] = [
                 datatype: datatypes.Boolean,
                 search_type: searchTypes.Exact,
                 is_active: true,
-                admin_access: true,
-                user_access: false,
-                employee_access: false,
             },
         ],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
         payload_params: [],
-        admin_access: true,
-        user_access: false,
-        employee_access: false,
         required_authentication: true,
+      admin_access: true,
+      user_access: false,
+      employee_access: false,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
 
     // activate unit
@@ -223,15 +211,15 @@ const unitsApiData: IAPI[] = [
         search_params: [],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
         payload_params: [],
-        admin_access: true,
-        user_access: false,
-        employee_access: false,
         required_authentication: true,
+      admin_access: true,
+      user_access: false,
+      employee_access: false,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
 
     // deactivate unit
@@ -247,15 +235,15 @@ const unitsApiData: IAPI[] = [
         search_params: [],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
         payload_params: [],
-        admin_access: true,
-        user_access: false,
-        employee_access: false,
         required_authentication: true,
+      admin_access: true,
+      user_access: false,
+      employee_access: false,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
 
     // show unit
@@ -271,17 +259,15 @@ const unitsApiData: IAPI[] = [
         search_params: [],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
-            user_access: { type: AccessType.ALL, keys: [] },
-            employee_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
         payload_params: [],
-        admin_access: true,
-        user_access: true,
-        employee_access: true,
         required_authentication: true,
+      admin_access: true,
+      user_access: true,
+      employee_access: true,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("user"), getRoleId("employee")],
     },
 
     // log unit
@@ -297,15 +283,15 @@ const unitsApiData: IAPI[] = [
         search_params: [],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
         payload_params: [],
-        admin_access: true,
-        user_access: false,
-        employee_access: false,
         required_authentication: true,
+      admin_access: true,
+      user_access: false,
+      employee_access: false,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
 ];
 

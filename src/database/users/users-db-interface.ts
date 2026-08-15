@@ -27,7 +27,7 @@ export interface IUser extends Document {
   first_name?: string;
   middle_name?: string;
   last_name?: string;
-  role: string;
+  role: Types.ObjectId;
   email?: string;
   password?: string;
   emailVerified?: boolean;
@@ -61,7 +61,7 @@ export interface IInputUser {
   first_name?: string | null;
   middle_name?: string | null;
   last_name?: string | null;
-  role: string;
+  role: Types.ObjectId;
   email?: string | null;
   password?: string | null;
   emailVerified?: boolean;

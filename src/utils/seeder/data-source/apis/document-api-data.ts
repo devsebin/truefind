@@ -1,10 +1,11 @@
+import { getRoleId } from "../../seeder-cookie";
 import { activityTypes } from "../../../../utils/definitions/constants/activity-types";
 import { AccessType, IAPI } from "../../../../utils/interfaces/api.interface";
 import { moduleTypes } from "../../../../utils/definitions/constants/modules";
 import { activityCode, activityName } from "../../activities/document-activities";
 import { apiMethods } from "../../../../utils/definitions/constants/api-methods";
 
-const documentApiData: IAPI[] = [
+const documentApiData = (): IAPI[] => [
     // create document
     {
         activity_type: activityTypes.Create,
@@ -18,15 +19,15 @@ const documentApiData: IAPI[] = [
         search_params: [],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
         payload_params: [],
-        admin_access: true,
-        user_access: false,
-        employee_access: false,
         required_authentication: true,
+      admin_access: true,
+      user_access: false,
+      employee_access: false,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
 
     // show document
@@ -42,15 +43,15 @@ const documentApiData: IAPI[] = [
         search_params: [],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
         payload_params: [],
-        admin_access: true,
-        user_access: false,
-        employee_access: false,
         required_authentication: true,
+      admin_access: true,
+      user_access: false,
+      employee_access: false,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
 
     // delete document
@@ -66,15 +67,15 @@ const documentApiData: IAPI[] = [
         search_params: [],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
         payload_params: [],
-        admin_access: true,
-        user_access: false,
-        employee_access: false,
         required_authentication: true,
+      admin_access: true,
+      user_access: false,
+      employee_access: false,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
 ];
 

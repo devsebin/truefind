@@ -10,7 +10,6 @@ import { toRolesDTO } from "../dto/create-roles.dto";
 import mongoose from "mongoose";
 import { DbTransaction } from "@/utils/interfaces/activity-log.interface";
 import { rolesErrorsMessages } from "../roles.messages";
-import findRolesHelperService from "../helpers/validators/find-roles.helper.service";
 import { populateFields, rolesPayload } from "../roles.helper";
 import createRolesHelperService from "../helpers/operations/create-roles.helper.service";
 import { rolesResponse } from "../roles.response";
@@ -34,7 +33,7 @@ class createRolesService {
 
       const existingDuplicate = await RolesModel.findOne({
         $or: [
-          { title: body.title },
+          { title: { $regex: new RegExp(`^${body.title}$`, "i") } },
           { label: body.label },
         ],
         is_deleted: { $in: [true, false] },
@@ -77,8 +76,17 @@ class createRolesService {
         is_active: true,
       }).session(session);
 
+      // Force is_default = true if no default role exists yet
+      const forcedIsDefault = !defaultRoleExists ? true : (body.is_default ?? false);
+
+      // If new role is being set as default, unset the current default
+      if (forcedIsDefault && defaultRoleExists) {
+        defaultRoleExists.is_default = false;
+        await defaultRoleExists.save({ session });
+      }
+
       const newRole = await createRolesHelperService.execute(
-        body,
+        { ...body, is_default: forcedIsDefault },
         session,
         DbTransactions,
         rolesErrorsMessages,

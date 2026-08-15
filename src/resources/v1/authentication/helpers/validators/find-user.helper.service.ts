@@ -2,6 +2,7 @@ import mongoose, { ClientSession, HydratedDocument, Model } from "mongoose";
 import User from "@/database/users/users-db-model";
 import { IUser } from "@/database/users/users-db-interface";
 import { roleTypes } from "@/utils/definitions/constants/role-types";
+import RolesModel from "@/database/roles/roles-db-model";
 import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 import { throwError } from "../../authentication.helper";
 import { authenticationErrors } from "../../authentication.messages";
@@ -21,10 +22,15 @@ class findUserHelperService {
         status: mongoose.Types.ObjectId,
     ): Promise<HydratedDocument<IUser>> {
         try {
+            const adminRoles = await RolesModel.find({
+                label: { $in: [roleTypes.SuperAdmin, roleTypes.Admin, roleTypes.Employee] }
+            }).session(session).exec();
+            const adminRoleIds = adminRoles.map(r => r._id);
+
             const user = await this.userRepository
                 .findOne({
                     email,
-                    role: { $in: [roleTypes.SuperAdmin, roleTypes.Admin, roleTypes.Employee] },
+                    role: { $in: adminRoleIds },
                     // status: status,
                     is_deleted: false,
                     is_active: true,
@@ -56,6 +62,7 @@ class findUserHelperService {
         try {
             const user = await this.userRepository
                 .findOne({ phone, is_active: true })
+                .populate("role")
                 .session(session);
 
             if (!user) {
@@ -69,12 +76,13 @@ class findUserHelperService {
                 );
             }
 
-            if (user!.role !== requestedRole) {
+            const userRoleLabel = (user!.role as any)?.label || user!.role.toString();
+            if (userRoleLabel !== requestedRole) {
                 throwError(
                     "role_mismatch",
                     ResponseBuilder.error(ErrorTypes.UNAUTHORIZED, {
                         message: "User role mismatch",
-                        data: { requested: requestedRole, actual: user!.role },
+                        data: { requested: requestedRole, actual: userRoleLabel },
                     }),
                 );
             }

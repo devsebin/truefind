@@ -12,5 +12,7 @@ export interface IInputIRolesPayloadStrict extends Strict<
       | "label"
       | "color"
     >
-  >
+  > & {
+    is_default?: boolean;
+  }
 > { }

@@ -95,7 +95,7 @@ class createSuburbsService {
         {
           district_id: body.district_id,
           $or: [
-            { name: body.name },
+            { name: { $regex: new RegExp(`^${body.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i") } },
             { code: body.code },
           ],
         } as any,

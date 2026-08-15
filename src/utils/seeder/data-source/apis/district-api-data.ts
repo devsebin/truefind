@@ -1,3 +1,4 @@
+import { getRoleId } from "../../seeder-cookie";
 import { activityTypes } from "../../../../utils/definitions/constants/activity-types";
 import { AccessType, IAPI } from "../../../../utils/interfaces/api.interface";
 import { moduleTypes } from "../../../../utils/definitions/constants/modules";
@@ -7,7 +8,7 @@ import { datatypes } from "../../../../utils/definitions/constants/data-types";
 import { searchTypes } from "../../../../utils/definitions/constants/search-types";
 import { defaultSearchParams } from "../../../../utils/helpers/seeder.helper";
 
-const districtsApiData: IAPI[] = [
+const districtsApiData = (): IAPI[] => [
     // create district
     {
         activity_type: activityTypes.Create,
@@ -21,7 +22,6 @@ const districtsApiData: IAPI[] = [
         search_params: [],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
@@ -59,10 +59,11 @@ const districtsApiData: IAPI[] = [
                 parent_key: "",
             },
         ],
-        admin_access: true,
-        user_access: false,
-        employee_access: false,
         required_authentication: true,
+      admin_access: true,
+      user_access: false,
+      employee_access: false,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
 
     // list district
@@ -84,9 +85,6 @@ const districtsApiData: IAPI[] = [
                 datatype: datatypes.String,
                 search_type: searchTypes.Partial,
                 is_active: true,
-                admin_access: true,
-                user_access: true,
-                employee_access: true,
             },
             {
                 title: "code_like",
@@ -95,9 +93,6 @@ const districtsApiData: IAPI[] = [
                 datatype: datatypes.String,
                 search_type: searchTypes.Partial,
                 is_active: true,
-                admin_access: true,
-                user_access: true,
-                employee_access: true,
             },
             {
                 title: "country_id",
@@ -106,9 +101,6 @@ const districtsApiData: IAPI[] = [
                 datatype: datatypes.String,
                 search_type: searchTypes.Exact,
                 is_active: true,
-                admin_access: true,
-                user_access: true,
-                employee_access: true,
             },
             {
                 title: "region_id",
@@ -117,24 +109,19 @@ const districtsApiData: IAPI[] = [
                 datatype: datatypes.String,
                 search_type: searchTypes.Exact,
                 is_active: true,
-                admin_access: true,
-                user_access: true,
-                employee_access: true,
             },
         ],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
-            user_access: { type: AccessType.ALL, keys: [] },
-            employee_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
         payload_params: [],
-        admin_access: true,
-        user_access: true,
-        employee_access: true,
         required_authentication: true,
+      admin_access: true,
+      user_access: true,
+      employee_access: true,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("user"), getRoleId("employee")],
     },
 
     // update district
@@ -150,9 +137,6 @@ const districtsApiData: IAPI[] = [
         search_params: [],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
-            user_access: { type: AccessType.ALL, keys: [] },
-            employee_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
@@ -190,10 +174,11 @@ const districtsApiData: IAPI[] = [
                 parent_key: "",
             },
         ],
-        admin_access: true,
-        user_access: false,
-        employee_access: false,
         required_authentication: true,
+      admin_access: true,
+      user_access: false,
+      employee_access: false,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
 
     // delete district
@@ -209,15 +194,15 @@ const districtsApiData: IAPI[] = [
         search_params: [],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
         payload_params: [],
-        admin_access: true,
-        user_access: false,
-        employee_access: false,
         required_authentication: true,
+      admin_access: true,
+      user_access: false,
+      employee_access: false,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
     // activate district
     {
@@ -232,15 +217,15 @@ const districtsApiData: IAPI[] = [
         search_params: [],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
         payload_params: [],
-        admin_access: true,
-        user_access: false,
-        employee_access: false,
         required_authentication: true,
+      admin_access: true,
+      user_access: false,
+      employee_access: false,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
     // deactivate district
     {
@@ -255,15 +240,15 @@ const districtsApiData: IAPI[] = [
         search_params: [],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
         payload_params: [],
-        admin_access: true,
-        user_access: false,
-        employee_access: false,
         required_authentication: true,
+      admin_access: true,
+      user_access: false,
+      employee_access: false,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
     // show district
     {
@@ -278,17 +263,15 @@ const districtsApiData: IAPI[] = [
         search_params: [],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
-            user_access: { type: AccessType.ALL, keys: [] },
-            employee_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
         payload_params: [],
-        admin_access: true,
-        user_access: true,
-        employee_access: true,
         required_authentication: true,
+      admin_access: true,
+      user_access: true,
+      employee_access: true,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("user"), getRoleId("employee")],
     },
     // log district
     {
@@ -303,15 +286,15 @@ const districtsApiData: IAPI[] = [
         search_params: [],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
         payload_params: [],
-        admin_access: true,
-        user_access: false,
-        employee_access: false,
         required_authentication: true,
+      admin_access: true,
+      user_access: false,
+      employee_access: false,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
 ];
 

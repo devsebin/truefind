@@ -1,3 +1,4 @@
+import { getRoleId } from "../../seeder-cookie";
 import { activityTypes } from "../../../../utils/definitions/constants/activity-types";
 import { AccessType, IAPI } from "../../../../utils/interfaces/api.interface";
 import { moduleTypes } from "../../../../utils/definitions/constants/modules";
@@ -5,7 +6,7 @@ import { activityCode, activityName } from "../../activities/authentication-sess
 import { apiMethods } from "../../../../utils/definitions/constants/api-methods";
 import { defaultSearchParams } from "../../../../utils/helpers/seeder.helper";
 
-const authenticationSessionsApiData: IAPI[] = [
+const authenticationSessionsApiData = (): IAPI[] => [
   // create session
   {
     activity_type: activityTypes.Create,
@@ -18,14 +19,14 @@ const authenticationSessionsApiData: IAPI[] = [
     form_params: [],
     search_params: [],
     access_params: {
-      admin_access: { type: AccessType.ALL, keys: [] },
     },
     control_params: [],
     payload_params: [],
+    required_authentication: true,
     admin_access: true,
     user_access: false,
     employee_access: false,
-    required_authentication: true,
+    access_roles: [getRoleId("super_admin"), getRoleId("admin")],
   },
 
   // list sessions
@@ -42,14 +43,14 @@ const authenticationSessionsApiData: IAPI[] = [
       ...defaultSearchParams,
     ],
     access_params: {
-      admin_access: { type: AccessType.ALL, keys: [] },
     },
     control_params: [],
     payload_params: [],
+    required_authentication: true,
     admin_access: true,
     user_access: false,
     employee_access: false,
-    required_authentication: true,
+    access_roles: [getRoleId("super_admin"), getRoleId("admin")],
   },
 ];
 

@@ -255,6 +255,7 @@ const apiModelSchema: Schema = new Schema<IApi>(
     form_params: { type: [formParamsSchema] },
     search_params: { type: [paramsSchema] },
     access_params: { type: accessParamsSchema, default: {} },
+    access_roles: { type: [Schema.Types.ObjectId], ref: tableName.Roles, default: [] },
     url: { type: String, required: true },
     status: { type: Boolean, default: true },
   },

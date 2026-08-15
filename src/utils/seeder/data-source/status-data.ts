@@ -1,9 +1,9 @@
 import { IStatus } from "../../..//database/status/status-db-interface";
 import User from "../../../database/users/users-db-model";
-import { roleTypes } from "../../../utils/definitions/constants/role-types";
+import { getRoleId } from "../seeder-cookie";
 
 export async function generateStatusData() {
-  const user = await User.findOne({ role: roleTypes.SuperAdmin }); // Or adjust to your specific query to get the first user
+  const user = await User.findOne({ role: getRoleId("super_admin") }); // Or adjust to your specific query to get the first user
 
   if (!user) {
     console.log("No users found. Please add a user first.");

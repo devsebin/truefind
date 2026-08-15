@@ -121,11 +121,24 @@ const UserSchema: Schema = new Schema<IUser>(
     middle_name: { type: String, default: null },
     last_name: { type: String, required: false, default: null },
     role: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: tableName.Roles,
       required: true,
-      default: "user",
-      enum: ["user", "admin", "employee", "super_admin"],
       index: true,
+      set: function(v: any) {
+        if (typeof v === "string") {
+          const mapping: Record<string, string> = {
+            super_admin: "64b8a1c8f1e67290bc5b4d1a",
+            admin: "64b8a1c8f1e67290bc5b4d1b",
+            employee: "64b8a1c8f1e67290bc5b4d1c",
+            user: "64b8a1c8f1e67290bc5b4d1d",
+          };
+          if (mapping[v]) {
+            return new Types.ObjectId(mapping[v]);
+          }
+        }
+        return v;
+      },
     },
     email: {
       type: String,

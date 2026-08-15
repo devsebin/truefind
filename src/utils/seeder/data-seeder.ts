@@ -30,6 +30,10 @@ const seedDatabase = async () => {
     }
 
     await seedRole();
+    const RolesModel = (await import("../../database/roles/roles-db-model")).default;
+    const roles = await RolesModel.find({});
+    (global as any).rolesCookie = roles;
+
     await seedUser();
     await seedStatus();
 

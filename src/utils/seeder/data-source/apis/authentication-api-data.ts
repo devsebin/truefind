@@ -1,10 +1,11 @@
+import { getRoleId } from "../../seeder-cookie";
 import { activityTypes } from "../../../../utils/definitions/constants/activity-types";
 import { AccessType, IAPI } from "../../../../utils/interfaces/api.interface";
 import { moduleTypes } from "../../../../utils/definitions/constants/modules";
 import { activityCode, activityName } from "../../activities/authentication-activities";
 import { apiMethods } from "../../../../utils/definitions/constants/api-methods";
 
-const authenticationApiData: IAPI[] = [
+const authenticationApiData = (): IAPI[] => [
   {
     activity_type: activityTypes.Send,
     module: moduleTypes.Authentication,
@@ -16,7 +17,6 @@ const authenticationApiData: IAPI[] = [
     form_params: [],
     search_params: [],
     access_params: {
-      admin_access: { type: AccessType.ALL, keys: [] },
     },
     control_params: [],
     payload_params: [],
@@ -24,6 +24,7 @@ const authenticationApiData: IAPI[] = [
     admin_access: true,
     user_access: false,
     employee_access: true,
+    access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
   },
   {
     activity_type: activityTypes.Login,
@@ -36,7 +37,6 @@ const authenticationApiData: IAPI[] = [
     form_params: [],
     search_params: [],
     access_params: {
-      admin_access: { type: AccessType.ALL, keys: [] },
     },
     control_params: [],
     payload_params: [],
@@ -44,6 +44,7 @@ const authenticationApiData: IAPI[] = [
     admin_access: true,
     user_access: false,
     employee_access: true,
+    access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
   },
   {
     activity_type: activityTypes.Refresh,
@@ -56,7 +57,6 @@ const authenticationApiData: IAPI[] = [
     form_params: [],
     search_params: [],
     access_params: {
-      admin_access: { type: AccessType.ALL, keys: [] },
     },
     control_params: [],
     payload_params: [],
@@ -64,6 +64,7 @@ const authenticationApiData: IAPI[] = [
     admin_access: true,
     user_access: false,
     employee_access: true,
+    access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
   },
   {
     activity_type: activityTypes.Login,
@@ -76,7 +77,6 @@ const authenticationApiData: IAPI[] = [
     form_params: [],
     search_params: [],
     access_params: {
-      admin_access: { type: AccessType.ALL, keys: [] },
     },
     control_params: [],
     payload_params: [],
@@ -84,6 +84,7 @@ const authenticationApiData: IAPI[] = [
     admin_access: true,
     user_access: false,
     employee_access: true,
+    access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
   },
   {
     activity_type: activityTypes.Login,
@@ -96,7 +97,6 @@ const authenticationApiData: IAPI[] = [
     form_params: [],
     search_params: [],
     access_params: {
-      admin_access: { type: AccessType.ALL, keys: [] },
     },
     control_params: [],
     payload_params: [],
@@ -104,6 +104,7 @@ const authenticationApiData: IAPI[] = [
     admin_access: true,
     user_access: false,
     employee_access: true,
+    access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
   },
   {
     activity_type: activityTypes.Logout,
@@ -116,7 +117,6 @@ const authenticationApiData: IAPI[] = [
     form_params: [],
     search_params: [],
     access_params: {
-      admin_access: { type: AccessType.ALL, keys: [] },
     },
     control_params: [],
     payload_params: [],
@@ -124,6 +124,7 @@ const authenticationApiData: IAPI[] = [
     admin_access: true,
     user_access: true,
     employee_access: true,
+    access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("user"), getRoleId("employee")],
   },
   {
     activity_type: activityTypes.Logout,
@@ -136,7 +137,6 @@ const authenticationApiData: IAPI[] = [
     form_params: [],
     search_params: [],
     access_params: {
-      admin_access: { type: AccessType.ALL, keys: [] },
     },
     control_params: [],
     payload_params: [],
@@ -144,6 +144,7 @@ const authenticationApiData: IAPI[] = [
     admin_access: true,
     user_access: true,
     employee_access: true,
+    access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("user"), getRoleId("employee")],
   },
 ];
 

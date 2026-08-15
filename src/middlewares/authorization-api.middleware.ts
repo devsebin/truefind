@@ -7,9 +7,6 @@ import {
 } from "@/utils/definitions/constants/common";
 import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 
-// User roles
-type Role = "super_admin" | "admin" | "user" | "employee";
-
 // Assuming you're attaching the user's role in `req.user.role`
 export const authorizationApi = async (
     req: Request,
@@ -59,14 +56,12 @@ export const authorizationApi = async (
                 );
         }
 
-        const roleAccessMap = {
-            super_admin: apiData.admin_access,
-            admin: apiData.admin_access,
-            user: apiData.user_access,
-            employee: apiData.employee_access,
-        };
+        const userRoleId = (req.user.role as any)?._id || req.user.role;
+        const hasAccess = apiData.access_roles?.some(
+            (roleId: any) => roleId.toString() === userRoleId.toString()
+        ) || false;
 
-        if (!roleAccessMap[req.user.role as Role]) {
+        if (!hasAccess) {
             return res
                 .status(statusCodes.Unauthorized)
                 .json(

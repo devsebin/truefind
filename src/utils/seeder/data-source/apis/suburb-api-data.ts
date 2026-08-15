@@ -1,3 +1,4 @@
+import { getRoleId } from "../../seeder-cookie";
 import { activityTypes } from "../../../../utils/definitions/constants/activity-types";
 import { AccessType, IAPI } from "../../../../utils/interfaces/api.interface";
 import { moduleTypes } from "../../../../utils/definitions/constants/modules";
@@ -7,7 +8,7 @@ import { datatypes } from "../../../../utils/definitions/constants/data-types";
 import { searchTypes } from "../../../../utils/definitions/constants/search-types";
 import { defaultSearchParams } from "../../../../utils/helpers/seeder.helper";
 
-const suburbsApiData: IAPI[] = [
+const suburbsApiData = (): IAPI[] => [
     // create suburb
     {
         activity_type: activityTypes.Create,
@@ -21,7 +22,6 @@ const suburbsApiData: IAPI[] = [
         search_params: [],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
@@ -91,10 +91,11 @@ const suburbsApiData: IAPI[] = [
                 parent_key: "",
             },
         ],
-        admin_access: true,
-        user_access: false,
-        employee_access: false,
         required_authentication: true,
+      admin_access: true,
+      user_access: false,
+      employee_access: false,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
 
     // list suburb
@@ -116,9 +117,6 @@ const suburbsApiData: IAPI[] = [
                 datatype: datatypes.String,
                 search_type: searchTypes.Partial,
                 is_active: true,
-                admin_access: true,
-                user_access: true,
-                employee_access: true,
             },
             {
                 title: "code_like",
@@ -127,9 +125,6 @@ const suburbsApiData: IAPI[] = [
                 datatype: datatypes.String,
                 search_type: searchTypes.Partial,
                 is_active: true,
-                admin_access: true,
-                user_access: true,
-                employee_access: true,
             },
             {
                 title: "country_id",
@@ -138,9 +133,6 @@ const suburbsApiData: IAPI[] = [
                 datatype: datatypes.String,
                 search_type: searchTypes.Exact,
                 is_active: true,
-                admin_access: true,
-                user_access: true,
-                employee_access: true,
             },
             {
                 title: "region_id",
@@ -149,9 +141,6 @@ const suburbsApiData: IAPI[] = [
                 datatype: datatypes.String,
                 search_type: searchTypes.Exact,
                 is_active: true,
-                admin_access: true,
-                user_access: true,
-                employee_access: true,
             },
             {
                 title: "district_id",
@@ -160,24 +149,19 @@ const suburbsApiData: IAPI[] = [
                 datatype: datatypes.String,
                 search_type: searchTypes.Exact,
                 is_active: true,
-                admin_access: true,
-                user_access: true,
-                employee_access: true,
             },
         ],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
-            user_access: { type: AccessType.ALL, keys: [] },
-            employee_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
         payload_params: [],
-        admin_access: true,
-        user_access: true,
-        employee_access: true,
         required_authentication: true,
+      admin_access: true,
+      user_access: true,
+      employee_access: true,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("user"), getRoleId("employee")],
     },
 
     // update suburb
@@ -193,9 +177,6 @@ const suburbsApiData: IAPI[] = [
         search_params: [],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
-            user_access: { type: AccessType.ALL, keys: [] },
-            employee_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
@@ -265,10 +246,11 @@ const suburbsApiData: IAPI[] = [
                 parent_key: "",
             },
         ],
-        admin_access: true,
-        user_access: false,
-        employee_access: false,
         required_authentication: true,
+      admin_access: true,
+      user_access: false,
+      employee_access: false,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
 
     // delete suburb
@@ -284,15 +266,15 @@ const suburbsApiData: IAPI[] = [
         search_params: [],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
         payload_params: [],
-        admin_access: true,
-        user_access: false,
-        employee_access: false,
         required_authentication: true,
+      admin_access: true,
+      user_access: false,
+      employee_access: false,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
     // activate suburb
     {
@@ -307,15 +289,15 @@ const suburbsApiData: IAPI[] = [
         search_params: [],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
         payload_params: [],
-        admin_access: true,
-        user_access: false,
-        employee_access: false,
         required_authentication: true,
+      admin_access: true,
+      user_access: false,
+      employee_access: false,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
     // deactivate suburb
     {
@@ -330,15 +312,15 @@ const suburbsApiData: IAPI[] = [
         search_params: [],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
         payload_params: [],
-        admin_access: true,
-        user_access: false,
-        employee_access: false,
         required_authentication: true,
+      admin_access: true,
+      user_access: false,
+      employee_access: false,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
     // show suburb
     {
@@ -353,17 +335,15 @@ const suburbsApiData: IAPI[] = [
         search_params: [],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
-            user_access: { type: AccessType.ALL, keys: [] },
-            employee_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
         payload_params: [],
-        admin_access: true,
-        user_access: true,
-        employee_access: true,
         required_authentication: true,
+      admin_access: true,
+      user_access: true,
+      employee_access: true,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("user"), getRoleId("employee")],
     },
     // log suburb
     {
@@ -378,15 +358,15 @@ const suburbsApiData: IAPI[] = [
         search_params: [],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
         payload_params: [],
-        admin_access: true,
-        user_access: false,
-        employee_access: false,
         required_authentication: true,
+      admin_access: true,
+      user_access: false,
+      employee_access: false,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
 ];
 

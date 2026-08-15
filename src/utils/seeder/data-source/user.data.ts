@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { IInputUserPayload } from "../../../resources/v1/users/payloads/user-input.interface";
-import { roleTypes } from "../../../utils/definitions/constants/role-types";
+import { getRoleId } from "../seeder-cookie";
 import bcrypt from "bcrypt";
 
 export async function generateUserData(): Promise<IInputUserPayload[]> {
@@ -8,7 +8,7 @@ export async function generateUserData(): Promise<IInputUserPayload[]> {
     {
       first_name: "Sebin",
       last_name: "George",
-      role: roleTypes.SuperAdmin,
+      role: getRoleId("super_admin"),
       email: "sebin@example.com",
       emailVerified: true,
       emailVerifiedAt: new Date(),

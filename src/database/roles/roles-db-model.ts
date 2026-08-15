@@ -10,6 +10,7 @@ const rolesSchema = new Schema<IRole>(
         title: { type: String, required: true, unique: true },
         label: { type: String, required: true, unique: true },
         color: { type: String, required: true },
+        is_default: { type: Boolean, default: false },
         ...CommonServiceFieldsModel,
     },
     { timestamps: true },

@@ -1,10 +1,11 @@
+import { getRoleId } from "../../seeder-cookie";
 import { activityTypes } from "../../../../utils/definitions/constants/activity-types";
 import { AccessType, IAPI } from "../../../../utils/interfaces/api.interface";
 import { moduleTypes } from "../../../../utils/definitions/constants/modules";
 import { activityCode, activityName } from "../../activities/currency-activities";
 import { apiMethods } from "../../../../utils/definitions/constants/api-methods";
 
-const currenciesApiData: IAPI[] = [
+const currenciesApiData = (): IAPI[] => [
     {
         activity_type: activityTypes.Create,
         module: moduleTypes.Currencies,
@@ -16,14 +17,14 @@ const currenciesApiData: IAPI[] = [
         form_params: [],
         search_params: [],
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
         },
         control_params: [],
         payload_params: [],
-        admin_access: true,
-        user_access: false,
-        employee_access: false,
         required_authentication: true,
+      admin_access: true,
+      user_access: false,
+      employee_access: false,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
     {
         activity_type: activityTypes.List,
@@ -36,14 +37,14 @@ const currenciesApiData: IAPI[] = [
         form_params: [],
         search_params: [],
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
         },
         control_params: [],
         payload_params: [],
-        admin_access: true,
-        user_access: false,
-        employee_access: false,
         required_authentication: true,
+      admin_access: true,
+      user_access: false,
+      employee_access: false,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
     {
         activity_type: activityTypes.Show,
@@ -56,14 +57,14 @@ const currenciesApiData: IAPI[] = [
         form_params: [],
         search_params: [],
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
         },
         control_params: [],
         payload_params: [],
-        admin_access: true,
-        user_access: false,
-        employee_access: false,
         required_authentication: true,
+      admin_access: true,
+      user_access: false,
+      employee_access: false,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
     {
         activity_type: activityTypes.Update,
@@ -76,14 +77,14 @@ const currenciesApiData: IAPI[] = [
         form_params: [],
         search_params: [],
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
         },
         control_params: [],
         payload_params: [],
-        admin_access: true,
-        user_access: false,
-        employee_access: false,
         required_authentication: true,
+      admin_access: true,
+      user_access: false,
+      employee_access: false,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
     {
         activity_type: activityTypes.Delete,
@@ -96,14 +97,14 @@ const currenciesApiData: IAPI[] = [
         form_params: [],
         search_params: [],
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
         },
         control_params: [],
         payload_params: [],
-        admin_access: true,
-        user_access: false,
-        employee_access: false,
         required_authentication: true,
+      admin_access: true,
+      user_access: false,
+      employee_access: false,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
 ];
 

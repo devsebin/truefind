@@ -77,6 +77,7 @@ async function authenticate(
 
         const user = await UserModel.findById(payload.id)
             .select("-password")
+            .populate("role")
             .exec();
 
         if (!user) {

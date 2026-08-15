@@ -1,3 +1,4 @@
+import { getRoleId } from "../../seeder-cookie";
 import { activityTypes } from "../../../../utils/definitions/constants/activity-types";
 import { AccessType, IAPI } from "../../../../utils/interfaces/api.interface";
 import { moduleTypes } from "../../../../utils/definitions/constants/modules";
@@ -7,7 +8,7 @@ import { datatypes } from "../../../../utils/definitions/constants/data-types";
 import { searchTypes } from "../../../../utils/definitions/constants/search-types";
 import { defaultSearchParams } from "../../../../utils/helpers/seeder.helper";
 
-const regionsApiData: IAPI[] = [
+const regionsApiData = (): IAPI[] => [
     // create region
     {
         activity_type: activityTypes.Create,
@@ -21,7 +22,6 @@ const regionsApiData: IAPI[] = [
         search_params: [],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
@@ -51,10 +51,11 @@ const regionsApiData: IAPI[] = [
                 parent_key: "",
             },
         ],
-        admin_access: true,
-        user_access: false,
-        employee_access: false,
         required_authentication: true,
+      admin_access: true,
+      user_access: false,
+      employee_access: false,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
 
     // list region
@@ -76,9 +77,6 @@ const regionsApiData: IAPI[] = [
                 datatype: datatypes.String,
                 search_type: searchTypes.Partial,
                 is_active: true,
-                admin_access: true,
-                user_access: true,
-                employee_access: true,
             },
             {
                 title: "code_like",
@@ -87,9 +85,6 @@ const regionsApiData: IAPI[] = [
                 datatype: datatypes.String,
                 search_type: searchTypes.Partial,
                 is_active: true,
-                admin_access: true,
-                user_access: true,
-                employee_access: true,
             },
             {
                 title: "country_id",
@@ -98,9 +93,6 @@ const regionsApiData: IAPI[] = [
                 datatype: datatypes.String,
                 search_type: searchTypes.Exact,
                 is_active: true,
-                admin_access: true,
-                user_access: true,
-                employee_access: true,
             },
             {
                 title: "country_name_like",
@@ -109,9 +101,6 @@ const regionsApiData: IAPI[] = [
                 datatype: datatypes.String,
                 search_type: searchTypes.Partial,
                 is_active: true,
-                admin_access: true,
-                user_access: true,
-                employee_access: true,
             },
             {
                 title: "country_status_id",
@@ -120,9 +109,6 @@ const regionsApiData: IAPI[] = [
                 datatype: datatypes.String,
                 search_type: searchTypes.Exact,
                 is_active: true,
-                admin_access: true,
-                user_access: true,
-                employee_access: true,
             },
             {
                 title: "country_status_title_like",
@@ -131,24 +117,19 @@ const regionsApiData: IAPI[] = [
                 datatype: datatypes.String,
                 search_type: searchTypes.Partial,
                 is_active: true,
-                admin_access: true,
-                user_access: true,
-                employee_access: true,
             },
         ],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
-            user_access: { type: AccessType.ALL, keys: [] },
-            employee_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
         payload_params: [],
-        admin_access: true,
-        user_access: true,
-        employee_access: true,
         required_authentication: true,
+      admin_access: true,
+      user_access: true,
+      employee_access: true,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("user"), getRoleId("employee")],
     },
 
     // update region
@@ -164,9 +145,6 @@ const regionsApiData: IAPI[] = [
         search_params: [],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
-            user_access: { type: AccessType.ALL, keys: [] },
-            employee_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
@@ -188,10 +166,11 @@ const regionsApiData: IAPI[] = [
                 parent_key: "",
             },
         ],
-        admin_access: true,
-        user_access: false,
-        employee_access: false,
         required_authentication: true,
+      admin_access: true,
+      user_access: false,
+      employee_access: false,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
 
     // delete region
@@ -207,15 +186,15 @@ const regionsApiData: IAPI[] = [
         search_params: [],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
         payload_params: [],
-        admin_access: true,
-        user_access: false,
-        employee_access: false,
         required_authentication: true,
+      admin_access: true,
+      user_access: false,
+      employee_access: false,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
     // activate region
     {
@@ -230,15 +209,15 @@ const regionsApiData: IAPI[] = [
         search_params: [],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
         payload_params: [],
-        admin_access: true,
-        user_access: false,
-        employee_access: false,
         required_authentication: true,
+      admin_access: true,
+      user_access: false,
+      employee_access: false,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
     // deactivate region
     {
@@ -253,15 +232,15 @@ const regionsApiData: IAPI[] = [
         search_params: [],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
         payload_params: [],
-        admin_access: true,
-        user_access: false,
-        employee_access: false,
         required_authentication: true,
+      admin_access: true,
+      user_access: false,
+      employee_access: false,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
     // show region
     {
@@ -276,17 +255,15 @@ const regionsApiData: IAPI[] = [
         search_params: [],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
-            user_access: { type: AccessType.ALL, keys: [] },
-            employee_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
         payload_params: [],
-        admin_access: true,
-        user_access: true,
-        employee_access: true,
         required_authentication: true,
+      admin_access: true,
+      user_access: true,
+      employee_access: true,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("user"), getRoleId("employee")],
     },
     // log region
     {
@@ -301,15 +278,15 @@ const regionsApiData: IAPI[] = [
         search_params: [],
 
         access_params: {
-            admin_access: { type: AccessType.ALL, keys: [] },
         },
 
         control_params: [],
         payload_params: [],
-        admin_access: true,
-        user_access: false,
-        employee_access: false,
         required_authentication: true,
+      admin_access: true,
+      user_access: false,
+      employee_access: false,
+      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
 ];
 

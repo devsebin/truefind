@@ -2,7 +2,8 @@ import { datatypes } from "@/utils/definitions/constants/data-types";
 import { roleTypes } from "@/utils/definitions/constants/role-types";
 import { searchTypes } from "@/utils/definitions/constants/search-types";
 import { FormFieldType, IAccessParams } from "@/utils/interfaces/api.interface";
-import { Document } from "mongoose";
+import mongoose, { Document } from "mongoose";
+
 
 interface Authentication {
   admin: boolean;
@@ -17,9 +18,9 @@ export interface ISearchParams {
   datatype: datatypes;
   search_type: searchTypes;
   is_active: boolean;
-  admin_access: boolean;
-  user_access: boolean;
-  employee_access: boolean;
+  admin_access?: boolean;
+  user_access?: boolean;
+  employee_access?: boolean;
 }
 
 export interface IControlParams {
@@ -96,6 +97,7 @@ export interface IApi extends Document {
   admin_access: boolean;
   user_access: boolean;
   employee_access: boolean;
+  access_roles: mongoose.Types.ObjectId[];
   status: boolean;
   authentication: Authentication;
   required_authentication: boolean;

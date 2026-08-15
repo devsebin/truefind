@@ -79,7 +79,7 @@ export const sendOtpValidation = Joi.object({
     device_id: Joi.string().required().messages({
         "any.required": "Device ID is required",
     }),
-    user_type: Joi.string().valid("user", "admin", "employee").required(),
+    user_type: Joi.string().valid("user", "employee").required(),
     declaimers: Joi.when("type", {
         is: "register",
         then: Joi.array().items(declaimerValidation).min(1).required(),

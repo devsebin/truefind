@@ -32,6 +32,11 @@ class disableRolesService {
         { throwIfNotFound: true, returnDocument: true, session },
       );
 
+      // Block disabling default role
+      if (role[0].is_default) {
+        throw new Error("cannot_disable_default");
+      }
+
       await findRolesStateHelperService.isAlreadyInactive(
         role[0],
         rolesErrorsMessages,

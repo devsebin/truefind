@@ -36,10 +36,11 @@ class StoreUserBasicService {
 
       let targetUserId = userId;
       if (body.user_id) {
-        const currentUserRole = (request.user as any)?.role;
+        const roleObj = (request.user as any)?.role;
+        const currentUserRoleLabel = roleObj && typeof roleObj === "object" ? roleObj.label : roleObj;
         const isAdminOrSuperAdmin =
-          currentUserRole === roleTypes.Admin ||
-          currentUserRole === roleTypes.SuperAdmin;
+          currentUserRoleLabel === roleTypes.Admin ||
+          currentUserRoleLabel === roleTypes.SuperAdmin;
 
         if (!isAdminOrSuperAdmin) {
           const response = ResponseBuilder.error(ErrorTypes.UNAUTHORIZED, {

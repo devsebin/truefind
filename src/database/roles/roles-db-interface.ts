@@ -5,6 +5,7 @@ export interface IRole extends CommonServiceFieldsInterface {
     title: string;
     label: string;
     color: string;
+    is_default: boolean;
 }
 
 export interface IRoleDocument extends IRole, Document { }

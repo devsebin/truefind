@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { datatypes } from "../definitions/constants/data-types";
 import { moduleTypes } from "../definitions/constants/modules";
 import { apiMethods } from "../definitions/constants/api-methods";
@@ -118,6 +119,7 @@ export interface IAPI<T = any> {
   admin_access: boolean;
   user_access: boolean;
   employee_access: boolean;
+  access_roles: mongoose.Types.ObjectId[];
   url: string;
   status: boolean;
 }

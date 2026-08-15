@@ -35,6 +35,11 @@ class deleteRolesService {
         { throwIfNotFound: true, returnDocument: true, session },
       );
 
+      // Block deleting default role
+      if (role[0].is_default) {
+        throw new Error("cannot_delete_default");
+      }
+
       await findRolesStateHelperService.isAlreadyDeleted(
         role[0],
         rolesErrorsMessages,
