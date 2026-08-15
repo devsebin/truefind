@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 
-export const buildUnitsPayload = (overrides: any = {}) => ({
+export const buildRolesPayload = (overrides: any = {}) => ({
   title: faker.word.noun(),
   label: faker.word.adjective().toLowerCase(),
   dimension: faker.word.noun(),

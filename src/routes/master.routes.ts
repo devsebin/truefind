@@ -17,6 +17,7 @@ import v1ServiceAreaConfigRoutes from "../resources/v1/masters/service-area-conf
 import v1PrioritiesRoutes from "../resources/v1/masters/priorities/priorities.routes";
 import v1UnitsRoutes from "../resources/v1/masters/units/units.routes";
 import v1CurrenciesRoutes from "../resources/v1/masters/currencies/currencies.routes";
+import v1RolesRoutes from "../resources/v1/masters/roles/roles.routes";
 
 const router = Router();
 
@@ -35,5 +36,6 @@ router.use("/service-area-configurations", authentication, authorizationApi, v1S
 router.use("/priorities", authentication, authorizationApi, v1PrioritiesRoutes);
 router.use("/units", authentication, authorizationApi, v1UnitsRoutes);
 router.use("/currencies", authentication, authorizationApi, v1CurrenciesRoutes);
+router.use("/roles", authentication, authorizationApi, v1RolesRoutes);
 
 export default router;

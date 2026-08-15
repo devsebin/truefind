@@ -16,6 +16,9 @@ import serviceAreaApiData from "../data-source/apis/service-area-api-data";
 import currenciesApiData from "../data-source/apis/currencies-api-data";
 import prioritiesApiData from "../data-source/apis/priorities-api-data";
 import unitsApiData from "../data-source/apis/units-api-data";
+import rolesApiData from "../data-source/apis/roles-api-data";
+import RolesModel from "../../../database/roles/roles-db-model";
+import { seedRole } from "./role-seeder";
 
 export const seedActivity = async () => {
   await api.deleteMany({});
@@ -38,9 +41,28 @@ export const seedActivity = async () => {
     ...currenciesApiData,
     ...prioritiesApiData,
     ...unitsApiData,
+    ...rolesApiData,
   ];
 
-  if (allApis.length > 0) {
-    await api.insertMany(allApis);
+  let roles = await RolesModel.find({});
+  if (roles.length === 0) {
+    await seedRole();
+    roles = await RolesModel.find({});
+  }
+
+  const roleMap = new Map<string, any>();
+  roles.forEach(r => roleMap.set(r.label, r._id));
+
+  const mappedApis = allApis.map(apiData => {
+    const resolvedRoles = (apiData.access_roles || []).map((label: string) => roleMap.get(label)).filter(Boolean);
+    const { access_roles, ...rest } = apiData as any;
+    return {
+      ...rest,
+      access_roles: resolvedRoles,
+    };
+  });
+
+  if (mappedApis.length > 0) {
+    await api.insertMany(mappedApis);
   }
 };

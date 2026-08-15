@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { seedRole } from "./seeder-source/role-seeder";
 import { seedUser } from "./seeder-source/user-seeder";
 import { seedStatus } from "./seeder-source/status-seeder";
 import dotenv from "dotenv";
@@ -28,6 +29,7 @@ const seedDatabase = async () => {
       await database.dropCollection(collection.name);
     }
 
+    await seedRole();
     await seedUser();
     await seedStatus();
 
