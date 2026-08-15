@@ -49,7 +49,7 @@ class updateSuburbHelperService {
       if (dto.region_id !== undefined) existing.region_id = dto.region_id;
       if (dto.district_id !== undefined) existing.district_id = dto.district_id;
       if (dto.post_code !== undefined) existing.post_code = dto.post_code;
-      if (dto.location !== undefined) existing.location = dto.location;
+      if (dto.boundary !== undefined) existing.boundary = dto.boundary;
 
       const saved = await existing.save({ session });
 

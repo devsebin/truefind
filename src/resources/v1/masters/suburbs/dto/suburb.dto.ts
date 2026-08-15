@@ -8,9 +8,9 @@ export interface ISuburbDTO {
   region_id: mongoose.Types.ObjectId;
   district_id: mongoose.Types.ObjectId;
   post_code: string;
-  location: {
-    type: "Point";
-    coordinates: [number, number]; // [longitude, latitude]
+  boundary: {
+    type: "Polygon" | "MultiPolygon";
+    coordinates: number[][][] | number[][][][];
   };
 }
 
@@ -22,10 +22,7 @@ export function toSuburbDTO(body: IInputSuburbPayloadStrict): ISuburbDTO {
     region_id: new mongoose.Types.ObjectId(body.region_id),
     district_id: new mongoose.Types.ObjectId(body.district_id),
     post_code: body.post_code ? body.post_code.trim() : "",
-    location: {
-      type: "Point",
-      coordinates: [Number(body.longitude), Number(body.latitude)],
-    },
+    boundary: body.boundary,
   };
 }
 
@@ -37,11 +34,8 @@ export function toUpdateSuburbDTO(body: Partial<IInputSuburbPayloadStrict>): Par
   if (body.region_id !== undefined) dto.region_id = new mongoose.Types.ObjectId(body.region_id);
   if (body.district_id !== undefined) dto.district_id = new mongoose.Types.ObjectId(body.district_id);
   if (body.post_code !== undefined) dto.post_code = body.post_code ? body.post_code.trim() : "";
-  if (body.longitude !== undefined && body.latitude !== undefined) {
-    dto.location = {
-      type: "Point",
-      coordinates: [Number(body.longitude), Number(body.latitude)],
-    };
+  if (body.boundary !== undefined) {
+    dto.boundary = body.boundary;
   }
   return dto;
 }

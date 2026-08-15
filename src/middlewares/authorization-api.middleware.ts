@@ -19,6 +19,7 @@ export const authorizationApi = async (
             activity_method: req.method.toLowerCase(),
             status: true,
         });
+
         if (!apiData) {
             const response = ResponseBuilder.error(ErrorTypes.NOT_FOUND, {
                 message: "API not found",
@@ -57,6 +58,7 @@ export const authorizationApi = async (
         }
 
         const userRoleId = (req.user.role as any)?._id || req.user.role;
+
         const hasAccess = apiData.access_roles?.some(
             (roleId: any) => roleId.toString() === userRoleId.toString()
         ) || false;

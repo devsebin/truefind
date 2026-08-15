@@ -139,7 +139,7 @@ const userApiData = (): IAPI[] => [
     admin_access: true,
     user_access: true,
     employee_access: false,
-    access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("user")],
+    access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("user"), getRoleId("employee")],
   },
 ];
 

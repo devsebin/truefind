@@ -7,8 +7,10 @@ export interface IInputSuburbPayload {
   region_id: string;
   district_id: string;
   post_code: string;
-  latitude: number;
-  longitude: number;
+  boundary: {
+    type: "Polygon" | "MultiPolygon";
+    coordinates: number[][][] | number[][][][];
+  };
 }
 
 export interface IInputSuburbPayloadStrict extends Strict<IInputSuburbPayload> { }

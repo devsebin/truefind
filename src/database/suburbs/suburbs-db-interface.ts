@@ -8,9 +8,10 @@ interface ISuburb extends CommonServiceFieldsInterface {
     region_id: Types.ObjectId;
     district_id: Types.ObjectId;
     post_code: string;
-    location: {
-        type: "Point";
-        coordinates: [number, number]; // [longitude, latitude]
+
+    boundary: {
+        type: "Polygon" | "MultiPolygon";
+        coordinates: number[][][] | number[][][][];
     };
 }
 

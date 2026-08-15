@@ -41,7 +41,7 @@ export const suburbResponse = (suburb: any): any => ({
     name: suburb.name,
     code: suburb.code,
     post_code: suburb.post_code,
-    location: suburb.location,
+    boundary: suburb.boundary,
     country: countryResponse(suburb.country_id),
     region: regionResponse(suburb.region_id),
     district: districtResponse(suburb.district_id),

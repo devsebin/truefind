@@ -9,8 +9,10 @@ export const suburbInputValidator = Joi.object<IInputSuburbPayloadStrict>({
     region_id: Joi.string().custom(objectIdValidator).required(),
     district_id: Joi.string().custom(objectIdValidator).required(),
     post_code: Joi.string().trim().min(4).max(6).required(),
-    latitude: Joi.number().min(-90).max(90).required(),
-    longitude: Joi.number().min(-180).max(180).required(),
+    boundary: Joi.object({
+        type: Joi.string().valid("Polygon", "MultiPolygon").required(),
+        coordinates: Joi.array().required()
+    }).required(),
 });
 
 export const updateSuburbInputValidator = Joi.object<Partial<IInputSuburbPayloadStrict>>({
@@ -20,8 +22,10 @@ export const updateSuburbInputValidator = Joi.object<Partial<IInputSuburbPayload
     region_id: Joi.string().custom(objectIdValidator).optional(),
     district_id: Joi.string().custom(objectIdValidator).optional(),
     post_code: Joi.string().trim().allow("", null).optional(),
-    latitude: Joi.number().min(-90).max(90).optional(),
-    longitude: Joi.number().min(-180).max(180).optional(),
+    boundary: Joi.object({
+        type: Joi.string().valid("Polygon", "MultiPolygon").required(),
+        coordinates: Joi.array().required()
+    }).optional(),
 });
 
 export const deleteSuburbInputValidator = Joi.object({

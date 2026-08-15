@@ -5,18 +5,17 @@ import { CommonServiceFieldsModel } from "@/utils/definitions/constants/db-const
 import { defaultStatusPlugin } from "@/utils/plugins/defaultStatus.plugin";
 import { auditPlugin } from "@/utils/plugins/audit.plugin";
 
-const GeoJSONPointSchema = new Schema(
+const GeoJSONBoundarySchema = new Schema(
     {
         type: {
             type: String,
-            enum: ["Point"],
+            enum: ["Polygon", "MultiPolygon"],
+            required: true,
         },
+
         coordinates: {
-            type: [Number],
-            validate: {
-                validator: (val: number[]) => Array.isArray(val) && val.length === 2,
-                message: "Coordinates must be [longitude, latitude]",
-            },
+            type: Schema.Types.Mixed,
+            required: true,
         },
     },
     { _id: false },
@@ -24,51 +23,56 @@ const GeoJSONPointSchema = new Schema(
 
 const suburbSchema = new Schema<ISuburb>(
     {
-        name: { type: String, required: true },
+        name: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+
         code: {
             type: String,
             required: true,
             trim: true,
         },
+
         country_id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: tableName.Countries,
             required: true,
         },
+
         region_id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: tableName.Regions,
             required: true,
         },
+
         district_id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: tableName.Districts,
             required: true,
         },
-        post_code: { type: String, required: true, default: null },
-        location: {
-            type: GeoJSONPointSchema,
-            required: false,
-            default: null,
-            validate: {
-                validator: function (val: any) {
-                    if (!val) return true;
-                    return (
-                        val.type &&
-                        Array.isArray(val.coordinates) &&
-                        val.coordinates.length === 2
-                    );
-                },
-                message:
-                    "If location is provided, it must include type and coordinates.",
-            },
+
+        post_code: {
+            type: String,
+            required: true,
         },
+
+        boundary: {
+            type: GeoJSONBoundarySchema,
+            required: true,
+        },
+
         ...CommonServiceFieldsModel,
     },
     { timestamps: true },
 );
 
-suburbSchema.index({ location: "2dsphere" });
+
+suburbSchema.index({
+    boundary: "2dsphere",
+});
+
 suburbSchema.index(
     { country_id: 1, region_id: 1, district_id: 1, code: 1 },
     { unique: true },
