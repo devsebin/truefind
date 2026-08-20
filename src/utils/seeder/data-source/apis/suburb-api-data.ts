@@ -92,10 +92,10 @@ const suburbsApiData = (): IAPI[] => [
             },
         ],
         required_authentication: true,
-      admin_access: true,
-      user_access: false,
-      employee_access: false,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
+        admin_access: true,
+        user_access: false,
+        employee_access: false,
+        access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
 
     // list suburb
@@ -128,7 +128,7 @@ const suburbsApiData = (): IAPI[] => [
             },
             {
                 title: "country_id",
-                value: "country_id._id",
+                value: "country_id",
                 allowed_values: [],
                 datatype: datatypes.String,
                 search_type: searchTypes.Exact,
@@ -136,7 +136,7 @@ const suburbsApiData = (): IAPI[] => [
             },
             {
                 title: "region_id",
-                value: "region_id._id",
+                value: "region_id",
                 allowed_values: [],
                 datatype: datatypes.String,
                 search_type: searchTypes.Exact,
@@ -144,7 +144,7 @@ const suburbsApiData = (): IAPI[] => [
             },
             {
                 title: "district_id",
-                value: "district_id._id",
+                value: "district_id",
                 allowed_values: [],
                 datatype: datatypes.String,
                 search_type: searchTypes.Exact,
@@ -158,10 +158,10 @@ const suburbsApiData = (): IAPI[] => [
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      admin_access: true,
-      user_access: true,
-      employee_access: true,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("user"), getRoleId("employee")],
+        admin_access: true,
+        user_access: true,
+        employee_access: true,
+        access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("user"), getRoleId("employee")],
     },
 
     // update suburb
@@ -247,10 +247,10 @@ const suburbsApiData = (): IAPI[] => [
             },
         ],
         required_authentication: true,
-      admin_access: true,
-      user_access: false,
-      employee_access: false,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
+        admin_access: true,
+        user_access: false,
+        employee_access: false,
+        access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
 
     // delete suburb
@@ -271,10 +271,10 @@ const suburbsApiData = (): IAPI[] => [
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      admin_access: true,
-      user_access: false,
-      employee_access: false,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
+        admin_access: true,
+        user_access: false,
+        employee_access: false,
+        access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
     // activate suburb
     {
@@ -294,10 +294,10 @@ const suburbsApiData = (): IAPI[] => [
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      admin_access: true,
-      user_access: false,
-      employee_access: false,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
+        admin_access: true,
+        user_access: false,
+        employee_access: false,
+        access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
     // deactivate suburb
     {
@@ -317,10 +317,10 @@ const suburbsApiData = (): IAPI[] => [
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      admin_access: true,
-      user_access: false,
-      employee_access: false,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
+        admin_access: true,
+        user_access: false,
+        employee_access: false,
+        access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
     // show suburb
     {
@@ -340,10 +340,10 @@ const suburbsApiData = (): IAPI[] => [
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      admin_access: true,
-      user_access: true,
-      employee_access: true,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("user"), getRoleId("employee")],
+        admin_access: true,
+        user_access: true,
+        employee_access: true,
+        access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("user"), getRoleId("employee")],
     },
     // log suburb
     {
@@ -363,10 +363,10 @@ const suburbsApiData = (): IAPI[] => [
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      admin_access: true,
-      user_access: false,
-      employee_access: false,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
+        admin_access: true,
+        user_access: false,
+        employee_access: false,
+        access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
 ];
 

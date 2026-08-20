@@ -61,4 +61,33 @@ export const userBasicValidation = Joi.object<IUserBasicPayload>({
         "string.min": "GST number must be at least 2 characters long",
         "string.max": "GST number cannot exceed 100 characters",
     }),
+
+    region_id: Joi.string().custom(objectIdValidator).messages({
+        "string.custom": "Region ID must be a valid MongoDB ObjectId",
+    }).required(),
+    country_id: Joi.string().custom(objectIdValidator).messages({
+        "string.custom": "Country ID must be a valid MongoDB ObjectId",
+    }).required(),
+
+    latitude: Joi.number().required().min(-90).max(90).messages({
+        "number.min": "Latitude must be between -90 and 90",
+        "number.max": "Latitude must be between -90 and 90"
+    }),
+    longitude: Joi.number().required().min(-180).max(180).messages({
+        "number.min": "Longitude must be between -180 and 180",
+        "number.max": "Longitude must be between -180 and 180"
+    }),
+
+
+});
+
+export const userLocationValidation = Joi.object({
+    latitude: Joi.number().required().min(-90).max(90).messages({
+        "number.min": "Latitude must be between -90 and 90",
+        "number.max": "Latitude must be between -90 and 90"
+    }),
+    longitude: Joi.number().required().min(-180).max(180).messages({
+        "number.min": "Longitude must be between -180 and 180",
+        "number.max": "Longitude must be between -180 and 180"
+    }),
 });

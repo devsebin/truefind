@@ -41,6 +41,10 @@ export interface IUser extends Document {
   region_id?: Types.ObjectId | null;
   district_id?: Types.ObjectId | null;
   suburb_id?: Types.ObjectId | null;
+  location: {
+    type: "Point";
+    coordinates: [number, number]; // [longitude, latitude]
+  };
   referral_code?: string;
   is_active: boolean;
   is_deleted: boolean;

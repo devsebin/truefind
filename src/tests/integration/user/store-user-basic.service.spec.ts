@@ -5,6 +5,9 @@ import DeclaimerModel from "@/database/declaimers/declaimers-db-model";
 import StatusModel from "@/database/status/status-db-model";
 import PriorityModel from "@/database/priority/priority-db-model";
 import CountryModel from "@/database/countries/countries-db-model";
+import RegionModel from "@/database/regions/regions-db-model";
+import DistrictModel from "@/database/districts/districts-db-model";
+import SuburbModel from "@/database/suburbs/suburbs-db-model";
 import { requestContext } from "@/utils/context/request-context";
 import mongoose from "mongoose";
 
@@ -13,12 +16,20 @@ describe("StoreUserBasicService (Integration)", () => {
   let testDeclaimer: any;
   let defaultStatus: any;
   let defaultPriority: any;
+  let testCountry: any;
+  let testRegion: any;
+  let testDistrict: any;
+  let testSuburb: any;
 
   beforeAll(async () => {
     await UserModel.ensureIndexes();
     await DeclaimerModel.ensureIndexes();
     await StatusModel.ensureIndexes();
     await PriorityModel.ensureIndexes();
+    await CountryModel.ensureIndexes();
+    await RegionModel.ensureIndexes();
+    await DistrictModel.ensureIndexes();
+    await SuburbModel.ensureIndexes();
   });
 
   beforeEach(async () => {
@@ -27,6 +38,10 @@ describe("StoreUserBasicService (Integration)", () => {
     await DeclaimerModel.deleteMany({});
     await StatusModel.deleteMany({});
     await PriorityModel.deleteMany({});
+    await SuburbModel.deleteMany({});
+    await DistrictModel.deleteMany({});
+    await RegionModel.deleteMany({});
+    await CountryModel.deleteMany({});
 
     // Seed default status
     defaultStatus = await StatusModel.create({
@@ -46,6 +61,51 @@ describe("StoreUserBasicService (Integration)", () => {
       is_default: true,
       is_active: true,
       is_deleted: false,
+      status_id: defaultStatus._id,
+    });
+
+    testCountry = await CountryModel.create({
+      name: "Test Country",
+      iso_code: "TC",
+      iso_code_3: "TST",
+      phone_code: "+1",
+      currency: "TST",
+      continent: "Test Continent",
+      status_id: defaultStatus._id,
+    });
+
+    testRegion = await RegionModel.create({
+      name: "Test Region",
+      code: "TR",
+      country_id: testCountry._id,
+      status_id: defaultStatus._id,
+    });
+
+    testDistrict = await DistrictModel.create({
+      name: "Test District",
+      code: "TD",
+      region_id: testRegion._id,
+      country_id: testCountry._id,
+      status_id: defaultStatus._id,
+    });
+
+    testSuburb = await SuburbModel.create({
+      name: "Test Suburb",
+      code: "TSUB",
+      country_id: testCountry._id,
+      region_id: testRegion._id,
+      district_id: testDistrict._id,
+      post_code: "1010",
+      boundary: {
+        type: "Polygon",
+        coordinates: [[
+          [76.0, 10.0],
+          [77.0, 10.0],
+          [77.0, 11.0],
+          [76.0, 11.0],
+          [76.0, 10.0]
+        ]]
+      },
       status_id: defaultStatus._id,
     });
 
@@ -85,6 +145,12 @@ describe("StoreUserBasicService (Integration)", () => {
       declaimer_id: testDeclaimer._id.toString(),
       is_gst_registered: true,
       gst_number: "GST-999-999",
+      "latitude": 10.069500,
+      "longitude": 76.331300,
+      "region": "Test Region",
+      "country": "Test Country",
+      "region_id": testRegion._id.toString(),
+      "country_id": testCountry._id.toString()
     };
 
     const mockReq = {
@@ -115,6 +181,45 @@ describe("StoreUserBasicService (Integration)", () => {
     expect(dbUser!.declaimer!.length).toBe(1);
     expect(dbUser!.declaimer![0].declaimer_id.toString()).toBe(testDeclaimer._id.toString());
     expect(dbUser!.declaimer![0].accepted).toBe(true);
+    
+    // Verify geographic hierarchy and location
+    expect(dbUser!.country_id?.toString()).toBe(testCountry._id.toString());
+    expect(dbUser!.region_id?.toString()).toBe(testRegion._id.toString());
+    expect(dbUser!.district_id?.toString()).toBe(testDistrict._id.toString());
+    expect(dbUser!.suburb_id?.toString()).toBe(testSuburb._id.toString());
+    expect(dbUser!.location).toBeDefined();
+    expect(dbUser!.location.type).toBe("Point");
+    expect(dbUser!.location.coordinates[0]).toBe(76.3313);
+    expect(dbUser!.location.coordinates[1]).toBe(10.0695);
+  });
+
+  it("should reject storing basic details if location is outside all suburbs", async () => {
+    const payload = {
+      first_name: "Outside",
+      last_name: "User",
+      city: "Auckland",
+      zip: "1010",
+      ird_number: "123-456-789",
+      declaimer_id: testDeclaimer._id.toString(),
+      "latitude": 5.0, // outside the 10-11 range
+      "longitude": 76.331300,
+      "region": "Test Region",
+      "country": "Test Country",
+      "region_id": testRegion._id.toString(),
+      "country_id": testCountry._id.toString()
+    };
+
+    const mockReq = {
+      body: payload,
+    } as any;
+
+    let result: any;
+    await requestContext.run({ userId: testUser._id.toString() }, async () => {
+      result = await storeUserBasicService.execute(testUser._id.toString(), mockReq, payload);
+    });
+
+    expect(result.result.code).toBe(400); // Validation error code
+    expect(result.result.message).toContain("Your location is not within any supported suburb");
   });
 
   it("should reject storing basic details if declaimer does not exist", async () => {
@@ -126,6 +231,12 @@ describe("StoreUserBasicService (Integration)", () => {
       zip: "1010",
       ird_number: "123-456-789",
       declaimer_id: fakeDeclaimerId,
+      "latitude": 10.069500,
+      "longitude": 76.331300,
+      "region": "Test Region",
+      "country": "Test Country",
+      "region_id": testRegion._id.toString(),
+      "country_id": testCountry._id.toString()
     };
 
     const mockReq = {
@@ -150,6 +261,12 @@ describe("StoreUserBasicService (Integration)", () => {
       zip: "1010",
       ird_number: "123-456-789",
       declaimer_id: testDeclaimer._id.toString(),
+      "latitude": 10.069500,
+      "longitude": 76.331300,
+      "region": "Test Region",
+      "country": "Test Country",
+      "region_id": testRegion._id.toString(),
+      "country_id": testCountry._id.toString()
     };
 
     const mockReq = {

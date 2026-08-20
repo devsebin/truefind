@@ -34,7 +34,7 @@ class listSuburbsService {
     const limit = parseInt(conditions.limit as string, 10) || 10;
     const offset = limit * (page - 1);
     const where = await buildWhereClause(request);
-
+    console.log(where)
     const query = this.buildQuery(where, conditions, offset);
     const DbTransactions: DbTransaction[] = [];
 

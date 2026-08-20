@@ -18,6 +18,7 @@ import v1PrioritiesRoutes from "../resources/v1/masters/priorities/priorities.ro
 import v1UnitsRoutes from "../resources/v1/masters/units/units.routes";
 import v1CurrenciesRoutes from "../resources/v1/masters/currencies/currencies.routes";
 import v1RolesRoutes from "../resources/v1/masters/roles/roles.routes";
+import { getLocationFromCoordinates } from "@/utils/helpers/location.helper";
 
 const router = Router();
 
@@ -37,5 +38,33 @@ router.use("/priorities", authentication, authorizationApi, v1PrioritiesRoutes);
 router.use("/units", authentication, authorizationApi, v1UnitsRoutes);
 router.use("/currencies", authentication, authorizationApi, v1CurrenciesRoutes);
 router.use("/roles", authentication, authorizationApi, v1RolesRoutes);
+
+router.use('/test', async (req, res, next) => {
+    try {
+
+
+        const location = await getLocationFromCoordinates(-36.986096712299435, 174.8934903934306);
+        // const location = await getLocationFromCoordinates(9.9406, 76.2653);
+
+        //         {
+        //   country: 'India',
+        //   countryCode: 'IN',
+        //   region: 'Kerala',
+        //   regionCode: 'KL',
+        //   district: null,
+        //   city: 'Kochi',
+        //   formattedAddress: 'W7R8+64 Kochi, Kerala, India'
+        // }
+        console.log(location);
+        res.status(200).json({
+            message: "Success",
+            status: 200,
+            success: true,
+            code: 200,
+        })
+    } catch (error) {
+        next(error)
+    }
+})
 
 export default router;

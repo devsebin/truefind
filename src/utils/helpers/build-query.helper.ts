@@ -5,11 +5,15 @@ import { AccessType } from "../interfaces/api.interface";
 import { convertParamsToId } from "@/middlewares/authorization-api.middleware";
 import { api } from "@/database/apis/apis-db-model";
 
+import { getRoleById } from "@/utils/helpers/role-cache.helper";
+
 const ROLE_ACCESS_MAP = {
+  super_admin: "admin_access",
   admin: "admin_access",
   user: "user_access",
   employee: "employee_access",
 } as const;
+
 
 export async function buildWhereClause(request: Request) {
   const where: any = { is_deleted: false, is_active: true };
@@ -21,10 +25,24 @@ export async function buildWhereClause(request: Request) {
     status: true,
   });
 
+
   if (!apiData) return where;
 
-  const role = request.user.role as keyof typeof ROLE_ACCESS_MAP;
-  const roleKey = ROLE_ACCESS_MAP[role];
+  const userRoleId = (request.user.role as any)?._id || request.user.role;
+  const hasAccess = apiData.access_roles?.some(
+    (roleId: any) => roleId.toString() === userRoleId.toString()
+  ) || false;
+
+  if (!hasAccess) return where;
+
+  const roleDoc = await getRoleById(userRoleId.toString());
+  if (!roleDoc) return where;
+
+  const roleLabel = roleDoc.label;
+  const roleKey = ROLE_ACCESS_MAP[roleLabel as keyof typeof ROLE_ACCESS_MAP];
+
+  if (!roleKey) return where;
+
 
   /**
    * STEP 1: FILTER SEARCH PARAMS SAFELY

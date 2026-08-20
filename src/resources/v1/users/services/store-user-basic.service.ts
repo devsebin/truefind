@@ -18,6 +18,8 @@ import findUserHelperService from "../helpers/validators/find-user.helper.servic
 import findDeclaimerHelperService from "@/resources/v1/masters/declaimers/helpers/validators/find-declaimer.helper.service";
 import { roleTypes } from "@/utils/definitions/constants/role-types";
 import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
+import SuburbModel from "@/database/suburbs/suburbs-db-model";
+import findSuburbHelperService from "../../masters/suburbs/helpers/validators/find-suburb.helper.service";
 
 class StoreUserBasicService {
   public async execute(
@@ -71,7 +73,56 @@ class StoreUserBasicService {
       );
       const user = users[0];
 
-      // 3. Set basic details on user document
+      // 3. Validate user location against suburb boundaries
+      const point = {
+        type: "Point",
+        coordinates: [body.longitude, body.latitude],
+      };
+
+      // const suburb = await SuburbModel.findOne({
+      //   boundary: {
+      //     $geoIntersects: {
+      //       $geometry: point,
+      //     },
+      //   },
+      // }).session(session);
+
+      // if (!suburb) {
+      //   const response = ResponseBuilder.error(ErrorTypes.VALIDATION_ERROR, {
+      //     message: "Your location is not within any supported suburb",
+      //     data: {},
+      //   });
+      //   throwError("suburb_not_found", response);
+      // }
+
+      //check the zip code within the specific region
+
+      const [suburb] = await findSuburbHelperService.execute(
+        {
+          post_code: body.zip,
+          region_id: new mongoose.Types.ObjectId(body.region_id),
+          country_id: new mongoose.Types.ObjectId(body.country_id)
+        },
+        usersErrorsMessages,
+        { throwIfNotFound: true, returnDocument: true, session },
+      )
+
+      if (!suburb) {
+        const response = ResponseBuilder.error(ErrorTypes.VALIDATION_ERROR, {
+          message: "Your zip code is not within any supported region",
+          data: {},
+        });
+        throwError("suburb_not_found", response);
+      }
+
+      // Set geographic hierarchy based on the matched suburb
+      user.country_id = suburb.country_id as mongoose.Types.ObjectId;
+      user.region_id = suburb.region_id as mongoose.Types.ObjectId;
+      user.district_id = suburb.district_id as mongoose.Types.ObjectId;
+      user.suburb_id = suburb._id as mongoose.Types.ObjectId;
+      user.location = point as any;
+
+      // 4. Set basic details on user document
       user.first_name = body.first_name;
       user.last_name = body.last_name;
 
@@ -88,7 +139,7 @@ class StoreUserBasicService {
         declaimer: body.declaimer_id,
       };
 
-      // 4. Update accepted declaimer in user.declaimer array
+      // 5. Update accepted declaimer in user.declaimer array
       const hasDeclaimer = user.declaimer?.some(
         (d: any) => d.declaimer_id.toString() === body.declaimer_id
       );
@@ -103,7 +154,7 @@ class StoreUserBasicService {
 
       await user.save({ session });
 
-      // 5. Create DB activity transaction log
+      // 6. Create DB activity transaction log
       DbTransactions.push(
         await createDbTransaction(
           tableName.User,

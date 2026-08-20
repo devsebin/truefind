@@ -31,6 +31,15 @@ rolesSchema.methods.toJSON = function () {
     return rolesObject;
 };
 
+import { refreshRolesCache } from "@/utils/helpers/role-cache.helper";
+
+rolesSchema.post('save', () => { refreshRolesCache(); });
+rolesSchema.post('updateOne', () => { refreshRolesCache(); });
+rolesSchema.post('updateMany', () => { refreshRolesCache(); });
+rolesSchema.post('deleteOne', () => { refreshRolesCache(); });
+rolesSchema.post('deleteMany', () => { refreshRolesCache(); });
+rolesSchema.post('findOneAndUpdate', () => { refreshRolesCache(); });
+
 export const RolesModel: Model<IRole> = model<IRole>(
     tableName.Roles,
     rolesSchema

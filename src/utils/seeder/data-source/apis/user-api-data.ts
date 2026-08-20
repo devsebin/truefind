@@ -116,7 +116,7 @@ const userApiData = (): IAPI[] => [
     admin_access: true,
     user_access: true,
     employee_access: false,
-    access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("user")],
+    access_roles: [getRoleId("super_admin"), getRoleId("user"), getRoleId("employee")],
   },
   {
     activity_type: activityTypes.Create,
@@ -134,6 +134,47 @@ const userApiData = (): IAPI[] => [
 
     control_params: [],
     payload_params: [
+      {
+        key: "latitude",
+        value: "string",
+        type: datatypes.String,
+        required: true,
+        parent: false,
+        parent_key: "",
+      },
+      {
+        key: "longitude",
+        value: "string",
+        type: datatypes.String,
+        required: true,
+        parent: false,
+        parent_key: "",
+      },
+    ],
+    required_authentication: true,
+    admin_access: true,
+    user_access: true,
+    employee_access: false,
+    access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("user"), getRoleId("employee")],
+  },
+  {
+    activity_type: activityTypes.Show,
+    module: moduleTypes.Users,
+    activity_name: activityName.GetUserLocation,
+    activity_code: activityCode.GetUserLocation,
+    activity_method: apiMethods.GET,
+    url: "/api/v1/users/:id/user-location",
+    status: true,
+    form_params: [],
+    search_params: [],
+
+    access_params: {
+    },
+
+    control_params: [],
+    payload_params: [
+
+
     ],
     required_authentication: true,
     admin_access: true,

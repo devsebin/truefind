@@ -10,29 +10,21 @@ import { defaultPriorityPlugin } from "../../utils/plugins/defaultPriority.plugi
 import { defaultStatusPlugin } from "@/utils/plugins/defaultStatus.plugin";
 
 // Define the IconUrl schema
-const IconUrlSchema: Schema = new Schema(
+const GeoJSONPointSchema = new Schema(
   {
-    imageUrl: { type: String, required: true },
-    thumbnailUrls: { type: [String], required: true },
+    type: {
+      type: String,
+      enum: ["Point"],
+    },
+    coordinates: {
+      type: [Number],
+      validate: {
+        validator: (val: number[]) => Array.isArray(val) && val.length === 2,
+        message: "Coordinates must be [longitude, latitude]",
+      },
+    },
   },
-  { _id: false },
-);
-
-// Define the Icon schema
-const IconSchema: Schema = new Schema(
-  {
-    name: { type: String, required: true },
-    url: { type: IconUrlSchema, required: true },
-  },
-  { _id: false },
-);
-
-const PrioritySchema = new Schema(
-  {
-    title: { type: String, required: true, default: priorities.High },
-    priority: { type: Number, required: true, default: 1 },
-  },
-  { _id: false },
+  { _id: false }
 );
 
 const DeclaimerSchema = new Schema<IUserDeclaimerInput>(
@@ -125,7 +117,7 @@ const UserSchema: Schema = new Schema<IUser>(
       ref: tableName.Roles,
       required: true,
       index: true,
-      set: function(v: any) {
+      set: function (v: any) {
         if (typeof v === "string") {
           const mapping: Record<string, string> = {
             super_admin: "64b8a1c8f1e67290bc5b4d1a",
@@ -191,6 +183,23 @@ const UserSchema: Schema = new Schema<IUser>(
       ref: tableName.Suburbs,
       default: null,
       required: false,
+    },
+    location: {
+      type: GeoJSONPointSchema,
+      required: false,
+      default: null,
+      validate: {
+        validator: function (val: any) {
+          if (!val) return true;
+          return (
+            val.type &&
+            Array.isArray(val.coordinates) &&
+            val.coordinates.length === 2
+          );
+        },
+        message:
+          "If location is provided, it must include type and coordinates.",
+      },
     },
     referral_code: { type: String, default: null },
     is_active: { type: Boolean, default: true },

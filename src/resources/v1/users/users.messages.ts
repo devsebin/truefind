@@ -17,6 +17,10 @@ export const usersErrorsMessages = {
     message: "You are not authorized to perform this action.",
     status: statusCodes.Forbidden,
   },
+  suburb_not_found: {
+    message: "Your location is not within any supported suburb.",
+    status: statusCodes.BadRequest,
+  },
 };
 
 export const usersSuccessMessages = {
@@ -26,6 +30,10 @@ export const usersSuccessMessages = {
   },
   services_fetched: {
     message: "User services fetched successfully.",
+    status: statusCodes.OK,
+  },
+  location_fetched: {
+    message: "User location fetched successfully.",
     status: statusCodes.OK,
   },
 };

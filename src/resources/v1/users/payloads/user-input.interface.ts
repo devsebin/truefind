@@ -21,6 +21,18 @@ export interface IInputUserPayloadStrict extends Strict<
     >
 > { }
 
+export interface IInputUserBasicPayloadStrict extends Strict<
+    Partial<IUserBasicPayload> &
+    Required<
+        Pick<
+            IUserBasicPayload,
+            "first_name" | "last_name" | "city" | "zip" | "ird_number"
+            | "declaimer_id" | "latitude" | "longitude" | "business_name"
+            | "year_of_experience" | "gst_number" | "is_gst_registered" | "street_address"
+        >
+    >
+> { }
+
 export interface IUserBasicPayload {
     user_id?: string;
     first_name: string;
@@ -34,4 +46,8 @@ export interface IUserBasicPayload {
     declaimer_id: string;
     is_gst_registered?: boolean;
     gst_number?: string;
-}
+    latitude: number;
+    longitude: number;
+    region_id: string;
+    country_id: string;
+}
