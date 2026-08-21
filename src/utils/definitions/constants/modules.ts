@@ -20,4 +20,5 @@ export enum moduleTypes {
   ServiceCountryConfigurations = "service_country_configurations",
   ServiceAreaConfigurations = "service_area_configurations",
   Currencies = "currencies",
+  Wallets = "wallets",
 }

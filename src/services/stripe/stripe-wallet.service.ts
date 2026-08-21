@@ -41,6 +41,7 @@ class StripeWalletService implements IPaymentProviderAdapter {
                 client_secret: paymentIntent.client_secret || undefined,
             };
         } catch (error) {
+            console.log(error)
             throw new Error(
                 `Stripe PaymentIntent creation failed: ${(error as Error).message}`
             );
