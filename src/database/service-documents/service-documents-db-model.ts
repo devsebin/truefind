@@ -60,7 +60,7 @@ const ServiceDocumentRequirementSchema = new Schema<IServiceDocumentRequirements
         item_code: { type: String, required: true },
         document_type_id: {
             type: Schema.Types.ObjectId,
-            ref: tableName.Documents,
+            ref: tableName.DocumentTypes,
             required: true,
         },
         description: { type: String, default: "" },
