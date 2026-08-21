@@ -22,6 +22,7 @@ export enum tableName {
   Currencies = "currencies",
   ServiceCountryConfigurations = "service_country_configurations",
   ServiceAreaConfigurations = "service_area_configurations",
+  ServiceUserConfigurations = "service_user_configurations",
   UserWallet = "user_wallets",
   UserWalletAccount = "user_wallet_accounts",
   WalletTransaction = "user_wallet_transactions",

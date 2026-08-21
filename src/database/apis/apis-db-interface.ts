@@ -94,9 +94,6 @@ export interface IApi extends Document {
   search_params: ISearchParams[];
   payload_params: InputParams[];
   form_params: IFormParams[];
-  admin_access: boolean;
-  user_access: boolean;
-  employee_access: boolean;
   access_roles: mongoose.Types.ObjectId[];
   status: boolean;
   authentication: Authentication;

@@ -18,6 +18,7 @@ import prioritiesApiData from "../data-source/apis/priorities-api-data";
 import unitsApiData from "../data-source/apis/units-api-data";
 import rolesApiData from "../data-source/apis/roles-api-data";
 import userWalletApiData from "../data-source/apis/user-wallet-api-data";
+import serviceUserConfigurationApiData from "../data-source/apis/service-user-configuration-api-data";
 import RolesModel from "../../../database/roles/roles-db-model";
 import { defaultRoles, seedRole } from "./role-seeder";
 
@@ -47,6 +48,7 @@ export const seedActivity = async () => {
     ...unitsApiData(),
     ...rolesApiData(),
     ...userWalletApiData(),
+    ...serviceUserConfigurationApiData(),
   ];
 
   if (allApis.length > 0) {

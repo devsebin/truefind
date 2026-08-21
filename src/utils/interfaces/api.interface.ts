@@ -116,9 +116,6 @@ export interface IAPI<T = any> {
   payload_params: inputParams<T>[];
   form_params: IFormField<T>[];
   required_authentication: boolean;
-  admin_access: boolean;
-  user_access: boolean;
-  employee_access: boolean;
   access_roles: mongoose.Types.ObjectId[];
   url: string;
   status: boolean;

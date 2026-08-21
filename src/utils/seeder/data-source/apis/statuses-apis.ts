@@ -21,9 +21,6 @@ const statusesApiData = (): IAPI[] => [
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      admin_access: true,
-      user_access: false,
-      employee_access: true,
       access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
     },
     {
@@ -41,9 +38,6 @@ const statusesApiData = (): IAPI[] => [
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      admin_access: true,
-      user_access: true,
-      employee_access: true,
       access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("user"), getRoleId("employee")],
     },
     {
@@ -61,9 +55,6 @@ const statusesApiData = (): IAPI[] => [
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      admin_access: true,
-      user_access: false,
-      employee_access: true,
       access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
     },
     {
@@ -81,9 +72,6 @@ const statusesApiData = (): IAPI[] => [
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      admin_access: true,
-      user_access: false,
-      employee_access: true,
       access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
     },
     {
@@ -101,9 +89,6 @@ const statusesApiData = (): IAPI[] => [
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      admin_access: true,
-      user_access: false,
-      employee_access: true,
       access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
     },
     {
@@ -121,9 +106,6 @@ const statusesApiData = (): IAPI[] => [
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      admin_access: true,
-      user_access: false,
-      employee_access: true,
       access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
     },
     {
@@ -141,9 +123,6 @@ const statusesApiData = (): IAPI[] => [
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      admin_access: true,
-      user_access: true,
-      employee_access: true,
       access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("user"), getRoleId("employee")],
     },
     {
@@ -161,9 +140,6 @@ const statusesApiData = (): IAPI[] => [
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      admin_access: true,
-      user_access: false,
-      employee_access: true,
       access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
     },
     {
@@ -181,9 +157,6 @@ const statusesApiData = (): IAPI[] => [
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      admin_access: true,
-      user_access: false,
-      employee_access: true,
       access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
     },
     {
@@ -201,9 +174,6 @@ const statusesApiData = (): IAPI[] => [
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      admin_access: true,
-      user_access: false,
-      employee_access: true,
       access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
     },
 ];

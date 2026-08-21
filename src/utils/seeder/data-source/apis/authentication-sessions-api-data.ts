@@ -23,9 +23,6 @@ const authenticationSessionsApiData = (): IAPI[] => [
     control_params: [],
     payload_params: [],
     required_authentication: true,
-    admin_access: true,
-    user_access: false,
-    employee_access: false,
     access_roles: [getRoleId("super_admin"), getRoleId("admin")],
   },
 
@@ -47,9 +44,6 @@ const authenticationSessionsApiData = (): IAPI[] => [
     control_params: [],
     payload_params: [],
     required_authentication: true,
-    admin_access: true,
-    user_access: false,
-    employee_access: false,
     access_roles: [getRoleId("super_admin"), getRoleId("admin")],
   },
 ];

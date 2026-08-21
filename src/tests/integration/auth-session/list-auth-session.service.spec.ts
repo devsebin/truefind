@@ -64,9 +64,6 @@ describe("ListAuthSessionService (Integration)", () => {
       status: true,
       form_params: [],
       search_params: [],
-      admin_access: true,
-      user_access: false,
-      employee_access: false,
       required_authentication: true,
     });
 
