@@ -18,6 +18,7 @@ import v1PrioritiesRoutes from "../resources/v1/masters/priorities/priorities.ro
 import v1UnitsRoutes from "../resources/v1/masters/units/units.routes";
 import v1CurrenciesRoutes from "../resources/v1/masters/currencies/currencies.routes";
 import v1RolesRoutes from "../resources/v1/masters/roles/roles.routes";
+import v1ServiceDocumentRoutes from "../resources/v1/masters/service-documents/service-documents.routes";
 import { getLocationFromCoordinates } from "@/utils/helpers/location.helper";
 
 const router = Router();
@@ -34,6 +35,7 @@ router.use("/auth-sessions", authentication, authorizationApi, v1AuthSessionRout
 router.use("/services", authentication, authorizationApi, v1ServiceRoutes);
 router.use("/service-country-configurations", authentication, authorizationApi, v1ServiceCountryConfigRoutes);
 router.use("/service-area-configurations", authentication, authorizationApi, v1ServiceAreaConfigRoutes);
+router.use("/service-documents", authentication, authorizationApi, v1ServiceDocumentRoutes);
 router.use("/priorities", authentication, authorizationApi, v1PrioritiesRoutes);
 router.use("/units", authentication, authorizationApi, v1UnitsRoutes);
 router.use("/currencies", authentication, authorizationApi, v1CurrenciesRoutes);

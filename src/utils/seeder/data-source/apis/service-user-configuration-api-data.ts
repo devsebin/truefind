@@ -12,7 +12,7 @@ const serviceUserConfigurationApiData = (): IAPI[] => [
     activity_name: activityName.bulkStoreServiceUserConfig,
     activity_code: activityCode.bulkStoreServiceUserConfig,
     activity_method: apiMethods.POST,
-    url: "/api/v1/service-user-configurations/bulk",
+    url: "/api/v1/service-user-configurations",
     status: true,
     form_params: [],
     search_params: [],
