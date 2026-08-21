@@ -22,4 +22,13 @@ export enum tableName {
   Currencies = "currencies",
   ServiceCountryConfigurations = "service_country_configurations",
   ServiceAreaConfigurations = "service_area_configurations",
+  UserWallet = "user_wallets",
+  UserWalletAccount = "user_wallet_accounts",
+  WalletTransaction = "user_wallet_transactions",
+  WalletLedgerEntry = "user_wallet_ledger_entries",
+  UserWalletHold = "user_wallet_holds",
+  PaymentWebhookEvent = "user_wallet_payment_webhook_events",
+  WalletTransfer = "user_wallet_transfers",
+  WalletAdjustment = "user_wallet_adjustments",
+  WalletReconciliation = "user_wallet_reconciliations",
 }
