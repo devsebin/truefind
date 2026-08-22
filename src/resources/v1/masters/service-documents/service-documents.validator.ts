@@ -42,7 +42,7 @@ export const serviceDocumentInputValidator = Joi.object<IServiceDocumentRequirem
     accepted_mimeTypes: Joi.array().items(Joi.string()).min(1).required(),
     samples: Joi.array().items(Joi.string().custom(objectIdValidator)).allow(null).optional(),
     data_requirements: Joi.array().items(DocumentDataRequirementValidator).optional(),
-    status_id: Joi.string().custom(objectIdValidator).optional(),
+    status_id: Joi.forbidden()
 });
 
 export const updateServiceDocumentInputValidator = Joi.object<IServiceDocumentRequirements>({
@@ -55,9 +55,9 @@ export const updateServiceDocumentInputValidator = Joi.object<IServiceDocumentRe
     accepted_mimeTypes: Joi.array().items(Joi.string()).min(1).optional(),
     samples: Joi.array().items(Joi.string().custom(objectIdValidator)).allow(null).optional(),
     data_requirements: Joi.array().items(DocumentDataRequirementValidator).optional(),
-    status_id: Joi.string().custom(objectIdValidator).optional(),
+    status_id: Joi.forbidden().optional(),
 });
 
 export const deleteServiceDocumentInputValidator = Joi.object({
-    force_action: Joi.boolean().optional(),
+    force_action: Joi.boolean()
 });

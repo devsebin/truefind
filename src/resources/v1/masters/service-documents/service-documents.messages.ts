@@ -57,6 +57,10 @@ export const serviceDocumentErrorsMessages = {
         message: "Status not found with id: {0}",
         status: statusCodes.NotFound,
     },
+    document_types_not_found: {
+        message: "Document types not found with id: {0}",
+        status: statusCodes.NotFound,
+    },
 };
 
 export const serviceDocumentSuccessMessages = {

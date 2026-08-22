@@ -16,6 +16,8 @@ import createServiceDocumentHelperService from "../helpers/operations/create-ser
 import { serviceDocumentResponse } from "../service-documents.response";
 import DocumentModel from "@/database/documents/documents-db-model";
 import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
+import { documentTypesErrorsMessages } from "../../document-types/document-types.messages";
+import findDocumentTypesHelperService from "../../document-types/helpers/validators/find-document-types.helper.service";
 
 class createServiceDocumentService {
   public async execute(
@@ -68,7 +70,20 @@ class createServiceDocumentService {
           }
         }
       }
-
+      const documentTypes = await findDocumentTypesHelperService.execute(
+        {
+          _id: body.document_type_id,
+          is_deleted: false,
+          is_active: { $in: [true, false] },
+        },
+        documentTypesErrorsMessages,
+        {
+          throwIfNotFound: true,
+          lean: false,
+          returnDocument: false,
+          session,
+        },
+      );
       const userId = request.user?.id ? new mongoose.Types.ObjectId(request.user.id) : undefined;
       const newDoc = await createServiceDocumentHelperService.execute(
         {
