@@ -21,6 +21,7 @@ export enum moduleTypes {
   ServiceAreaConfigurations = "service_area_configurations",
   ServiceUserConfigurations = "service_user_configurations",
   ServiceDocuments = "service_documents",
+  ServiceDocumentConfigurations = "service_document_configurations",
   DocumentTypes = "document_types",
   Currencies = "currencies",
   Wallets = "wallets",

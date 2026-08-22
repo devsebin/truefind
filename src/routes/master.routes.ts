@@ -19,6 +19,7 @@ import v1UnitsRoutes from "../resources/v1/masters/units/units.routes";
 import v1CurrenciesRoutes from "../resources/v1/masters/currencies/currencies.routes";
 import v1RolesRoutes from "../resources/v1/masters/roles/roles.routes";
 import v1ServiceDocumentRoutes from "../resources/v1/masters/service-documents/service-documents.routes";
+import v1ServiceDocumentConfigRoutes from "../resources/v1/masters/service-document-configurations/service-document-configurations.routes";
 import v1DocumentTypesRoutes from "../resources/v1/masters/document-types/document-types.routes";
 import { getLocationFromCoordinates } from "@/utils/helpers/location.helper";
 
@@ -37,6 +38,7 @@ router.use("/services", authentication, authorizationApi, v1ServiceRoutes);
 router.use("/service-country-configurations", authentication, authorizationApi, v1ServiceCountryConfigRoutes);
 router.use("/service-area-configurations", authentication, authorizationApi, v1ServiceAreaConfigRoutes);
 router.use("/service-documents", authentication, authorizationApi, v1ServiceDocumentRoutes);
+router.use("/service-document-configurations", authentication, authorizationApi, v1ServiceDocumentConfigRoutes);
 router.use("/document-types", authentication, authorizationApi, v1DocumentTypesRoutes);
 router.use("/priorities", authentication, authorizationApi, v1PrioritiesRoutes);
 router.use("/units", authentication, authorizationApi, v1UnitsRoutes);

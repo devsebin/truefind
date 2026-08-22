@@ -34,4 +34,5 @@ export enum tableName {
   WalletReconciliation = "user_wallet_reconciliations",
   DocumentTypes = "document_types",
   ServiceDocuments = "service_documents",
+  ServiceDocumentConfigurations = "service_document_configurations",
 }
