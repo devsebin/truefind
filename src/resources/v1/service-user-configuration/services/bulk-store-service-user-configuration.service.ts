@@ -21,6 +21,8 @@ import { usersErrorsMessages } from "@/resources/v1/users/users.messages";
 import { roleTypes } from "@/utils/definitions/constants/role-types";
 import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 import { BaseServiceModel } from "@/database/services/services-db-model";
+import processDocumentEligibilityHelperService from "@/resources/v1/service-user-document-configuration/helpers/operations/process-document-eligibility.helper.service";
+import { serviceUserDocConfigErrorsMessages } from "@/resources/v1/service-user-document-configuration/service-user-document-configuration.messages";
 
 class BulkStoreServiceUserConfigurationService {
   public async execute(
@@ -108,16 +110,42 @@ class BulkStoreServiceUserConfigurationService {
         ? new mongoose.Types.ObjectId(userId)
         : undefined;
 
-      // 3. Bulk upsert configuration
+      // 3. Evaluate Document Eligibility from service_document_configurations
+      const targetUserObjectId = new mongoose.Types.ObjectId(targetUserId);
+      const eligibilityMap =
+        await processDocumentEligibilityHelperService.evaluateServicesEligibility(
+          serviceObjectIds,
+          session,
+        );
+
+      const serviceEligibilityStatusMap = new Map<string, "pending" | "success">();
+      const evaluationList = [];
+      for (const [sId, evalResult] of eligibilityMap.entries()) {
+        serviceEligibilityStatusMap.set(sId, evalResult.eligibilityStatus);
+        evaluationList.push(evalResult);
+      }
+
+      // 4. Bulk upsert configuration with dynamic eligibility
       const records =
         await createServiceUserConfigurationHelperService.bulkUpsert(
-          new mongoose.Types.ObjectId(targetUserId),
+          targetUserObjectId,
           serviceObjectIds,
           currentUserId,
           session,
           DbTransactions,
           serviceUserConfigErrorsMessages,
+          serviceEligibilityStatusMap,
         );
+
+      // 5. Create user document configuration records for required documents
+      await processDocumentEligibilityHelperService.processAndPersistUserDocumentConfigurations(
+        targetUserObjectId,
+        evaluationList,
+        currentUserId,
+        session,
+        DbTransactions,
+        serviceUserDocConfigErrorsMessages,
+      );
 
       for (const rec of records) {
         await rec.populate(populateFields);

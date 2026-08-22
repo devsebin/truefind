@@ -1,11 +1,10 @@
-import mongoose, { Schema, model, Types, Document } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import { defaultStatusPlugin } from "@/utils/plugins/defaultStatus.plugin";
 import { auditPlugin } from "@/utils/plugins/audit.plugin";
 import { IUserTaskMapping } from "./service-user-configuration-db-interface";
 import { tableName } from "@/utils/definitions/constants/table-names";
 import { CommonServiceFieldsModel } from "@/utils/definitions/constants/db-constants";
 
-// Enum for eligibility status
 // Enum for eligibility status (with correct TypeScript typing)
 export const UserTaskEligibilityStatus = [
     "pending",
@@ -14,6 +13,7 @@ export const UserTaskEligibilityStatus = [
     "approved",
     "rejected",
     "hold",
+    "success",
 ] as const;
 
 export type UserTaskEligibilityStatus =
@@ -30,23 +30,20 @@ const UserTaskSchema = new Schema<IUserTaskMapping>(
         task_id: {
             type: Schema.Types.ObjectId,
             required: true,
-            ref: tableName.Services, // Replace with your actual task model
+            ref: tableName.Services,
         },
         eligibility_status: {
             type: String,
             enum: UserTaskEligibilityStatus,
             default: "pending",
         },
-        ...CommonServiceFieldsModel
+        ...CommonServiceFieldsModel,
     },
     { timestamps: true }
 );
 
-
 UserTaskSchema.plugin(defaultStatusPlugin);
 UserTaskSchema.plugin(auditPlugin);
-
-
 
 UserTaskSchema.methods.toJSON = function () {
     const countryObject = this.toObject();

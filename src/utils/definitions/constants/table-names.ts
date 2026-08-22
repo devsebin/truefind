@@ -35,4 +35,5 @@ export enum tableName {
   DocumentTypes = "document_types",
   ServiceDocuments = "service_documents",
   ServiceDocumentConfigurations = "service_document_configurations",
+  ServiceUserDocumentConfigurations = "service_user_document_configurations",
 }

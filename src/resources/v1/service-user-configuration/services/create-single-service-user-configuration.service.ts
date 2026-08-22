@@ -21,6 +21,8 @@ import findServiceHelperService from "@/resources/v1/masters/services/helpers/va
 import { usersErrorsMessages } from "@/resources/v1/users/users.messages";
 import { roleTypes } from "@/utils/definitions/constants/role-types";
 import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
+import processDocumentEligibilityHelperService from "@/resources/v1/service-user-document-configuration/helpers/operations/process-document-eligibility.helper.service";
+import { serviceUserDocConfigErrorsMessages } from "@/resources/v1/service-user-document-configuration/service-user-document-configuration.messages";
 
 class CreateSingleServiceUserConfigurationService {
   public async execute(
@@ -103,16 +105,47 @@ class CreateSingleServiceUserConfigurationService {
         ? new mongoose.Types.ObjectId(userId)
         : undefined;
 
+      const targetUserObjectId = new mongoose.Types.ObjectId(targetUserId);
+      const serviceObjectId = new mongoose.Types.ObjectId(body.service_id);
+
+      // 4. Evaluate document eligibility from service_document_configurations
+      const eligibilityMap =
+        await processDocumentEligibilityHelperService.evaluateServicesEligibility(
+          [serviceObjectId],
+          session,
+        );
+
+      const evaluation = eligibilityMap.get(serviceObjectId.toString()) ?? {
+        serviceId: serviceObjectId,
+        eligibilityStatus: "success" as const,
+        requiredDocuments: [],
+      };
+
+      const finalEligibilityStatus =
+        body.eligibility_status ?? evaluation.eligibilityStatus;
+
       const record =
         await createServiceUserConfigurationHelperService.createSingle(
-          new mongoose.Types.ObjectId(targetUserId),
-          new mongoose.Types.ObjectId(body.service_id),
-          body.eligibility_status,
+          targetUserObjectId,
+          serviceObjectId,
+          finalEligibilityStatus,
           currentUserId,
           session,
           DbTransactions,
           serviceUserConfigErrorsMessages,
         );
+
+      // 5. Create user document configuration records for required documents
+      if (evaluation.requiredDocuments.length > 0) {
+        await processDocumentEligibilityHelperService.processAndPersistUserDocumentConfigurations(
+          targetUserObjectId,
+          [evaluation],
+          currentUserId,
+          session,
+          DbTransactions,
+          serviceUserDocConfigErrorsMessages,
+        );
+      }
 
       await record.populate(populateFields);
 

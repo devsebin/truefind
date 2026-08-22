@@ -54,10 +54,18 @@ export const populateFields = [
   {
     path: "required_documents.document_id",
     select: "name display_name item_code max_file_size accepted_mimeTypes description samples data_requirements",
+    populate: {
+      path: "samples",
+      select: "name document_type content_type keys unsigned_urls",
+    },
   },
   {
     path: "required_documents.exemption_documents.document_id",
     select: "name display_name item_code max_file_size accepted_mimeTypes description samples data_requirements",
+    populate: {
+      path: "samples",
+      select: "name document_type content_type keys unsigned_urls",
+    },
   },
   {
     path: "required_documents.status_id",

@@ -20,6 +20,7 @@ export enum moduleTypes {
   ServiceCountryConfigurations = "service_country_configurations",
   ServiceAreaConfigurations = "service_area_configurations",
   ServiceUserConfigurations = "service_user_configurations",
+  ServiceUserDocumentConfigurations = "service_user_document_configurations",
   ServiceDocuments = "service_documents",
   ServiceDocumentConfigurations = "service_document_configurations",
   DocumentTypes = "document_types",

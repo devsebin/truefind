@@ -21,6 +21,7 @@ import userWalletApiData from "../data-source/apis/user-wallet-api-data";
 import serviceUserConfigurationApiData from "../data-source/apis/service-user-configuration-api-data";
 import serviceDocumentApiData from "../data-source/apis/service-documents-api-data";
 import serviceDocumentConfigurationApiData from "../data-source/apis/service-document-configuration-api-data";
+import serviceUserDocumentConfigurationApiData from "../data-source/apis/service-user-document-configuration-api-data";
 import documentTypesApiData from "../data-source/apis/document-types-api-data";
 import RolesModel from "../../../database/roles/roles-db-model";
 import { defaultRoles, seedRole } from "./role-seeder";
@@ -52,6 +53,7 @@ export const seedActivity = async () => {
     ...rolesApiData(),
     ...userWalletApiData(),
     ...serviceUserConfigurationApiData(),
+    ...serviceUserDocumentConfigurationApiData(),
     ...serviceDocumentApiData(),
     ...serviceDocumentConfigurationApiData(),
     ...documentTypesApiData(),

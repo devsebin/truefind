@@ -145,7 +145,6 @@ describe("Service User Configuration (Integration)", () => {
   it("should create a single service user configuration successfully", async () => {
     const payload = {
       service_id: service1._id.toString(),
-      eligibility_status: "verified" as const,
     };
 
     const mockReq = {
@@ -165,7 +164,7 @@ describe("Service User Configuration (Integration)", () => {
     expect(result.result.code).toBe(201);
     const data = result.result.data[0].result;
     expect(data.id).toBeDefined();
-    expect(data.eligibility_status).toBe("verified");
+    expect(data.eligibility_status).toBe("success");
 
     // Conflict on duplicate single create
     let duplicateResult: any;
@@ -193,6 +192,8 @@ describe("Service User Configuration (Integration)", () => {
     // 2. List configurations
     const mockListReq = {
       query: { user_id: testUser._id.toString() },
+      originalUrl: "/api/v1/service-user-configurations",
+      method: "GET",
     } as any;
 
     const listResult: any = await listServiceUserConfigurationService.execute(mockListReq);

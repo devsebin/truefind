@@ -7,7 +7,8 @@ export type UserTaskEligibilityStatus =
     | "uploaded"
     | "approved"
     | "rejected"
-    | "hold";
+    | "hold"
+    | "success";
 
 export interface IUserTaskMapping extends CommonServiceFieldsInterface {
     user_id: Types.ObjectId;

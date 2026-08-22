@@ -22,6 +22,7 @@ class CreateServiceUserConfigurationHelperService {
     session: mongoose.ClientSession,
     dbTransactions: DbTransaction[],
     errorMap: Record<string, { message: string; status: number }>,
+    serviceEligibilityMap?: Map<string, "pending" | "success">,
   ): Promise<HydratedDocument<IUserTaskMapping>[]> {
     try {
       const ops = serviceIds.map((serviceId) => {
@@ -36,10 +37,13 @@ class CreateServiceUserConfigurationHelperService {
           updateFields.updated_by = currentUserId;
         }
 
+        const eligibilityStatus =
+          serviceEligibilityMap?.get(serviceId.toString()) ?? "pending";
+
         const updateDoc: any = {
           $set: updateFields,
           $setOnInsert: {
-            eligibility_status: "pending",
+            eligibility_status: eligibilityStatus,
             ...(currentUserId ? { created_by: currentUserId } : {}),
           },
         };
