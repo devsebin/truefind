@@ -26,5 +26,6 @@ export enum moduleTypes {
   DocumentTypes = "document_types",
   Currencies = "currencies",
   Wallets = "wallets",
+  Carousels = "carousels",
 }
 

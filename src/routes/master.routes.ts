@@ -21,6 +21,7 @@ import v1RolesRoutes from "../resources/v1/masters/roles/roles.routes";
 import v1ServiceDocumentRoutes from "../resources/v1/masters/service-documents/service-documents.routes";
 import v1ServiceDocumentConfigRoutes from "../resources/v1/masters/service-document-configurations/service-document-configurations.routes";
 import v1DocumentTypesRoutes from "../resources/v1/masters/document-types/document-types.routes";
+import v1CarouselsRoutes from "../resources/v1/masters/carousels/carousels.routes";
 import { getLocationFromCoordinates } from "@/utils/helpers/location.helper";
 
 const router = Router();
@@ -44,6 +45,7 @@ router.use("/priorities", authentication, authorizationApi, v1PrioritiesRoutes);
 router.use("/units", authentication, authorizationApi, v1UnitsRoutes);
 router.use("/currencies", authentication, authorizationApi, v1CurrenciesRoutes);
 router.use("/roles", authentication, authorizationApi, v1RolesRoutes);
+router.use("/carousels", authentication, authorizationApi, v1CarouselsRoutes);
 
 router.use('/test', async (req, res, next) => {
     try {

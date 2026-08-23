@@ -27,6 +27,7 @@ import serviceUserDocumentConfigurationApiData from "@/utils/seeder/data-source/
 import serviceDocumentApiData from "@/utils/seeder/data-source/apis/service-documents-api-data";
 import serviceDocumentConfigurationApiData from "@/utils/seeder/data-source/apis/service-document-configuration-api-data";
 import documentTypesApiData from "@/utils/seeder/data-source/apis/document-types-api-data";
+import carouselsApiData from "@/utils/seeder/data-source/apis/carousels-api-data";
 
 export const generatePostmanCollection = () => {
   (global as any).rolesCookie = [
@@ -61,6 +62,7 @@ export const generatePostmanCollection = () => {
     { name: "Service Documents", data: serviceDocumentApiData() },
     { name: "Service Document Configurations", data: serviceDocumentConfigurationApiData() },
     { name: "Document Types", data: documentTypesApiData() },
+    { name: "Carousels", data: carouselsApiData() },
   ];
 
   function getSampleBodyForUrl(url: string, method: string): any {
@@ -214,7 +216,7 @@ export const generatePostmanCollection = () => {
       },
       {
         key: "auth_token",
-        value: "",
+        value: "{{token}}",
         type: "string",
       },
     ],

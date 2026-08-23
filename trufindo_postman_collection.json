@@ -13,7 +13,7 @@
     },
     {
       "key": "auth_token",
-      "value": "",
+      "value": "{{token}}",
       "type": "string"
     }
   ],
@@ -11606,6 +11606,482 @@
               ]
             },
             "description": "**Activity Code**: `log_document_type`\n\n**Module**: `document_types`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Carousels",
+      "item": [
+        {
+          "name": "Create Carousel",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/carousels",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "carousels"
+              ]
+            },
+            "description": "**Activity Code**: `create_carousel`\n\n**Module**: `carousels`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"slideType\": \"promotion\",\n  \"title\": \"title\",\n  \"description\": \"description\",\n  \"image\": \"image\",\n  \"target\": {},\n  \"button\": {},\n  \"colorPattern\": {},\n  \"redeemCode\": \"redeemCode\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Carousel",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/carousels",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "carousels"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "id",
+                  "disabled": true
+                },
+                {
+                  "key": "is_deleted",
+                  "value": "",
+                  "description": "is_deleted",
+                  "disabled": true
+                },
+                {
+                  "key": "created_at_gte",
+                  "value": "",
+                  "description": "created_at_gte",
+                  "disabled": true
+                },
+                {
+                  "key": "created_at_lte",
+                  "value": "",
+                  "description": "created_at_lte",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_at_gte",
+                  "value": "",
+                  "description": "updated_at_gte",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_at_lte",
+                  "value": "",
+                  "description": "updated_at_lte",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_at_gte",
+                  "value": "",
+                  "description": "deleted_at_gte",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_at_lte",
+                  "value": "",
+                  "description": "deleted_at_lte",
+                  "disabled": true
+                },
+                {
+                  "key": "is_active",
+                  "value": "",
+                  "description": "is_active",
+                  "disabled": true
+                },
+                {
+                  "key": "created_by_id",
+                  "value": "",
+                  "description": "created_by_id",
+                  "disabled": true
+                },
+                {
+                  "key": "created_by_name_like",
+                  "value": "",
+                  "description": "created_by_name_like",
+                  "disabled": true
+                },
+                {
+                  "key": "created_by_role_like",
+                  "value": "",
+                  "description": "created_by_role_like",
+                  "disabled": true
+                },
+                {
+                  "key": "created_by_email_like",
+                  "value": "",
+                  "description": "created_by_email_like",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_by_id",
+                  "value": "",
+                  "description": "updated_by_id",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_by_name_like",
+                  "value": "",
+                  "description": "updated_by_name_like",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_by_role_like",
+                  "value": "",
+                  "description": "updated_by_role_like",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_by_email_like",
+                  "value": "",
+                  "description": "updated_by_email_like",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_by_id",
+                  "value": "",
+                  "description": "deleted_by_id",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_by_name_like",
+                  "value": "",
+                  "description": "deleted_by_name_like",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_by_role_like",
+                  "value": "",
+                  "description": "deleted_by_role_like",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_by_email_like",
+                  "value": "",
+                  "description": "deleted_by_email_like",
+                  "disabled": true
+                },
+                {
+                  "key": "status_id",
+                  "value": "",
+                  "description": "status_id",
+                  "disabled": true
+                },
+                {
+                  "key": "status_title_like",
+                  "value": "",
+                  "description": "status_title_like",
+                  "disabled": true
+                },
+                {
+                  "key": "slideType",
+                  "value": "",
+                  "description": "slideType",
+                  "disabled": true
+                },
+                {
+                  "key": "title_like",
+                  "value": "",
+                  "description": "title_like",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "**Activity Code**: `list_carousel`\n\n**Module**: `carousels`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Show Carousel",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/carousels/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "carousels",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `show_carousel`\n\n**Module**: `carousels`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Carousel",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/carousels/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "carousels",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `update_carousel`\n\n**Module**: `carousels`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"slideType\": \"slideType\",\n  \"title\": \"title\",\n  \"description\": \"description\",\n  \"image\": \"image\",\n  \"target\": {},\n  \"button\": {},\n  \"colorPattern\": {},\n  \"redeemCode\": \"redeemCode\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Carousel",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/carousels/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "carousels",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `delete_carousel`\n\n**Module**: `carousels`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Activate Carousel",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/carousels/:id/enable",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "carousels",
+                ":id",
+                "enable"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `activate_carousel`\n\n**Module**: `carousels`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Deactivate Carousel",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/carousels/:id/disable",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "carousels",
+                ":id",
+                "disable"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `deactivate_carousel`\n\n**Module**: `carousels`\n\n**Auth Required**: `true`",
             "auth": {
               "type": "bearer",
               "bearer": [
