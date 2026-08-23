@@ -81,6 +81,97 @@ const serviceUserDocumentConfigurationApiData = (): IAPI[] => [
     ],
   },
 
+  // Upload
+  {
+    activity_type: activityTypes.Create,
+    module: moduleTypes.ServiceUserDocumentConfigurations,
+    activity_name: activityName.uploadServiceUserDoc,
+    activity_code: activityCode.uploadServiceUserDoc,
+    activity_method: apiMethods.POST,
+    url: "/api/v1/service-user-document-configurations/:id/upload",
+    status: true,
+    form_params: [],
+    search_params: [],
+    access_params: {},
+    control_params: [],
+    payload_params: [
+      {
+        key: "document_id",
+        value: "64b8a1c8f1e67290bc5b4d1a",
+        type: datatypes.String,
+        required: true,
+        parent: false,
+        parent_key: "",
+      },
+    ],
+    required_authentication: true,
+    access_roles: [
+      getRoleId("employee"),
+    ],
+  },
+
+  // Approve
+  {
+    activity_type: activityTypes.Update,
+    module: moduleTypes.ServiceUserDocumentConfigurations,
+    activity_name: activityName.approveServiceUserDoc,
+    activity_code: activityCode.approveServiceUserDoc,
+    activity_method: apiMethods.PATCH,
+    url: "/api/v1/service-user-document-configurations/:id/approve",
+    status: true,
+    form_params: [],
+    search_params: [],
+    access_params: {},
+    control_params: [],
+    payload_params: [
+      {
+        key: "validation_notes",
+        value: "Document verified and approved.",
+        type: datatypes.String,
+        required: false,
+        parent: false,
+        parent_key: "",
+      },
+    ],
+    required_authentication: true,
+    access_roles: [
+      getRoleId("super_admin"),
+      getRoleId("admin"),
+      getRoleId("employee"),
+    ],
+  },
+
+  // Reject
+  {
+    activity_type: activityTypes.Update,
+    module: moduleTypes.ServiceUserDocumentConfigurations,
+    activity_name: activityName.rejectServiceUserDoc,
+    activity_code: activityCode.rejectServiceUserDoc,
+    activity_method: apiMethods.PATCH,
+    url: "/api/v1/service-user-document-configurations/:id/reject",
+    status: true,
+    form_params: [],
+    search_params: [],
+    access_params: {},
+    control_params: [],
+    payload_params: [
+      {
+        key: "reason",
+        value: "The uploaded document is unclear and cannot be verified.",
+        type: datatypes.String,
+        required: true,
+        parent: false,
+        parent_key: "",
+      },
+    ],
+    required_authentication: true,
+    access_roles: [
+      getRoleId("super_admin"),
+      getRoleId("admin"),
+      getRoleId("employee"),
+    ],
+  },
+
   // Show
   {
     activity_type: activityTypes.Show,

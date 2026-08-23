@@ -45,6 +45,32 @@ export const updateServiceUserDocConfigValidator = Joi.object({
   is_active: Joi.boolean().optional(),
 });
 
+export const uploadServiceUserDocValidator = Joi.object({
+  document_id: Joi.string()
+    .custom(objectIdValidator)
+    .required()
+    .messages({
+      "any.required": "document_id is required",
+      "string.custom": "document_id must be a valid MongoDB ObjectId",
+    }),
+});
+
+export const approveServiceUserDocValidator = Joi.object({
+  validation_notes: Joi.string().trim().optional().allow(""),
+});
+
+export const rejectServiceUserDocValidator = Joi.object({
+  reason: Joi.string()
+    .trim()
+    .min(1)
+    .required()
+    .messages({
+      "any.required": "reason is required",
+      "string.empty": "reason cannot be empty",
+      "string.min": "reason cannot be empty",
+    }),
+});
+
 export const deleteServiceUserDocConfigValidator = Joi.object({
   force_action: Joi.boolean().optional(),
 });

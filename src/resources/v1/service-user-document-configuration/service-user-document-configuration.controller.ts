@@ -12,6 +12,9 @@ import showServiceUserDocumentConfigurationService from "./services/show-service
 import enableServiceUserDocumentConfigurationService from "./services/enable-service-user-document-configuration.service";
 import disableServiceUserDocumentConfigurationService from "./services/disable-service-user-document-configuration.service";
 import deleteServiceUserDocumentConfigurationService from "./services/delete-service-user-document-configuration.service";
+import uploadServiceUserDocumentService from "./services/upload-service-user-document.service";
+import approveServiceUserDocumentService from "./services/approve-service-user-document.service";
+import rejectServiceUserDocumentService from "./services/reject-service-user-document.service";
 
 class ServiceUserDocumentConfigurationController {
   public async Index(
@@ -52,6 +55,93 @@ class ServiceUserDocumentConfigurationController {
     try {
       response = await showServiceUserDocumentConfigurationService.execute(
         new mongoose.Types.ObjectId(req.params.id as string),
+      );
+      return res.status(response.result.code).json(response.result);
+    } catch (error: any) {
+      const message = (error as Error).message;
+      response = {
+        result: errorResponse(
+          errorMessages.SomethingWentWrong,
+          statusCodes.InternalServerError,
+          [message],
+        ),
+        DbTransactions: [],
+      };
+      res.status(statusCodes.InternalServerError).json(response.result);
+    } finally {
+      const end = new Date().getTime();
+      createActivityLogService.execute(req, res, start, end, response);
+    }
+  }
+
+  public async Upload(
+    req: Request,
+    res: Response,
+  ): Promise<JsonResponse | void> {
+    let response: any;
+    const start = new Date().getTime();
+    try {
+      response = await uploadServiceUserDocumentService.execute(
+        new mongoose.Types.ObjectId(req.params.id as string),
+        req,
+      );
+      return res.status(response.result.code).json(response.result);
+    } catch (error: any) {
+      const message = (error as Error).message;
+      response = {
+        result: errorResponse(
+          errorMessages.SomethingWentWrong,
+          statusCodes.InternalServerError,
+          [message],
+        ),
+        DbTransactions: [],
+      };
+      res.status(statusCodes.InternalServerError).json(response.result);
+    } finally {
+      const end = new Date().getTime();
+      createActivityLogService.execute(req, res, start, end, response);
+    }
+  }
+
+  public async Approve(
+    req: Request,
+    res: Response,
+  ): Promise<JsonResponse | void> {
+    let response: any;
+    const start = new Date().getTime();
+    try {
+      response = await approveServiceUserDocumentService.execute(
+        new mongoose.Types.ObjectId(req.params.id as string),
+        req,
+      );
+      return res.status(response.result.code).json(response.result);
+    } catch (error: any) {
+      const message = (error as Error).message;
+      response = {
+        result: errorResponse(
+          errorMessages.SomethingWentWrong,
+          statusCodes.InternalServerError,
+          [message],
+        ),
+        DbTransactions: [],
+      };
+      res.status(statusCodes.InternalServerError).json(response.result);
+    } finally {
+      const end = new Date().getTime();
+      createActivityLogService.execute(req, res, start, end, response);
+    }
+  }
+
+  public async Reject(
+    req: Request,
+    res: Response,
+  ): Promise<JsonResponse | void> {
+    let response: any;
+    const start = new Date().getTime();
+    try {
+      response = await rejectServiceUserDocumentService.execute(
+        new mongoose.Types.ObjectId(req.params.id as string),
+        req,
       );
       return res.status(response.result.code).json(response.result);
     } catch (error: any) {

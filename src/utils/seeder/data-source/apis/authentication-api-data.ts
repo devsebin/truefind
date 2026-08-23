@@ -1,9 +1,10 @@
 import { getRoleId } from "../../seeder-cookie";
 import { activityTypes } from "../../../../utils/definitions/constants/activity-types";
-import { AccessType, IAPI } from "../../../../utils/interfaces/api.interface";
+import { IAPI } from "../../../../utils/interfaces/api.interface";
 import { moduleTypes } from "../../../../utils/definitions/constants/modules";
 import { activityCode, activityName } from "../../activities/authentication-activities";
 import { apiMethods } from "../../../../utils/definitions/constants/api-methods";
+import { datatypes } from "../../../../utils/definitions/constants/data-types";
 
 const authenticationApiData = (): IAPI[] => [
   {
@@ -16,10 +17,58 @@ const authenticationApiData = (): IAPI[] => [
     status: true,
     form_params: [],
     search_params: [],
-    access_params: {
-    },
+    access_params: {},
     control_params: [],
-    payload_params: [],
+    payload_params: [
+      {
+        key: "phone",
+        value: "string",
+        type: datatypes.String,
+        required: true,
+        parent: false,
+        parent_key: "",
+      },
+      {
+        key: "country",
+        value: "string",
+        type: datatypes.String,
+        required: true,
+        parent: false,
+        parent_key: "",
+      },
+      {
+        key: "type",
+        value: "login",
+        type: datatypes.String,
+        required: true,
+        parent: false,
+        parent_key: "",
+      },
+      {
+        key: "device_id",
+        value: "string",
+        type: datatypes.String,
+        required: true,
+        parent: false,
+        parent_key: "",
+      },
+      {
+        key: "user_type",
+        value: "user",
+        type: datatypes.String,
+        required: true,
+        parent: false,
+        parent_key: "",
+      },
+      {
+        key: "declaimers",
+        value: "array",
+        type: datatypes.Array,
+        required: false,
+        parent: false,
+        parent_key: "",
+      },
+    ],
     required_authentication: false,
     access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
   },
@@ -33,10 +82,18 @@ const authenticationApiData = (): IAPI[] => [
     status: true,
     form_params: [],
     search_params: [],
-    access_params: {
-    },
+    access_params: {},
     control_params: [],
-    payload_params: [],
+    payload_params: [
+      {
+        key: "otp",
+        value: "123456",
+        type: datatypes.String,
+        required: true,
+        parent: false,
+        parent_key: "",
+      },
+    ],
     required_authentication: false,
     access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
   },
@@ -50,10 +107,34 @@ const authenticationApiData = (): IAPI[] => [
     status: true,
     form_params: [],
     search_params: [],
-    access_params: {
-    },
+    access_params: {},
     control_params: [],
-    payload_params: [],
+    payload_params: [
+      {
+        key: "refresh_token",
+        value: "string",
+        type: datatypes.String,
+        required: true,
+        parent: false,
+        parent_key: "",
+      },
+      {
+        key: "device_id",
+        value: "string",
+        type: datatypes.String,
+        required: true,
+        parent: false,
+        parent_key: "",
+      },
+      {
+        key: "device_name",
+        value: "string",
+        type: datatypes.String,
+        required: true,
+        parent: false,
+        parent_key: "",
+      },
+    ],
     required_authentication: false,
     access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
   },
@@ -67,10 +148,42 @@ const authenticationApiData = (): IAPI[] => [
     status: true,
     form_params: [],
     search_params: [],
-    access_params: {
-    },
+    access_params: {},
     control_params: [],
-    payload_params: [],
+    payload_params: [
+      {
+        key: "email",
+        value: "admin@example.com",
+        type: datatypes.String,
+        required: true,
+        parent: false,
+        parent_key: "",
+      },
+      {
+        key: "password",
+        value: "password123",
+        type: datatypes.String,
+        required: true,
+        parent: false,
+        parent_key: "",
+      },
+      {
+        key: "device_id",
+        value: "string",
+        type: datatypes.String,
+        required: true,
+        parent: false,
+        parent_key: "",
+      },
+      {
+        key: "device_name",
+        value: "string",
+        type: datatypes.String,
+        required: true,
+        parent: false,
+        parent_key: "",
+      },
+    ],
     required_authentication: false,
     access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
   },
@@ -84,10 +197,42 @@ const authenticationApiData = (): IAPI[] => [
     status: true,
     form_params: [],
     search_params: [],
-    access_params: {
-    },
+    access_params: {},
     control_params: [],
-    payload_params: [],
+    payload_params: [
+      {
+        key: "email",
+        value: "admin@example.com",
+        type: datatypes.String,
+        required: true,
+        parent: false,
+        parent_key: "",
+      },
+      {
+        key: "password",
+        value: "password123",
+        type: datatypes.String,
+        required: true,
+        parent: false,
+        parent_key: "",
+      },
+      {
+        key: "device_id",
+        value: "string",
+        type: datatypes.String,
+        required: true,
+        parent: false,
+        parent_key: "",
+      },
+      {
+        key: "device_name",
+        value: "string",
+        type: datatypes.String,
+        required: true,
+        parent: false,
+        parent_key: "",
+      },
+    ],
     required_authentication: false,
     access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
   },
@@ -101,8 +246,7 @@ const authenticationApiData = (): IAPI[] => [
     status: true,
     form_params: [],
     search_params: [],
-    access_params: {
-    },
+    access_params: {},
     control_params: [],
     payload_params: [],
     required_authentication: true,
@@ -118,8 +262,7 @@ const authenticationApiData = (): IAPI[] => [
     status: true,
     form_params: [],
     search_params: [],
-    access_params: {
-    },
+    access_params: {},
     control_params: [],
     payload_params: [],
     required_authentication: true,

@@ -4,6 +4,7 @@ import { AccessType, IAPI } from "../../../../utils/interfaces/api.interface";
 import { moduleTypes } from "../../../../utils/definitions/constants/modules";
 import { activityCode, activityName } from "../../activities/service-area-activities";
 import { apiMethods } from "../../../../utils/definitions/constants/api-methods";
+import { datatypes } from "../../../../utils/definitions/constants/data-types";
 
 const serviceAreaApiData = (): IAPI[] => [
     {
@@ -16,12 +17,20 @@ const serviceAreaApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-        access_params: {
-        },
+        access_params: {},
         control_params: [],
-        payload_params: [],
+        payload_params: [
+            {
+                key: "suburbs",
+                value: "array",
+                type: datatypes.Array,
+                required: true,
+                parent: false,
+                parent_key: "",
+            },
+        ],
         required_authentication: true,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
+        access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
     {
         activity_type: activityTypes.Show,
@@ -33,12 +42,11 @@ const serviceAreaApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-        access_params: {
-        },
+        access_params: {},
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
+        access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
     {
         activity_type: activityTypes.List,
@@ -50,12 +58,11 @@ const serviceAreaApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-        access_params: {
-        },
+        access_params: {},
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("user"), getRoleId("employee")],
+        access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("user"), getRoleId("employee")],
     },
     {
         activity_type: activityTypes.Update,
@@ -67,12 +74,60 @@ const serviceAreaApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-        access_params: {
-        },
+        access_params: {},
         control_params: [],
-        payload_params: [],
+        payload_params: [
+            {
+                key: "required_licenses",
+                value: "true",
+                type: datatypes.Boolean,
+                required: false,
+                parent: false,
+                parent_key: "",
+            },
+            {
+                key: "is_callout_service",
+                value: "false",
+                type: datatypes.Boolean,
+                required: false,
+                parent: false,
+                parent_key: "",
+            },
+            {
+                key: "is_fixed_price",
+                value: "true",
+                type: datatypes.Boolean,
+                required: false,
+                parent: false,
+                parent_key: "",
+            },
+            {
+                key: "price",
+                value: "100",
+                type: datatypes.Number,
+                required: false,
+                parent: false,
+                parent_key: "",
+            },
+            {
+                key: "unit_id",
+                value: "64b8a1c8f1e67290bc5b4d1a",
+                type: datatypes.String,
+                required: false,
+                parent: false,
+                parent_key: "",
+            },
+            {
+                key: "is_active",
+                value: "true",
+                type: datatypes.Boolean,
+                required: false,
+                parent: false,
+                parent_key: "",
+            },
+        ],
         required_authentication: true,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
+        access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
     {
         activity_type: activityTypes.Update,
@@ -84,12 +139,11 @@ const serviceAreaApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-        access_params: {
-        },
+        access_params: {},
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
+        access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
     {
         activity_type: activityTypes.Update,
@@ -101,12 +155,11 @@ const serviceAreaApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-        access_params: {
-        },
+        access_params: {},
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
+        access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
 ];
 

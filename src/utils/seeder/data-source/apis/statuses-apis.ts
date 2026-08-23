@@ -4,6 +4,7 @@ import { AccessType, IAPI } from "../../../../utils/interfaces/api.interface";
 import { moduleTypes } from "../../../../utils/definitions/constants/modules";
 import { activityCode, activityName } from "../../activities/statues-activities";
 import { apiMethods } from "../../../../utils/definitions/constants/api-methods";
+import { datatypes } from "../../../../utils/definitions/constants/data-types";
 
 const statusesApiData = (): IAPI[] => [
     {
@@ -16,12 +17,28 @@ const statusesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-        access_params: {
-        },
+        access_params: {},
         control_params: [],
-        payload_params: [],
+        payload_params: [
+            {
+                key: "title",
+                value: "Active",
+                type: datatypes.String,
+                required: true,
+                parent: false,
+                parent_key: "",
+            },
+            {
+                key: "color",
+                value: "#00FF00",
+                type: datatypes.String,
+                required: true,
+                parent: false,
+                parent_key: "",
+            },
+        ],
         required_authentication: true,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
+        access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
     },
     {
         activity_type: activityTypes.List,
@@ -33,12 +50,11 @@ const statusesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-        access_params: {
-        },
+        access_params: {},
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("user"), getRoleId("employee")],
+        access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("user"), getRoleId("employee")],
     },
     {
         activity_type: activityTypes.Update,
@@ -50,12 +66,28 @@ const statusesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-        access_params: {
-        },
+        access_params: {},
         control_params: [],
-        payload_params: [],
+        payload_params: [
+            {
+                key: "title",
+                value: "Active",
+                type: datatypes.String,
+                required: true,
+                parent: false,
+                parent_key: "",
+            },
+            {
+                key: "color",
+                value: "#00FF00",
+                type: datatypes.String,
+                required: true,
+                parent: false,
+                parent_key: "",
+            },
+        ],
         required_authentication: true,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
+        access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
     },
     {
         activity_type: activityTypes.Delete,
@@ -67,12 +99,11 @@ const statusesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-        access_params: {
-        },
+        access_params: {},
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
+        access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
     },
     {
         activity_type: activityTypes.Activate,
@@ -84,12 +115,11 @@ const statusesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-        access_params: {
-        },
+        access_params: {},
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
+        access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
     },
     {
         activity_type: activityTypes.Deactivate,
@@ -101,12 +131,11 @@ const statusesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-        access_params: {
-        },
+        access_params: {},
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
+        access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
     },
     {
         activity_type: activityTypes.Show,
@@ -118,12 +147,11 @@ const statusesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-        access_params: {
-        },
+        access_params: {},
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("user"), getRoleId("employee")],
+        access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("user"), getRoleId("employee")],
     },
     {
         activity_type: activityTypes.Import,
@@ -135,12 +163,11 @@ const statusesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-        access_params: {
-        },
+        access_params: {},
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
+        access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
     },
     {
         activity_type: activityTypes.Export,
@@ -152,12 +179,11 @@ const statusesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-        access_params: {
-        },
+        access_params: {},
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
+        access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
     },
     {
         activity_type: activityTypes.Log,
@@ -169,12 +195,11 @@ const statusesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-        access_params: {
-        },
+        access_params: {},
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
+        access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("employee")],
     },
 ];
 

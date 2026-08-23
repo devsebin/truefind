@@ -23,10 +23,14 @@ import showServiceUserDocumentConfigurationService from "@/resources/v1/service-
 import enableServiceUserDocumentConfigurationService from "@/resources/v1/service-user-document-configuration/services/enable-service-user-document-configuration.service";
 import disableServiceUserDocumentConfigurationService from "@/resources/v1/service-user-document-configuration/services/disable-service-user-document-configuration.service";
 import deleteServiceUserDocumentConfigurationService from "@/resources/v1/service-user-document-configuration/services/delete-service-user-document-configuration.service";
+import uploadServiceUserDocumentService from "@/resources/v1/service-user-document-configuration/services/upload-service-user-document.service";
+import approveServiceUserDocumentService from "@/resources/v1/service-user-document-configuration/services/approve-service-user-document.service";
+import rejectServiceUserDocumentService from "@/resources/v1/service-user-document-configuration/services/reject-service-user-document.service";
 
 describe("Service User Document Configuration & Eligibility Integration", () => {
   let testUser: any;
   let adminUser: any;
+  let employeeUser: any;
   let testIcon: any;
   let activeStatus: any;
   let defaultPriority: any;
@@ -96,6 +100,15 @@ describe("Service User Document Configuration & Eligibility Integration", () => 
       last_name: "User",
       email: "admin@example.com",
       role: "admin",
+      status_id: activeStatus._id,
+      priority_id: defaultPriority._id,
+    });
+
+    employeeUser = await UserModel.create({
+      first_name: "Employee",
+      last_name: "User",
+      email: "employee@example.com",
+      role: "employee",
       status_id: activeStatus._id,
       priority_id: defaultPriority._id,
     });
@@ -517,6 +530,193 @@ describe("Service User Document Configuration & Eligibility Integration", () => 
       );
       expect(docInDb!.is_deleted).toBe(true);
       expect(docInDb!.is_active).toBe(false);
+    });
+  });
+
+  describe("Upload, Approve, and Reject Workflows", () => {
+    let targetDocConfig: any;
+    let uploadedFile: any;
+
+    beforeEach(async () => {
+      uploadedFile = await DocumentModel.create({
+        name: "user_aadhaar.pdf",
+        document_type: "pdf",
+        content_type: "application/pdf",
+        keys: { original: "user-aadhaar-key" },
+        status_id: activeStatus._id,
+      });
+
+      targetDocConfig = await ServiceUserDocumentConfigurationsModel.create({
+        user_id: testUser._id,
+        task_id: serviceA._id,
+        document_requirement_id: reqDoc1._id,
+        is_mandatory: true,
+        uploads: [],
+        current_status: ServiceUserDocumentConfigurationStatus.PENDING,
+        is_active: true,
+        is_deleted: false,
+        status_id: activeStatus._id,
+      });
+    });
+
+    it("should allow an employee to upload a document and forbid non-employees", async () => {
+      const payload = {
+        document_id: uploadedFile._id.toString(),
+      };
+
+      // 1. Non-employee attempts upload -> Forbidden
+      const nonEmpReq = {
+        body: payload,
+        user: testUser, // role: "user"
+      } as any;
+
+      let nonEmpResult: any;
+      await requestContext.run({ userId: testUser._id.toString() }, async () => {
+        nonEmpResult = await uploadServiceUserDocumentService.execute(
+          targetDocConfig._id,
+          nonEmpReq,
+          payload,
+        );
+      });
+      expect(nonEmpResult.result.code).toBe(403);
+
+      // 2. Employee uploads document -> Success
+      const empReq = {
+        body: payload,
+        user: employeeUser, // role: "employee"
+      } as any;
+
+      let empResult: any;
+      await requestContext.run({ userId: employeeUser._id.toString() }, async () => {
+        empResult = await uploadServiceUserDocumentService.execute(
+          targetDocConfig._id,
+          empReq,
+          payload,
+        );
+      });
+
+      expect(empResult.result.code).toBe(200);
+      const resData = empResult.result.data[0].result;
+      expect(resData.uploads.length).toBe(1);
+      expect(resData.uploads[0].document_id.toString()).toBe(uploadedFile._id.toString());
+      expect(resData.uploads[0].status).toBe(ServiceUserDocumentConfigurationStatus.PENDING);
+    });
+
+    it("should allow employee to approve document when all data requirements pass and update user task status", async () => {
+      // Step 1: Upload document first
+      const empReq = {
+        body: { document_id: uploadedFile._id.toString() },
+        user: employeeUser,
+      } as any;
+
+      await uploadServiceUserDocumentService.execute(
+        targetDocConfig._id,
+        empReq,
+        { document_id: uploadedFile._id.toString() },
+      );
+
+      // Step 2: Also create the user task mapping
+      await TaskUserMappingModel.create({
+        user_id: testUser._id,
+        task_id: serviceA._id,
+        eligibility_status: "pending",
+        is_active: true,
+        is_deleted: false,
+        status_id: activeStatus._id,
+      });
+
+      // Also create reqDoc2 for serviceA as approved to test complete eligibility transition
+      await ServiceUserDocumentConfigurationsModel.create({
+        user_id: testUser._id,
+        task_id: serviceA._id,
+        document_requirement_id: reqDoc2._id,
+        is_mandatory: false,
+        uploads: [],
+        current_status: ServiceUserDocumentConfigurationStatus.PENDING,
+        is_active: true,
+        is_deleted: false,
+        status_id: activeStatus._id,
+      });
+
+      // Step 3: Approve target document
+      const approveReq = {
+        body: { validation_notes: "Aadhaar verified successfully" },
+        user: employeeUser,
+      } as any;
+
+      let approveResult: any;
+      await requestContext.run({ userId: employeeUser._id.toString() }, async () => {
+        approveResult = await approveServiceUserDocumentService.execute(
+          targetDocConfig._id,
+          approveReq,
+          { validation_notes: "Aadhaar verified successfully" },
+        );
+      });
+
+      expect(approveResult.result.code).toBe(200);
+      const approvedDoc = approveResult.result.data[0].result;
+      expect(approvedDoc.current_status).toBe(ServiceUserDocumentConfigurationStatus.APPROVED);
+      expect(approvedDoc.uploads[0].status).toBe(ServiceUserDocumentConfigurationStatus.APPROVED);
+      expect(approvedDoc.uploads[0].validation_notes).toBe("Aadhaar verified successfully");
+
+      // Verify task mapping became success since all mandatory docs are approved
+      const taskMapping = await TaskUserMappingModel.findOne({
+        user_id: testUser._id,
+        task_id: serviceA._id,
+      });
+      expect(taskMapping!.eligibility_status).toBe("success");
+    });
+
+    it("should allow employee to reject document with a mandatory reason", async () => {
+      // Step 1: Upload document first
+      const empReq = {
+        body: { document_id: uploadedFile._id.toString() },
+        user: employeeUser,
+      } as any;
+
+      await uploadServiceUserDocumentService.execute(
+        targetDocConfig._id,
+        empReq,
+        { document_id: uploadedFile._id.toString() },
+      );
+
+      // Step 2: Reject without reason -> validation error
+      const rejectEmptyReq = {
+        body: { reason: "" },
+        user: employeeUser,
+      } as any;
+
+      let rejectEmptyResult: any;
+      await requestContext.run({ userId: employeeUser._id.toString() }, async () => {
+        rejectEmptyResult = await rejectServiceUserDocumentService.execute(
+          targetDocConfig._id,
+          rejectEmptyReq,
+          { reason: "" },
+        );
+      });
+      expect(rejectEmptyResult.result.code).toBe(400);
+
+      // Step 3: Reject with valid reason -> success
+      const validRejectReq = {
+        body: { reason: "Image is blurred and unreadable" },
+        user: employeeUser,
+      } as any;
+
+      let rejectResult: any;
+      await requestContext.run({ userId: employeeUser._id.toString() }, async () => {
+        rejectResult = await rejectServiceUserDocumentService.execute(
+          targetDocConfig._id,
+          validRejectReq,
+          { reason: "Image is blurred and unreadable" },
+        );
+      });
+
+      expect(rejectResult.result.code).toBe(200);
+      const rejectedDoc = rejectResult.result.data[0].result;
+      expect(rejectedDoc.current_status).toBe(ServiceUserDocumentConfigurationStatus.REJECTED);
+      expect(rejectedDoc.uploads[0].status).toBe(ServiceUserDocumentConfigurationStatus.REJECTED);
+      expect(rejectedDoc.uploads[0].validation_notes).toBe("Image is blurred and unreadable");
+      expect(rejectedDoc.uploads[0].document_id.toString()).toBe(uploadedFile._id.toString());
     });
   });
 });

@@ -4,6 +4,7 @@ import { AccessType, IAPI } from "../../../../utils/interfaces/api.interface";
 import { moduleTypes } from "../../../../utils/definitions/constants/modules";
 import { activityCode, activityName } from "../../activities/service-activities";
 import { apiMethods } from "../../../../utils/definitions/constants/api-methods";
+import { datatypes } from "../../../../utils/definitions/constants/data-types";
 
 const servicesApiData = (): IAPI[] => [
     /* --- Categories --- */
@@ -17,12 +18,36 @@ const servicesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-        access_params: {
-        },
+        access_params: {},
         control_params: [],
-        payload_params: [],
+        payload_params: [
+            {
+                key: "name",
+                value: "Home Services",
+                type: datatypes.String,
+                required: true,
+                parent: false,
+                parent_key: "",
+            },
+            {
+                key: "description",
+                value: "Category for all home services",
+                type: datatypes.String,
+                required: true,
+                parent: false,
+                parent_key: "",
+            },
+            {
+                key: "icon",
+                value: "64b8a1c8f1e67290bc5b4d1a",
+                type: datatypes.String,
+                required: true,
+                parent: false,
+                parent_key: "",
+            },
+        ],
         required_authentication: true,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
+        access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
     /* --- Subcategories --- */
     {
@@ -35,12 +60,44 @@ const servicesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-        access_params: {
-        },
+        access_params: {},
         control_params: [],
-        payload_params: [],
+        payload_params: [
+            {
+                key: "parent_id",
+                value: "64b8a1c8f1e67290bc5b4d1a",
+                type: datatypes.String,
+                required: true,
+                parent: false,
+                parent_key: "",
+            },
+            {
+                key: "name",
+                value: "Plumbing",
+                type: datatypes.String,
+                required: true,
+                parent: false,
+                parent_key: "",
+            },
+            {
+                key: "description",
+                value: "All plumbing related services",
+                type: datatypes.String,
+                required: true,
+                parent: false,
+                parent_key: "",
+            },
+            {
+                key: "icon",
+                value: "64b8a1c8f1e67290bc5b4d1a",
+                type: datatypes.String,
+                required: true,
+                parent: false,
+                parent_key: "",
+            },
+        ],
         required_authentication: true,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
+        access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
     /* --- Services / Tasks --- */
     {
@@ -53,12 +110,60 @@ const servicesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-        access_params: {
-        },
+        access_params: {},
         control_params: [],
-        payload_params: [],
+        payload_params: [
+            {
+                key: "parent_id",
+                value: "64b8a1c8f1e67290bc5b4d1a",
+                type: datatypes.String,
+                required: true,
+                parent: false,
+                parent_key: "",
+            },
+            {
+                key: "name",
+                value: "Pipe Leak Repair",
+                type: datatypes.String,
+                required: true,
+                parent: false,
+                parent_key: "",
+            },
+            {
+                key: "description",
+                value: "Fixing leaking pipes and fittings",
+                type: datatypes.String,
+                required: true,
+                parent: false,
+                parent_key: "",
+            },
+            {
+                key: "icon",
+                value: "64b8a1c8f1e67290bc5b4d1a",
+                type: datatypes.String,
+                required: true,
+                parent: false,
+                parent_key: "",
+            },
+            {
+                key: "estimated_time",
+                value: "60",
+                type: datatypes.Number,
+                required: true,
+                parent: false,
+                parent_key: "",
+            },
+            {
+                key: "estimated_time_unit",
+                value: "minute",
+                type: datatypes.String,
+                required: true,
+                parent: false,
+                parent_key: "",
+            },
+        ],
         required_authentication: true,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
+        access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
     /* --- Common/Generic Routes --- */
     {
@@ -71,12 +176,11 @@ const servicesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-        access_params: {
-        },
+        access_params: {},
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
+        access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
     {
         activity_type: activityTypes.Show,
@@ -88,12 +192,11 @@ const servicesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-        access_params: {
-        },
+        access_params: {},
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
+        access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
     {
         activity_type: activityTypes.Delete,
@@ -105,12 +208,11 @@ const servicesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-        access_params: {
-        },
+        access_params: {},
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
+        access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
     {
         activity_type: activityTypes.Update,
@@ -122,12 +224,11 @@ const servicesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-        access_params: {
-        },
+        access_params: {},
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
+        access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
     {
         activity_type: activityTypes.Update,
@@ -139,12 +240,11 @@ const servicesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-        access_params: {
-        },
+        access_params: {},
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
+        access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
     {
         activity_type: activityTypes.Update,
@@ -156,12 +256,52 @@ const servicesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-        access_params: {
-        },
+        access_params: {},
         control_params: [],
-        payload_params: [],
+        payload_params: [
+            {
+                key: "name",
+                value: "Updated Service Name",
+                type: datatypes.String,
+                required: false,
+                parent: false,
+                parent_key: "",
+            },
+            {
+                key: "description",
+                value: "Updated description",
+                type: datatypes.String,
+                required: false,
+                parent: false,
+                parent_key: "",
+            },
+            {
+                key: "icon",
+                value: "64b8a1c8f1e67290bc5b4d1a",
+                type: datatypes.String,
+                required: false,
+                parent: false,
+                parent_key: "",
+            },
+            {
+                key: "estimated_time",
+                value: "45",
+                type: datatypes.Number,
+                required: false,
+                parent: false,
+                parent_key: "",
+            },
+            {
+                key: "estimated_time_unit",
+                value: "minute",
+                type: datatypes.String,
+                required: false,
+                parent: false,
+                parent_key: "",
+            },
+        ],
         required_authentication: true,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
+        access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
 ];
 

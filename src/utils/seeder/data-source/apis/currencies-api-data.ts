@@ -4,6 +4,7 @@ import { AccessType, IAPI } from "../../../../utils/interfaces/api.interface";
 import { moduleTypes } from "../../../../utils/definitions/constants/modules";
 import { activityCode, activityName } from "../../activities/currency-activities";
 import { apiMethods } from "../../../../utils/definitions/constants/api-methods";
+import { datatypes } from "../../../../utils/definitions/constants/data-types";
 
 const currenciesApiData = (): IAPI[] => [
     {
@@ -16,12 +17,44 @@ const currenciesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-        access_params: {
-        },
+        access_params: {},
         control_params: [],
-        payload_params: [],
+        payload_params: [
+            {
+                key: "title",
+                value: "US Dollar",
+                type: datatypes.String,
+                required: true,
+                parent: false,
+                parent_key: "",
+            },
+            {
+                key: "label",
+                value: "USD",
+                type: datatypes.String,
+                required: true,
+                parent: false,
+                parent_key: "",
+            },
+            {
+                key: "code",
+                value: "USD",
+                type: datatypes.String,
+                required: true,
+                parent: false,
+                parent_key: "",
+            },
+            {
+                key: "symbol",
+                value: "64b8a1c8f1e67290bc5b4d1a",
+                type: datatypes.String,
+                required: true,
+                parent: false,
+                parent_key: "",
+            },
+        ],
         required_authentication: true,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
+        access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
     {
         activity_type: activityTypes.List,
@@ -33,12 +66,11 @@ const currenciesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-        access_params: {
-        },
+        access_params: {},
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
+        access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
     {
         activity_type: activityTypes.Show,
@@ -50,12 +82,11 @@ const currenciesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-        access_params: {
-        },
+        access_params: {},
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
+        access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
     {
         activity_type: activityTypes.Update,
@@ -67,12 +98,44 @@ const currenciesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-        access_params: {
-        },
+        access_params: {},
         control_params: [],
-        payload_params: [],
+        payload_params: [
+            {
+                key: "title",
+                value: "US Dollar",
+                type: datatypes.String,
+                required: false,
+                parent: false,
+                parent_key: "",
+            },
+            {
+                key: "label",
+                value: "USD",
+                type: datatypes.String,
+                required: false,
+                parent: false,
+                parent_key: "",
+            },
+            {
+                key: "code",
+                value: "USD",
+                type: datatypes.String,
+                required: false,
+                parent: false,
+                parent_key: "",
+            },
+            {
+                key: "symbol",
+                value: "64b8a1c8f1e67290bc5b4d1a",
+                type: datatypes.String,
+                required: false,
+                parent: false,
+                parent_key: "",
+            },
+        ],
         required_authentication: true,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
+        access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
     {
         activity_type: activityTypes.Delete,
@@ -84,12 +147,11 @@ const currenciesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-        access_params: {
-        },
+        access_params: {},
         control_params: [],
         payload_params: [],
         required_authentication: true,
-      access_roles: [getRoleId("super_admin"), getRoleId("admin")],
+        access_roles: [getRoleId("super_admin"), getRoleId("admin")],
     },
 ];
 

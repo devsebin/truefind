@@ -61,6 +61,26 @@ export const serviceUserDocConfigErrorsMessages = {
     message: "Forbidden: Only admins can specify a target user ID",
     status: statusCodes.Forbidden,
   },
+  employee_only: {
+    message: "Only employees are authorized to perform this action",
+    status: statusCodes.Forbidden,
+  },
+  document_not_found: {
+    message: "Uploaded document not found with id: {0}",
+    status: statusCodes.NotFound,
+  },
+  no_upload_found: {
+    message: "No upload record found to review for service user document configuration",
+    status: statusCodes.BadRequest,
+  },
+  approval_requirements_failed: {
+    message: "Document cannot be approved: all data requirements must be satisfied",
+    status: statusCodes.BadRequest,
+  },
+  rejection_reason_required: {
+    message: "Rejection reason is mandatory",
+    status: statusCodes.BadRequest,
+  },
 };
 
 export const serviceUserDocConfigSuccessMessages = {
@@ -90,6 +110,18 @@ export const serviceUserDocConfigSuccessMessages = {
   },
   service_user_doc_config_updated: {
     message: "Service user document configuration updated successfully.",
+    status: statusCodes.OK,
+  },
+  service_user_doc_uploaded: {
+    message: "Document uploaded successfully for review.",
+    status: statusCodes.OK,
+  },
+  service_user_doc_approved: {
+    message: "Service user document configuration approved successfully.",
+    status: statusCodes.OK,
+  },
+  service_user_doc_rejected: {
+    message: "Service user document configuration rejected successfully.",
     status: statusCodes.OK,
   },
 };

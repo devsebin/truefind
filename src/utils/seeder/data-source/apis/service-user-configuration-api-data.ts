@@ -4,6 +4,7 @@ import { IAPI } from "../../../../utils/interfaces/api.interface";
 import { moduleTypes } from "../../../../utils/definitions/constants/modules";
 import { activityCode, activityName } from "../../activities/service-user-activities";
 import { apiMethods } from "../../../../utils/definitions/constants/api-methods";
+import { datatypes } from "../../../../utils/definitions/constants/data-types";
 
 const serviceUserConfigurationApiData = (): IAPI[] => [
   {
@@ -18,7 +19,24 @@ const serviceUserConfigurationApiData = (): IAPI[] => [
     search_params: [],
     access_params: {},
     control_params: [],
-    payload_params: [],
+    payload_params: [
+      {
+        key: "user_id",
+        value: "64b8a1c8f1e67290bc5b4d1d",
+        type: datatypes.String,
+        required: false,
+        parent: false,
+        parent_key: "",
+      },
+      {
+        key: "service_ids",
+        value: "array",
+        type: datatypes.Array,
+        required: true,
+        parent: false,
+        parent_key: "",
+      },
+    ],
     required_authentication: true,
     access_roles: [
       getRoleId("super_admin"),
@@ -39,7 +57,32 @@ const serviceUserConfigurationApiData = (): IAPI[] => [
     search_params: [],
     access_params: {},
     control_params: [],
-    payload_params: [],
+    payload_params: [
+      {
+        key: "user_id",
+        value: "64b8a1c8f1e67290bc5b4d1d",
+        type: datatypes.String,
+        required: false,
+        parent: false,
+        parent_key: "",
+      },
+      {
+        key: "service_id",
+        value: "64b8a1c8f1e67290bc5b4d1a",
+        type: datatypes.String,
+        required: true,
+        parent: false,
+        parent_key: "",
+      },
+      {
+        key: "eligibility_status",
+        value: "pending",
+        type: datatypes.String,
+        required: false,
+        parent: false,
+        parent_key: "",
+      },
+    ],
     required_authentication: true,
     access_roles: [
       getRoleId("super_admin"),
