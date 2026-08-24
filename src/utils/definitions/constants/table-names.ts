@@ -37,4 +37,7 @@ export enum tableName {
   ServiceDocumentConfigurations = "service_document_configurations",
   ServiceUserDocumentConfigurations = "service_user_document_configurations",
   Carousel = "carousels",
+  ServiceInformation = "service_information",
+  ServiceReview = "service_reviews",
+  Booking = "bookings",
 }

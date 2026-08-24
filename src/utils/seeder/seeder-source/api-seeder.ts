@@ -24,6 +24,7 @@ import serviceDocumentConfigurationApiData from "../data-source/apis/service-doc
 import serviceUserDocumentConfigurationApiData from "../data-source/apis/service-user-document-configuration-api-data";
 import documentTypesApiData from "../data-source/apis/document-types-api-data";
 import carouselsApiData from "../data-source/apis/carousels-api-data";
+import serviceInformationApiData from "../data-source/apis/service-information-api-data";
 import RolesModel from "../../../database/roles/roles-db-model";
 import { defaultRoles, seedRole } from "./role-seeder";
 
@@ -57,6 +58,7 @@ export const seedActivity = async () => {
     ...serviceUserDocumentConfigurationApiData(),
     ...serviceDocumentApiData(),
     ...serviceDocumentConfigurationApiData(),
+    ...serviceInformationApiData(),
     ...documentTypesApiData(),
     ...carouselsApiData(),
   ];

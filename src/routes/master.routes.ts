@@ -22,6 +22,7 @@ import v1ServiceDocumentRoutes from "../resources/v1/masters/service-documents/s
 import v1ServiceDocumentConfigRoutes from "../resources/v1/masters/service-document-configurations/service-document-configurations.routes";
 import v1DocumentTypesRoutes from "../resources/v1/masters/document-types/document-types.routes";
 import v1CarouselsRoutes from "../resources/v1/masters/carousels/carousels.routes";
+import v1ServiceInformationRoutes from "../resources/v1/masters/service-informations/service-informations.routes";
 import { getLocationFromCoordinates } from "@/utils/helpers/location.helper";
 
 const router = Router();
@@ -40,6 +41,7 @@ router.use("/service-country-configurations", authentication, authorizationApi, 
 router.use("/service-area-configurations", authentication, authorizationApi, v1ServiceAreaConfigRoutes);
 router.use("/service-documents", authentication, authorizationApi, v1ServiceDocumentRoutes);
 router.use("/service-document-configurations", authentication, authorizationApi, v1ServiceDocumentConfigRoutes);
+router.use("/service-informations", authentication, authorizationApi, v1ServiceInformationRoutes);
 router.use("/document-types", authentication, authorizationApi, v1DocumentTypesRoutes);
 router.use("/priorities", authentication, authorizationApi, v1PrioritiesRoutes);
 router.use("/units", authentication, authorizationApi, v1UnitsRoutes);
