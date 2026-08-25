@@ -29,7 +29,6 @@ class ListAvailableUserServicesService {
 
     try {
       session.startTransaction();
-      console.log("userId", userId);
       // 1. Get authenticated user
       const user = await UserModel.findById(userId)
         .select("region_id suburb_id")
@@ -48,7 +47,7 @@ class ListAvailableUserServicesService {
       let suburbIds: mongoose.Types.ObjectId[] = [];
       const isExactSuburb = !!user.suburb_id;
 
-      if (user.suburb_id) {
+      if (user.suburb_id && !request.query.is_full_region) {
         suburbIds = [user.suburb_id];
       } else if (user.region_id) {
         const suburbs = await SuburbModel.find({

@@ -58,7 +58,8 @@ class createServiceService {
 
       const taskData = {
         ...body,
-        type: serviceTypes.Service, // Set type to "Service"
+        type: serviceTypes.Service,
+        is_active: false, // Set type to "Service"
       };
 
       const newTask = await createServiceEntityHelperService.execute(

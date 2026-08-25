@@ -91,3 +91,7 @@ export const userLocationValidation = Joi.object({
         "number.max": "Longitude must be between -180 and 180"
     }),
 });
+
+export const areaValidation = Joi.object({
+    is_full_region: Joi.boolean().required().default(false),
+});

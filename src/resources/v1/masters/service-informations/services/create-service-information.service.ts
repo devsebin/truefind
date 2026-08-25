@@ -22,6 +22,8 @@ import findServiceHelperService from "@/resources/v1/masters/services/helpers/va
 import { serviceTypes } from "@/utils/definitions/constants/service-types";
 import { ResponseBuilder, ErrorTypes } from "@/utils/helpers/response-builder";
 import { getContextUserId } from "@/utils/context/request-context";
+import findServiceStatusesHelperService from "../../service-statuses/helpers/validators/find-service-statuses.helper.service";
+import { getActiveServiceStatusId } from "@/utils/plugins/service-status.plugin";
 
 class CreateServiceInformationService {
   public async execute(
@@ -76,8 +78,8 @@ class CreateServiceInformationService {
       const userId = userIdStr
         ? new mongoose.Types.ObjectId(userIdStr)
         : request.user?.id
-        ? new mongoose.Types.ObjectId(request.user.id)
-        : undefined;
+          ? new mongoose.Types.ObjectId(request.user.id)
+          : undefined;
 
       let resultInfo: any;
 
@@ -108,6 +110,12 @@ class CreateServiceInformationService {
           serviceInformationErrorsMessages,
         );
       }
+
+      const activeServiceStatusId = await getActiveServiceStatusId()
+
+      service.is_active = true;
+      service.status_id = activeServiceStatusId
+      await service.save({ session });
 
       await resultInfo.populate(populateFields);
 

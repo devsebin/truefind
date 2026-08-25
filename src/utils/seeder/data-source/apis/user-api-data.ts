@@ -5,6 +5,7 @@ import { moduleTypes } from "../../../../utils/definitions/constants/modules";
 import { activityCode, activityName } from "../../activities/user-activities";
 import { apiMethods } from "../../../../utils/definitions/constants/api-methods";
 import { datatypes } from "../../../../utils/definitions/constants/data-types";
+import { searchTypes } from "@/utils/definitions/constants/search-types";
 
 const userApiData = (): IAPI[] => [
   {
@@ -148,11 +149,18 @@ const userApiData = (): IAPI[] => [
     url: "/api/v1/users/:id/services",
     status: true,
     form_params: [],
-    search_params: [],
-
+    search_params: [
+      {
+        title: "is_full_region",
+        value: "boolean",
+        allowed_values: ["true", "false"],
+        datatype: datatypes.Boolean,
+        search_type: searchTypes.Exact,
+        is_active: true,
+      },
+    ],
     access_params: {
     },
-
     control_params: [],
     payload_params: [
       {
@@ -191,8 +199,22 @@ const userApiData = (): IAPI[] => [
 
     control_params: [],
     payload_params: [
-
-
+      {
+        key: "latitude",
+        value: "string",
+        type: datatypes.String,
+        required: true,
+        parent: false,
+        parent_key: "",
+      },
+      {
+        key: "longitude",
+        value: "string",
+        type: datatypes.String,
+        required: true,
+        parent: false,
+        parent_key: "",
+      },
     ],
     required_authentication: true,
     access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("user"), getRoleId("employee")],

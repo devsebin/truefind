@@ -576,6 +576,14 @@
                 ":id",
                 "services"
               ],
+              "query": [
+                {
+                  "key": "is_full_region",
+                  "value": "",
+                  "description": "is_full_region",
+                  "disabled": true
+                }
+              ],
               "variable": [
                 {
                   "key": "id",
@@ -1068,6 +1076,528 @@
               ]
             },
             "description": "**Activity Code**: `log_status`\n\n**Module**: `statuses`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Service Statuses",
+      "item": [
+        {
+          "name": "Create Service Status",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/service-statuses",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "service-statuses"
+              ]
+            },
+            "description": "**Activity Code**: `create_service_status`\n\n**Module**: `service_statuses`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"title\",\n  \"label\": \"label\",\n  \"color\": \"color\",\n  \"is_default\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Service Statuses",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/service-statuses",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "service-statuses"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "id",
+                  "disabled": true
+                },
+                {
+                  "key": "is_deleted",
+                  "value": "",
+                  "description": "is_deleted",
+                  "disabled": true
+                },
+                {
+                  "key": "created_at_gte",
+                  "value": "",
+                  "description": "created_at_gte",
+                  "disabled": true
+                },
+                {
+                  "key": "created_at_lte",
+                  "value": "",
+                  "description": "created_at_lte",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_at_gte",
+                  "value": "",
+                  "description": "updated_at_gte",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_at_lte",
+                  "value": "",
+                  "description": "updated_at_lte",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_at_gte",
+                  "value": "",
+                  "description": "deleted_at_gte",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_at_lte",
+                  "value": "",
+                  "description": "deleted_at_lte",
+                  "disabled": true
+                },
+                {
+                  "key": "is_active",
+                  "value": "",
+                  "description": "is_active",
+                  "disabled": true
+                },
+                {
+                  "key": "created_by_id",
+                  "value": "",
+                  "description": "created_by_id",
+                  "disabled": true
+                },
+                {
+                  "key": "created_by_name_like",
+                  "value": "",
+                  "description": "created_by_name_like",
+                  "disabled": true
+                },
+                {
+                  "key": "created_by_role_like",
+                  "value": "",
+                  "description": "created_by_role_like",
+                  "disabled": true
+                },
+                {
+                  "key": "created_by_email_like",
+                  "value": "",
+                  "description": "created_by_email_like",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_by_id",
+                  "value": "",
+                  "description": "updated_by_id",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_by_name_like",
+                  "value": "",
+                  "description": "updated_by_name_like",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_by_role_like",
+                  "value": "",
+                  "description": "updated_by_role_like",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_by_email_like",
+                  "value": "",
+                  "description": "updated_by_email_like",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_by_id",
+                  "value": "",
+                  "description": "deleted_by_id",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_by_name_like",
+                  "value": "",
+                  "description": "deleted_by_name_like",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_by_role_like",
+                  "value": "",
+                  "description": "deleted_by_role_like",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_by_email_like",
+                  "value": "",
+                  "description": "deleted_by_email_like",
+                  "disabled": true
+                },
+                {
+                  "key": "status_id",
+                  "value": "",
+                  "description": "status_id",
+                  "disabled": true
+                },
+                {
+                  "key": "status_title_like",
+                  "value": "",
+                  "description": "status_title_like",
+                  "disabled": true
+                },
+                {
+                  "key": "title_like",
+                  "value": "",
+                  "description": "title_like",
+                  "disabled": true
+                },
+                {
+                  "key": "label",
+                  "value": "",
+                  "description": "label",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "**Activity Code**: `list_service_status`\n\n**Module**: `service_statuses`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Service Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/service-statuses/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "service-statuses",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `update_service_status`\n\n**Module**: `service_statuses`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"title\",\n  \"label\": \"label\",\n  \"color\": \"color\",\n  \"is_default\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Service Status",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/service-statuses/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "service-statuses",
+                ":id"
+              ],
+              "query": [
+                {
+                  "key": "force_action",
+                  "value": "",
+                  "description": "force_action",
+                  "disabled": true
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `delete_service_status`\n\n**Module**: `service_statuses`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Activate Service Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/service-statuses/:id/enable",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "service-statuses",
+                ":id",
+                "enable"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `activate_service_status`\n\n**Module**: `service_statuses`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Deactivate Service Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/service-statuses/:id/disable",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "service-statuses",
+                ":id",
+                "disable"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `deactivate_service_status`\n\n**Module**: `service_statuses`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Show Service Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/service-statuses/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "service-statuses",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `show_service_status`\n\n**Module**: `service_statuses`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Log Service Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/service-statuses/log",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "service-statuses",
+                "log"
+              ]
+            },
+            "description": "**Activity Code**: `log_service_status`\n\n**Module**: `service_statuses`\n\n**Auth Required**: `true`",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -4951,14 +5481,13 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/masters/service-country-configurations",
+              "raw": "{{base_url}}/api/v1/service-country-configurations",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "masters",
                 "service-country-configurations"
               ]
             },
@@ -4997,14 +5526,13 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/masters/service-country-configurations",
+              "raw": "{{base_url}}/api/v1/service-country-configurations",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "masters",
                 "service-country-configurations"
               ]
             },
@@ -5034,14 +5562,13 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/masters/service-country-configurations/:id",
+              "raw": "{{base_url}}/api/v1/service-country-configurations/:id",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "masters",
                 "service-country-configurations",
                 ":id"
               ],
@@ -5079,14 +5606,13 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/masters/service-country-configurations/:id",
+              "raw": "{{base_url}}/api/v1/service-country-configurations/:id",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "masters",
                 "service-country-configurations",
                 ":id"
               ],
@@ -5133,14 +5659,13 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/masters/service-country-configurations/:id",
+              "raw": "{{base_url}}/api/v1/service-country-configurations/:id",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "masters",
                 "service-country-configurations",
                 ":id"
               ],
@@ -10650,14 +11175,13 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/masters/service-document-configurations",
+              "raw": "{{base_url}}/api/v1/service-document-configurations",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "masters",
                 "service-document-configurations"
               ]
             },
@@ -10696,14 +11220,13 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/masters/service-document-configurations",
+              "raw": "{{base_url}}/api/v1/service-document-configurations",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "masters",
                 "service-document-configurations"
               ],
               "query": [
@@ -10873,14 +11396,13 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/masters/service-document-configurations/:id",
+              "raw": "{{base_url}}/api/v1/service-document-configurations/:id",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "masters",
                 "service-document-configurations",
                 ":id"
               ],
@@ -10918,14 +11440,13 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/masters/service-document-configurations/:id",
+              "raw": "{{base_url}}/api/v1/service-document-configurations/:id",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "masters",
                 "service-document-configurations",
                 ":id"
               ],
@@ -10972,14 +11493,13 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/masters/service-document-configurations/:id",
+              "raw": "{{base_url}}/api/v1/service-document-configurations/:id",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "masters",
                 "service-document-configurations",
                 ":id"
               ],
@@ -11017,14 +11537,13 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/masters/service-document-configurations/:id/enable",
+              "raw": "{{base_url}}/api/v1/service-document-configurations/:id/enable",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "masters",
                 "service-document-configurations",
                 ":id",
                 "enable"
@@ -11063,14 +11582,13 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/masters/service-document-configurations/:id/disable",
+              "raw": "{{base_url}}/api/v1/service-document-configurations/:id/disable",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "masters",
                 "service-document-configurations",
                 ":id",
                 "disable"
