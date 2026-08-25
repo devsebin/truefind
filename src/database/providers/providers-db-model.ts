@@ -69,6 +69,10 @@ const ProviderSchema = new Schema<IProvider>(
 
         supportedCountries: { type: [SupportedCountrySchema], default: [] },
 
+        status_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: tableName.Status,
+        },
         ...CommonServiceFieldsModel,
     },
     {

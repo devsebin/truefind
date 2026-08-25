@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 import { tableName } from "../../utils/definitions/constants/table-names";
 import { IServiceStatus } from "./service-status-db-interface";
 import { CommonServiceFieldsModel } from "@/utils/definitions/constants/db-constants";
@@ -21,6 +21,10 @@ const ServiceStatusSchema = new Schema<IServiceStatus>(
             type: Boolean,
             required: false,
             default: false,
+        },
+        status_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: tableName.Status,
         },
         ...CommonServiceFieldsModel
     },

@@ -1,4 +1,4 @@
-import { Schema, model, models, Model } from "mongoose";
+import mongoose, { Schema, model, models, Model } from "mongoose";
 import { CommonServiceFieldsModel } from "@/utils/definitions/constants/db-constants";
 import { IPaymentWebhookEvent } from "./user-wallet-webhooks-db-interface";
 import { tableName } from "@/utils/definitions/constants/table-names";
@@ -70,6 +70,10 @@ const PaymentWebhookEventSchema = new Schema<IPaymentWebhookEvent>(
 
         processed_at: {
             type: Date,
+        },
+        status_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: tableName.Status,
         },
         ...CommonServiceFieldsModel
     },

@@ -80,6 +80,10 @@ const ServiceDocumentRequirementSchema = new Schema<IServiceDocumentRequirements
             },
         ],
         data_requirements: [DocumentDataRequirementSchema],
+        status_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: tableName.Status,
+        },
         ...CommonServiceFieldsModel,
     },
     { timestamps: true }

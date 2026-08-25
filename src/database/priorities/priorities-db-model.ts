@@ -11,6 +11,10 @@ const prioritiesSchema = new Schema<IStatus>(
         label: { type: String, required: true, unique: true },
         color: { type: String, required: true },
         is_default: { type: Boolean, required: false, default: false },
+        status_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: tableName.Status,
+        },
         ...CommonServiceFieldsModel,
     },
     { timestamps: true },

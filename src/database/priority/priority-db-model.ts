@@ -25,6 +25,10 @@ const PrioritySchema = new Schema<IPriorities>(
       type: Boolean,
       default: false,
     },
+    status_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: tableName.Status,
+    },
     ...CommonServiceFieldsModel,
   },
   {

@@ -138,7 +138,7 @@ class WalletLedgerService {
                         version: 1,
                     },
                 } as any,
-                { new: true, session }
+                { returnDocument: 'after', session }
             );
 
             if (!updated) {
@@ -205,7 +205,7 @@ class WalletLedgerService {
                         version: 1,
                     },
                 } as any,
-                { new: false, session } // return pre-update doc for balance_before
+                { returnDocument: 'before', session } // return pre-update doc for balance_before
             )) as any;
 
             if (!updated) {

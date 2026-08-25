@@ -74,6 +74,10 @@ const walletAccountSchema = new Schema<IWalletAccount>(
             required: true,
             default: 0,
         },
+        status_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: tableName.Status,
+        },
         ...CommonServiceFieldsModel
     },
     {

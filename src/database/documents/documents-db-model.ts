@@ -30,6 +30,10 @@ const DocumentSchema = new Schema<IDocument>(
         content_type: { type: String, required: true },
         keys: { type: KeysSchema, required: true },
         unsigned_urls: { type: urlsSchema, required: false, default: undefined },
+        status_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: tableName.Status,
+        },
         ...CommonServiceFieldsModel,
     },
     {

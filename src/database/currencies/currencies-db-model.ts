@@ -32,6 +32,10 @@ const currencySchema = new Schema<ICurrency>(
             required: true,
             ref: tableName.Documents,
         },
+        status_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: tableName.Status,
+        },
         ...CommonServiceFieldsModel,
     },
     {

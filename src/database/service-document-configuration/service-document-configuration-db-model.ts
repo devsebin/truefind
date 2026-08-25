@@ -35,9 +35,17 @@ const ServiceDocumentConfigurationSchema = new Schema(
                         },
                     },
                 ],
+                status_id: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: tableName.Status,
+                },
                 ...CommonServiceFieldsModel, // <== Add this here
             },
         ],
+        status_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: tableName.Status,
+        },
         ...CommonServiceFieldsModel,
     },
     { timestamps: true }

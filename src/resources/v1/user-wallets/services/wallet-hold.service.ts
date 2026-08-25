@@ -44,7 +44,7 @@ class WalletHoldService {
                         version: 1,
                     },
                 } as any,
-                { new: true, session }
+                { returnDocument: 'after', session }
             );
 
             if (!updated) {
@@ -108,7 +108,7 @@ class WalletHoldService {
                         version: 1,
                     },
                 } as any,
-                { new: true, session }
+                { returnDocument: 'after', session }
             );
 
             if (!updated) {
@@ -167,7 +167,7 @@ class WalletHoldService {
                         version: 1,
                     },
                 } as any,
-                { new: true, session }
+                { returnDocument: 'after', session }
             );
 
             if (!updated) {

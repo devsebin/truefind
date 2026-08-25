@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 import { CommonServiceFieldsModel } from "@/utils/definitions/constants/db-constants";
 import { AdjustmentStatus, IWalletAdjustment } from "./user-wallet-adjustments-db-interface";
 import { tableName } from "@/utils/definitions/constants/table-names";
@@ -70,6 +70,10 @@ const WalletAdjustmentSchema = new Schema<IWalletAdjustment>(
 
         completed_at: Date,
 
+        status_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: tableName.Status,
+        },
         ...CommonServiceFieldsModel,
     },
     {

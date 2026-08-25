@@ -71,6 +71,10 @@ const carouselSchema = new mongoose.Schema<ICarousel>({
     button: buttonSchema,
     colorPattern: colorPatternSchema,
     redeemCode: String,
+    status_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: tableName.Status,
+    },
     ...CommonServiceFieldsModel,
 }, {
     timestamps: true

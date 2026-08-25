@@ -191,6 +191,10 @@ const ServiceInformationSchema =
                 type: [ServiceDisclaimerSchema],
                 default: [],
             },
+            status_id: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: tableName.Status,
+            },
             ...CommonServiceFieldsModel,
         },
         {

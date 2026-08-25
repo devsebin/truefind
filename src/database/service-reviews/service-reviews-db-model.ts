@@ -58,6 +58,10 @@ const ServiceReviewSchema =
                 type: mongoose.Schema.Types.ObjectId,
                 ref: tableName.User,
             },
+            status_id: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: tableName.Status,
+            },
             ...CommonServiceFieldsModel,
         },
         {

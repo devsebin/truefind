@@ -1,4 +1,4 @@
-import { Schema, model, Types } from "mongoose";
+import mongoose, { Schema, model, Types } from "mongoose";
 import {
     CommonServiceFieldsModel,
 } from "@/utils/definitions/constants/db-constants";
@@ -37,6 +37,10 @@ const walletSchema = new Schema<IWallet>(
             enum: ["INR", "NZD", "USD", "AUD", "GBP"] satisfies CurrencyCode[],
             default: "INR",
             index: true,
+        },
+        status_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: tableName.Status,
         },
         ...CommonServiceFieldsModel
     },

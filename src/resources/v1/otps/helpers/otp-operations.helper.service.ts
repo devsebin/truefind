@@ -201,7 +201,7 @@ class OtpOperationsHelperService {
                 $inc: { attempts: 1 },
                 $set: { last_seen_at: new Date() },
             },
-            { new: true },
+            { returnDocument: 'after' },
         );
 
         if (updated && updated.attempts >= MAX_OTP_ATTEMPTS) {

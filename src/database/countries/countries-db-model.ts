@@ -49,6 +49,10 @@ const countrySchema = new Schema<ICountry>(
             required: false,
             default: [],
         },
+        status_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: tableName.Status,
+        },
         ...CommonServiceFieldsModel,
     },
     { timestamps: true },

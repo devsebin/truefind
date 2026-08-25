@@ -63,6 +63,10 @@ const suburbSchema = new Schema<ISuburb>(
             required: true,
         },
 
+        status_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: tableName.Status,
+        },
         ...CommonServiceFieldsModel,
     },
     { timestamps: true },

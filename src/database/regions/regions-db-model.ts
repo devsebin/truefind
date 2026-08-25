@@ -20,6 +20,10 @@ const regionSchema = new Schema<IRegion>(
                 ref: tableName.Districts,
             },
         ],
+        status_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: tableName.Status,
+        },
         ...CommonServiceFieldsModel,
     },
     { timestamps: true },

@@ -1,6 +1,6 @@
 import { CommonServiceFieldsModel } from "@/utils/definitions/constants/db-constants";
 import { IWalletLedgerEntry } from "./user-wallet-ledgers-db-interface";
-import { model, Schema } from "mongoose";
+import mongoose, { model, Schema } from "mongoose";
 import { tableName } from "@/utils/definitions/constants/table-names";
 
 const WalletLedgerEntrySchema =
@@ -83,6 +83,10 @@ const WalletLedgerEntrySchema =
 
             metadata: Schema.Types.Mixed,
 
+            status_id: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: tableName.Status,
+            },
             ...CommonServiceFieldsModel
         },
         {

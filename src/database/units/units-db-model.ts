@@ -12,6 +12,10 @@ const unitsSchema = new Schema<IUnits>(
         dimension: { type: String, required: true },
         color: { type: String, required: true },
         is_default: { type: Boolean, required: false, default: false },
+        status_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: tableName.Status,
+        },
         ...CommonServiceFieldsModel,
     },
     { timestamps: true },

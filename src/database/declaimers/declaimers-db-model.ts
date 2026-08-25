@@ -55,6 +55,10 @@ const DeclaimerSchema = new Schema<IDeclaimer>(
         metadata: {
             type: Schema.Types.Mixed,
         },
+        status_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: tableName.Status,
+        },
         ...CommonServiceFieldsModel,
     },
     {

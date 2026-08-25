@@ -20,10 +20,6 @@ export const CommonServiceFieldsModel = {
     ref: tableName.User,
     default: null,
   },
-  status_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: tableName.Status,
-  },
 };
 
 export interface CommonServiceFieldsInterface {

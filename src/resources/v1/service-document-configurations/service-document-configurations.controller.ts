@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 import { errorMessages, statusCodes } from "@/utils/definitions/constants/common";
 import { errorResponse } from "@/utils/responses/error.response";
 import { JsonResponse } from "@/utils/responses/types";
-import createActivityLogService from "../../activity-log/services/create-activity-log.service";
 
 import createServiceDocumentConfigurationService from "./services/create-service-document-configuration.service";
 import showServiceDocumentConfigurationService from "./services/show-service-document-configuration.service";
@@ -12,6 +11,7 @@ import updateServiceDocumentConfigurationService from "./services/update-service
 import deleteServiceDocumentConfigurationService from "./services/delete-service-document-configuration.service";
 import enableServiceDocumentConfigurationService from "./services/enable-service-document-configuration.service";
 import disableServiceDocumentConfigurationService from "./services/disable-service-document-configuration.service";
+import createActivityLogService from "../activity-log/services/create-activity-log.service";
 
 class ServiceDocumentConfigurationsController {
   async Store(req: Request, res: Response): Promise<JsonResponse | void> {

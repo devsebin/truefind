@@ -37,6 +37,10 @@ const UserTaskSchema = new Schema<IUserTaskMapping>(
             enum: UserTaskEligibilityStatus,
             default: "pending",
         },
+        status_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: tableName.Status,
+        },
         ...CommonServiceFieldsModel,
     },
     { timestamps: true }

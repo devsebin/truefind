@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 import { CommonServiceFieldsModel } from "@/utils/definitions/constants/db-constants";
 import { IWalletReconciliation, ReconciliationStatus } from "./user-wallet-reconciliations-db-interface";
 import { tableName } from "@/utils/definitions/constants/table-names";
@@ -61,6 +61,10 @@ const WalletReconciliationSchema = new Schema<IWalletReconciliation>(
             maxlength: 2000,
         },
 
+        status_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: tableName.Status,
+        },
         ...CommonServiceFieldsModel,
     },
     {

@@ -3,13 +3,13 @@ import mongoose from "mongoose";
 import { errorMessages, statusCodes } from "@/utils/definitions/constants/common";
 import { errorResponse } from "@/utils/responses/error.response";
 import { JsonResponse } from "@/utils/responses/types";
-import createActivityLogService from "../../activity-log/services/create-activity-log.service";
 
 import createCountryConfigurationService from "./services/create-country-configuration.service";
 import listCountryConfigurationService from "./services/list-country-configuration.service";
 import showCountryConfigurationService from "./services/show-country-configuration.service";
 import updateCountryConfigurationService from "./services/update-country-configuration.service";
 import deleteCountryConfigurationService from "./services/delete-country-configuration.service";
+import createActivityLogService from "../activity-log/services/create-activity-log.service";
 
 class ServiceCountryConfigurationsController {
   async StoreCountryConfig(req: Request, res: Response): Promise<JsonResponse | void> {

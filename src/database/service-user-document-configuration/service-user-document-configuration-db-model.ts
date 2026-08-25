@@ -54,6 +54,10 @@ const ServiceUserDocumentConfigurationSchema = new Schema<IServiceUserDocumentCo
         },
         verified_by: { type: Schema.Types.ObjectId, ref: tableName.User },
         verified_at: { type: Date },
+        status_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: tableName.Status,
+        },
         ...CommonServiceFieldsModel,
     },
     { timestamps: true }
