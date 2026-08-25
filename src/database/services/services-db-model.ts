@@ -20,10 +20,6 @@ const TaskSchema = new Schema<ITaskServiceDocument>(
             enum: timeUnits,
             default: timeUnits.hours,
         },
-        status_id: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: tableName.Status,
-        },
         ...CommonServiceFieldsModel,
     },
     { timestamps: true },
@@ -48,14 +44,10 @@ const BaseServiceSchema = new Schema<IBaseServiceDocument>(
         children: [
             { type: mongoose.Schema.Types.ObjectId, ref: tableName.Services },
         ], // references tasks or subcategories
-        status_id: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: tableName.Status,
-        },
         ...CommonServiceFieldsModel,
     },
     { discriminatorKey: "type", timestamps: true },
-);
+); CommonServiceFieldsModel
 
 /*---------------- Models ----------------*/
 export const BaseServiceModel = mongoose.model<IBaseServiceDocument>(
