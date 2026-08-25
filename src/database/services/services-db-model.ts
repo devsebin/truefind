@@ -3,6 +3,8 @@ import mongoose, { Schema } from "mongoose";
 import { CommonServiceFieldsModel } from "@/utils/definitions/constants/db-constants";
 import { serviceTypes } from "@/utils/definitions/constants/service-types";
 import { IBaseServiceDocument, ICategoryDocument, ISubcategoryDocument, ITaskServiceDocument, timeUnits } from "./services-db-interface";
+import { defaultServiceStatusPlugin } from "@/utils/plugins/service-status.plugin";
+import { auditPlugin } from "@/utils/plugins/audit.plugin";
 
 /*---------------- Task ----------------*/
 const TaskSchema = new Schema<ITaskServiceDocument>(
@@ -20,10 +22,17 @@ const TaskSchema = new Schema<ITaskServiceDocument>(
             enum: timeUnits,
             default: timeUnits.hours,
         },
+        status_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: tableName.ServiceStatus,
+            required: true,
+        },
         ...CommonServiceFieldsModel,
     },
     { timestamps: true },
 );
+
+TaskSchema.plugin(auditPlugin);
 
 /*---------------- Base (Category/Subcategory) ----------------*/
 const BaseServiceSchema = new Schema<IBaseServiceDocument>(
@@ -41,14 +50,21 @@ const BaseServiceSchema = new Schema<IBaseServiceDocument>(
             ref: tableName.Documents,
             required: true,
         },
+        status_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: tableName.ServiceStatus,
+            required: true,
+        },
         children: [
             { type: mongoose.Schema.Types.ObjectId, ref: tableName.Services },
         ], // references tasks or subcategories
         ...CommonServiceFieldsModel,
     },
     { discriminatorKey: "type", timestamps: true },
-); CommonServiceFieldsModel
+);
 
+BaseServiceSchema.plugin(defaultServiceStatusPlugin);
+BaseServiceSchema.plugin(auditPlugin);
 /*---------------- Models ----------------*/
 export const BaseServiceModel = mongoose.model<IBaseServiceDocument>(
     tableName.Services,

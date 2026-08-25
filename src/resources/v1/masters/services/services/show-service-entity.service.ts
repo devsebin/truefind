@@ -3,7 +3,7 @@ import { buildErrorResult, ErrorResponse } from "@/utils/responses/error.respons
 import { SingleResponse } from "@/utils/responses/success.response";
 import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 import mongoose from "mongoose";
-import { returnServiceSuccess, throwError } from "../services.helper";
+import { populateFields, returnServiceSuccess, throwError } from "../services.helper";
 import { servicesErrorsMessages } from "../services.messages";
 import { serviceResponse } from "../services.response";
 
@@ -12,14 +12,7 @@ class showServiceEntityService {
     id: mongoose.Types.ObjectId,
   ): Promise<SingleResponse | ErrorResponse> {
     try {
-      const doc = await BaseServiceModel.findById(id)
-        .populate("icon")
-        .populate({
-          path: "children",
-          populate: {
-            path: "icon"
-          }
-        });
+      const doc = await BaseServiceModel.findById(id).populate(populateFields);
 
       if (!doc || doc.is_deleted) {
         throwError(

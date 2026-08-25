@@ -33,6 +33,7 @@ export const serviceResponse = (service: any): any => {
 
     is_active: service.is_active,
     is_deleted: service.is_deleted,
+    status: service.status_id,
 
     created_by: userResponse(service.created_by),
     updated_by: userResponse(service.updated_by),

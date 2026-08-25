@@ -45,7 +45,7 @@ export const populateFields = [
   },
   {
     path: "status_id",
-    select: "title",
+    select: "_id title label color is_default is_active is_deleted",
   },
   {
     path: "icon",
@@ -54,6 +54,31 @@ export const populateFields = [
   },
   {
     path: "children",
+    populate: [
+      {
+        path: "icon",
+        select:
+          "_id name document_type content_type unsigned_urls is_active is_deleted",
+      },
+      {
+        path: "status_id",
+        select: "_id title label color is_default is_active is_deleted",
+      },
+      {
+        path: "children",
+        populate: [
+          {
+            path: "icon",
+            select:
+              "_id name document_type content_type unsigned_urls is_active is_deleted",
+          },
+          {
+            path: "status_id",
+            select: "_id title label color is_default is_active is_deleted",
+          },
+        ],
+      },
+    ],
   },
 ];
 

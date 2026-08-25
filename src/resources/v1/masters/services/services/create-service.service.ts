@@ -13,7 +13,7 @@ import updateParentCategoryHelperService from "../helpers/operations/update-pare
 import findServiceHelperService from "../helpers/validators/find-service.helper.service";
 import validateIconHelperService from "../helpers/validators/validate-icon.helper.service";
 import validateParentHelperService from "../helpers/validators/validate-parent.helper.service";
-import { returnServiceSuccess, throwError } from "../services.helper";
+import { populateFields, returnServiceSuccess, throwError } from "../services.helper";
 import { servicesErrorsMessages } from "../services.messages";
 import { serviceResponse } from "../services.response";
 
@@ -74,6 +74,8 @@ class createServiceService {
         newTask._id as mongoose.Types.ObjectId,
         session,
       );
+
+      await newTask.populate(populateFields);
 
       await session.commitTransaction();
 
