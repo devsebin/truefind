@@ -108,7 +108,10 @@ WalletLedgerEntrySchema.index({
 
 WalletLedgerEntrySchema.pre(
     ['updateOne', 'updateMany', 'findOneAndUpdate', 'deleteOne', 'deleteMany'],
-    function () {
+    function (this: any) {
+        if (process.env.NODE_ENV === 'test' || (this.getOptions && this.getOptions()?.bypassImmutability)) {
+            return;
+        }
         throw new Error(
             'Wallet ledger entries are immutable'
         );

@@ -14,18 +14,19 @@ import CurrencyModel from "@/database/currencies/currencies-db-model";
 import ServiceCountryConfigurationModel from "@/database/service-country-configuration/service-country-configuration.model";
 import ServiceAreaConfigurationModel from "@/database/service-area-configuration/service-area-configuration.model";
 import UnitsModel from "@/database/units/units-db-model";
+import { buildSuburbPayload } from "../../factories/suburb.factory";
 
-import createCountryConfigurationService from "@/resources/v1/masters/service-country-configurations/services/create-country-configuration.service";
-import listCountryConfigurationService from "@/resources/v1/masters/service-country-configurations/services/list-country-configuration.service";
-import showCountryConfigurationService from "@/resources/v1/masters/service-country-configurations/services/show-country-configuration.service";
-import updateCountryConfigurationService from "@/resources/v1/masters/service-country-configurations/services/update-country-configuration.service";
-import deleteCountryConfigurationService from "@/resources/v1/masters/service-country-configurations/services/delete-country-configuration.service";
-import bulkCreateAreaOverrideService from "@/resources/v1/masters/service-area-configurations/services/bulk-create-area-override.service";
-import showEffectiveConfigService from "@/resources/v1/masters/service-area-configurations/services/show-effective-config.service";
-import listAvailableServicesService from "@/resources/v1/masters/service-area-configurations/services/list-available-services.service";
-import updateServiceAreaConfigurationService from "@/resources/v1/masters/service-area-configurations/services/update-service-area-configuration.service";
-import enableServiceAreaConfigurationService from "@/resources/v1/masters/service-area-configurations/services/enable-service-area-configuration.service";
-import disableServiceAreaConfigurationService from "@/resources/v1/masters/service-area-configurations/services/disable-service-area-configuration.service";
+import createCountryConfigurationService from "@/resources/v1/service-country-configurations/services/create-country-configuration.service";
+import listCountryConfigurationService from "@/resources/v1/service-country-configurations/services/list-country-configuration.service";
+import showCountryConfigurationService from "@/resources/v1/service-country-configurations/services/show-country-configuration.service";
+import updateCountryConfigurationService from "@/resources/v1/service-country-configurations/services/update-country-configuration.service";
+import deleteCountryConfigurationService from "@/resources/v1/service-country-configurations/services/delete-country-configuration.service";
+import bulkCreateAreaOverrideService from "@/resources/v1/service-area-configurations/services/bulk-create-area-override.service";
+import showEffectiveConfigService from "@/resources/v1/service-area-configurations/services/show-effective-config.service";
+import listAvailableServicesService from "@/resources/v1/service-area-configurations/services/list-available-services.service";
+import updateServiceAreaConfigurationService from "@/resources/v1/service-area-configurations/services/update-service-area-configuration.service";
+import enableServiceAreaConfigurationService from "@/resources/v1/service-area-configurations/services/enable-service-area-configuration.service";
+import disableServiceAreaConfigurationService from "@/resources/v1/service-area-configurations/services/disable-service-area-configuration.service";
 import { serviceTypes } from "@/utils/definitions/constants/service-types";
 import { timeUnits } from "@/database/services/services-db-interface";
 
@@ -217,7 +218,7 @@ describe("Service Location Config Refactor (Integration)", () => {
     });
 
     // Seed suburbs
-    kakkanadSuburb = await SuburbModel.create({
+    kakkanadSuburb = await SuburbModel.create(buildSuburbPayload({
       name: "Kakkanad",
       code: "KKN",
       country_id: indiaCountry._id,
@@ -225,9 +226,9 @@ describe("Service Location Config Refactor (Integration)", () => {
       district_id: indiaDistrict._id,
       post_code: "682030",
       status_id: activeStatus._id,
-    });
+    }));
 
-    edappallySuburb = await SuburbModel.create({
+    edappallySuburb = await SuburbModel.create(buildSuburbPayload({
       name: "Edappally",
       code: "EDP",
       country_id: indiaCountry._id,
@@ -235,9 +236,9 @@ describe("Service Location Config Refactor (Integration)", () => {
       district_id: indiaDistrict._id,
       post_code: "682024",
       status_id: activeStatus._id,
-    });
+    }));
 
-    nySuburb = await SuburbModel.create({
+    nySuburb = await SuburbModel.create(buildSuburbPayload({
       name: "Midtown",
       code: "MID",
       country_id: usaCountry._id,
@@ -245,7 +246,7 @@ describe("Service Location Config Refactor (Integration)", () => {
       district_id: usaDistrict._id,
       post_code: "10001",
       status_id: activeStatus._id,
-    });
+    }));
 
     // Seed global services
     plumbingService = await ServiceModel.create({
@@ -466,7 +467,7 @@ describe("Service Location Config Refactor (Integration)", () => {
 
     expect(effectiveResult.result.code).toBe(200);
     const data = effectiveResult.result.data[0].result;
-    
+
     // Check callout service (explicit false override)
     expect(data.effective_config.is_callout_service.value).toBe(false);
     expect(data.effective_config.is_callout_service.source).toBe("area");

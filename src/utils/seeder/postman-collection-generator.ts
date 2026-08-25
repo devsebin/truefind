@@ -29,6 +29,7 @@ import serviceDocumentConfigurationApiData from "@/utils/seeder/data-source/apis
 import documentTypesApiData from "@/utils/seeder/data-source/apis/document-types-api-data";
 import carouselsApiData from "@/utils/seeder/data-source/apis/carousels-api-data";
 import serviceInformationApiData from "@/utils/seeder/data-source/apis/service-information-api-data";
+import serviceStatusesApiData from "@/utils/seeder/data-source/apis/service-statuses-api-data";
 
 export const generatePostmanCollection = () => {
   (global as any).rolesCookie = [
@@ -43,6 +44,7 @@ export const generatePostmanCollection = () => {
     { name: "Authentication Sessions", data: authenticationSessionsApiData() },
     { name: "Users", data: userApiData() },
     { name: "Statuses", data: statusesApiData() },
+    { name: "Service Statuses", data: serviceStatusesApiData() },
     { name: "Countries", data: countriesApiData() },
     { name: "Regions", data: regionsApiData() },
     { name: "Districts", data: districtsApiData() },

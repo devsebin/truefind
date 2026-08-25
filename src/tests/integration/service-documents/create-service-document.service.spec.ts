@@ -4,19 +4,23 @@ import serviceDocumentRequirementModel from "@/database/service-documents/servic
 import UserModel from "@/database/users/users-db-model";
 import StatusModel from "@/database/status/status-db-model";
 import PriorityModel from "@/database/priority/priority-db-model";
+import DocumentTypesModel from "@/database/document-types/document-types-db-model";
 import { requestContext } from "@/utils/context/request-context";
 import { buildServiceDocumentPayload } from "../../factories/service-document.factory";
+import { buildDocumentTypesPayload } from "../../factories/document-types.factory";
 import mongoose from "mongoose";
 
 describe("CreateServiceDocumentService (Integration)", () => {
   let testUser: any;
   let defaultStatus: any;
+  let testDocType: any;
 
   beforeAll(async () => {
     await serviceDocumentRequirementModel.ensureIndexes();
     await UserModel.ensureIndexes();
     await StatusModel.ensureIndexes();
     await PriorityModel.ensureIndexes();
+    await DocumentTypesModel.ensureIndexes();
   });
 
   beforeEach(async () => {
@@ -39,6 +43,10 @@ describe("CreateServiceDocumentService (Integration)", () => {
       status_id: defaultStatus._id,
     });
 
+    testDocType = await DocumentTypesModel.create(
+      buildDocumentTypesPayload({ title: "Identification", label: "identification", color: "#112233" })
+    );
+
     testUser = await UserModel.create({
       first_name: "John",
       last_name: "Doe",
@@ -54,6 +62,7 @@ describe("CreateServiceDocumentService (Integration)", () => {
       name: "Passport",
       display_name: "Passport Copy",
       item_code: "DOC_PASSPORT",
+      document_type_id: testDocType._id.toString(),
     });
 
     const mockReq = {
@@ -80,12 +89,14 @@ describe("CreateServiceDocumentService (Integration)", () => {
       name: "Driving License",
       display_name: "Driving License",
       item_code: "DOC_DL",
+      document_type_id: testDocType._id.toString(),
     });
 
     const payload2 = buildServiceDocumentPayload({
       name: "Driving License 2",
       display_name: "Driving License 2",
       item_code: "DOC_DL",
+      document_type_id: testDocType._id.toString(),
     });
 
     await requestContext.run({ userId: testUser._id.toString() }, async () => {
@@ -107,12 +118,14 @@ describe("CreateServiceDocumentService (Integration)", () => {
       name: "National ID",
       display_name: "National ID",
       item_code: "DOC_NID_1",
+      document_type_id: testDocType._id.toString(),
     });
 
     const payload2 = buildServiceDocumentPayload({
       name: "National ID",
       display_name: "National ID Card",
       item_code: "DOC_NID_2",
+      document_type_id: testDocType._id.toString(),
     });
 
     await requestContext.run({ userId: testUser._id.toString() }, async () => {
@@ -135,6 +148,7 @@ describe("CreateServiceDocumentService (Integration)", () => {
       name: "Tax Certificate",
       display_name: "Tax Certificate",
       item_code: "DOC_TAX",
+      document_type_id: testDocType._id.toString(),
       samples: [fakeSampleId.toString()],
     });
 

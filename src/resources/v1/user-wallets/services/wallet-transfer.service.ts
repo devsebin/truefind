@@ -41,80 +41,76 @@ class WalletTransferService {
         const existing = await checkIdempotency(idempotency_key);
         if (existing) return existing;
 
-        return withWalletTransaction(async (session) => {
-            // Get sender wallet & account
-            const senderWallet = await walletCoreService.getWalletByUserId(from_user_id, session);
-            walletCoreService.validateWalletActive(senderWallet);
-            const senderAccount = await walletCoreService.getAccountByCurrency(
-                from_user_id, currency, session
-            );
-            walletCoreService.validateAccountActive(senderAccount);
+        // Get sender wallet & account
+        const senderWallet = await walletCoreService.getWalletByUserId(from_user_id);
+        walletCoreService.validateWalletActive(senderWallet);
+        const senderAccount = await walletCoreService.getAccountByCurrency(
+            from_user_id, currency
+        );
+        walletCoreService.validateAccountActive(senderAccount);
 
-            // Get receiver wallet & account (auto-create if needed)
-            const receiverWallet = await walletCoreService.getOrCreateWallet(
-                to_user_id, currency, session
-            );
-            walletCoreService.validateWalletActive(receiverWallet);
-            const receiverAccount = await walletCoreService.getOrCreateAccount(
-                receiverWallet._id as Types.ObjectId,
-                to_user_id,
-                currency,
-                "customer_wallet",
-                session
-            );
+        // Get receiver wallet & account (auto-create if needed)
+        const receiverWallet = await walletCoreService.getOrCreateWallet(
+            to_user_id, currency
+        );
+        walletCoreService.validateWalletActive(receiverWallet);
+        const receiverAccount = await walletCoreService.getOrCreateAccount(
+            receiverWallet._id as Types.ObjectId,
+            to_user_id,
+            currency,
+            "customer_wallet"
+        );
 
-            const transferNumber = generateTransferNumber();
+        const transferNumber = generateTransferNumber();
 
-            // Create transfer record
-            const [transfer] = await WalletTransferModel.create(
-                [
-                    {
-                        transfer_number: transferNumber,
-                        from_account_id: senderAccount._id as Types.ObjectId,
-                        to_account_id: receiverAccount._id as Types.ObjectId,
-                        from_user_id,
-                        to_user_id,
-                        currency,
-                        amount_minor: amount_minor.toString(),
-                        fee_minor: fee_minor.toString(),
-                        status: "completed",
-                        idempotency_key,
-                        description,
-                        completed_at: new Date(),
-                    },
-                ],
-                { session }
-            );
+        // Create transfer record
+        const [transfer] = await WalletTransferModel.create(
+            [
+                {
+                    transfer_number: transferNumber,
+                    from_account_id: senderAccount._id as Types.ObjectId,
+                    to_account_id: receiverAccount._id as Types.ObjectId,
+                    from_user_id,
+                    to_user_id,
+                    currency,
+                    amount_minor: amount_minor.toString(),
+                    fee_minor: fee_minor.toString(),
+                    status: "completed",
+                    idempotency_key,
+                    description,
+                    completed_at: new Date(),
+                },
+            ]
+        );
 
-            // Debit sender
-            await walletLedgerService.debit({
-                wallet_id: senderWallet._id as Types.ObjectId,
-                account_id: senderAccount._id as Types.ObjectId,
-                user_id: from_user_id,
-                amount_minor,
-                currency,
-                type: "transfer",
-                description: description || `Transfer to user`,
-                idempotency_key: `${idempotency_key}-debit`,
-                transfer_id: transfer._id as Types.ObjectId,
-                fee_minor,
-            });
-
-            // Credit receiver
-            await walletLedgerService.credit({
-                wallet_id: receiverWallet._id as Types.ObjectId,
-                account_id: receiverAccount._id as Types.ObjectId,
-                user_id: to_user_id,
-                amount_minor: amount_minor - fee_minor,
-                currency,
-                type: "transfer",
-                description: description || `Transfer from user`,
-                idempotency_key: `${idempotency_key}-credit`,
-                transfer_id: transfer._id as Types.ObjectId,
-            });
-
-            return transfer;
+        // Debit sender
+        await walletLedgerService.debit({
+            wallet_id: senderWallet._id as Types.ObjectId,
+            account_id: senderAccount._id as Types.ObjectId,
+            user_id: from_user_id,
+            amount_minor,
+            currency,
+            type: "transfer",
+            description: description || `Transfer to user`,
+            idempotency_key: `${idempotency_key}-debit`,
+            transfer_id: transfer._id as Types.ObjectId,
+            fee_minor,
         });
+
+        // Credit receiver
+        await walletLedgerService.credit({
+            wallet_id: receiverWallet._id as Types.ObjectId,
+            account_id: receiverAccount._id as Types.ObjectId,
+            user_id: to_user_id,
+            amount_minor: amount_minor - fee_minor,
+            currency,
+            type: "transfer",
+            description: description || `Transfer from user`,
+            idempotency_key: `${idempotency_key}-credit`,
+            transfer_id: transfer._id as Types.ObjectId,
+        });
+
+        return transfer;
     }
 
     /**

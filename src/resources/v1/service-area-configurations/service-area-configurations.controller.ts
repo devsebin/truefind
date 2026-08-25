@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import { errorMessages, statusCodes } from "@/utils/definitions/constants/common";
 import { errorResponse } from "@/utils/responses/error.response";
 import { JsonResponse } from "@/utils/responses/types";
-import createActivityLogService from "../../activity-log/services/create-activity-log.service";
+import createActivityLogService from "../activity-log/services/create-activity-log.service";
 
 import bulkCreateAreaOverrideService from "./services/bulk-create-area-override.service";
 import showEffectiveConfigService from "./services/show-effective-config.service";

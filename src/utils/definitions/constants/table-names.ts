@@ -1,6 +1,7 @@
 export enum tableName {
   User = "users",
   Status = "status",
+  ServiceStatus = "service_status",
   ActivityLog = "activity_logs",
   Api = "apis",
   Tokens = "tokens",

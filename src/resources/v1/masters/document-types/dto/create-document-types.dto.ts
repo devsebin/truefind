@@ -9,7 +9,7 @@ export interface IDocumentTypesDTO {
 
 export function toDocumentTypesDTO(body: IInputIDocumentTypesPayloadStrict): IDocumentTypesDTO {
     return {
-        title: body.title?.trim().toUpperCase(),
+        title: body.title?.trim(),
         label: body.label?.trim()?.toLowerCase(),
         color: body.color?.trim(),
         is_default: body.is_default,

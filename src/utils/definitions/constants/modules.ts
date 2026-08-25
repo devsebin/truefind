@@ -28,5 +28,6 @@ export enum moduleTypes {
   Wallets = "wallets",
   Carousels = "carousels",
   ServiceInformations = "service_informations",
+  ServiceStatuses = "service_statuses",
 }
 

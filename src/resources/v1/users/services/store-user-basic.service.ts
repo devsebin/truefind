@@ -79,37 +79,20 @@ class StoreUserBasicService {
         coordinates: [body.longitude, body.latitude],
       };
 
-      // const suburb = await SuburbModel.findOne({
-      //   boundary: {
-      //     $geoIntersects: {
-      //       $geometry: point,
-      //     },
-      //   },
-      // }).session(session);
-
-      // if (!suburb) {
-      //   const response = ResponseBuilder.error(ErrorTypes.VALIDATION_ERROR, {
-      //     message: "Your location is not within any supported suburb",
-      //     data: {},
-      //   });
-      //   throwError("suburb_not_found", response);
-      // }
-
-      //check the zip code within the specific region
-
-      const [suburb] = await findSuburbHelperService.execute(
-        {
-          post_code: body.zip,
-          region_id: new mongoose.Types.ObjectId(body.region_id),
-          country_id: new mongoose.Types.ObjectId(body.country_id)
+      const suburb = await SuburbModel.findOne({
+        boundary: {
+          $geoIntersects: {
+            $geometry: point,
+          },
         },
-        usersErrorsMessages,
-        { throwIfNotFound: true, returnDocument: true, session },
-      )
+        post_code: body.zip,
+        region_id: new mongoose.Types.ObjectId(body.region_id),
+        country_id: new mongoose.Types.ObjectId(body.country_id),
+      }).session(session);
 
       if (!suburb) {
         const response = ResponseBuilder.error(ErrorTypes.VALIDATION_ERROR, {
-          message: "Your zip code is not within any supported region",
+          message: "Your location is not within any supported suburb",
           data: {},
         });
         throwError("suburb_not_found", response);

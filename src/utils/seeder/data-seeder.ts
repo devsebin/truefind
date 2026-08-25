@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { seedRole } from "./seeder-source/role-seeder";
 import { seedUser } from "./seeder-source/user-seeder";
 import { seedStatus } from "./seeder-source/status-seeder";
+import { seedServiceStatus } from "./seeder-source/service-status-seeder";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -36,6 +37,7 @@ const seedDatabase = async () => {
 
     await seedUser();
     await seedStatus();
+    await seedServiceStatus();
 
     console.log("Seeding complete!");
     process.exit();

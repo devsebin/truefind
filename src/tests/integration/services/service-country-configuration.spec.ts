@@ -11,11 +11,11 @@ import CurrencyModel from "@/database/currencies/currencies-db-model";
 import ServiceCountryConfigurationModel from "@/database/service-country-configuration/service-country-configuration.model";
 import UnitsModel from "@/database/units/units-db-model";
 
-import createCountryConfigurationService from "@/resources/v1/masters/service-country-configurations/services/create-country-configuration.service";
-import listCountryConfigurationService from "@/resources/v1/masters/service-country-configurations/services/list-country-configuration.service";
-import showCountryConfigurationService from "@/resources/v1/masters/service-country-configurations/services/show-country-configuration.service";
-import updateCountryConfigurationService from "@/resources/v1/masters/service-country-configurations/services/update-country-configuration.service";
-import deleteCountryConfigurationService from "@/resources/v1/masters/service-country-configurations/services/delete-country-configuration.service";
+import createCountryConfigurationService from "@/resources/v1/service-country-configurations/services/create-country-configuration.service";
+import listCountryConfigurationService from "@/resources/v1/service-country-configurations/services/list-country-configuration.service";
+import showCountryConfigurationService from "@/resources/v1/service-country-configurations/services/show-country-configuration.service";
+import updateCountryConfigurationService from "@/resources/v1/service-country-configurations/services/update-country-configuration.service";
+import deleteCountryConfigurationService from "@/resources/v1/service-country-configurations/services/delete-country-configuration.service";
 import { serviceTypes } from "@/utils/definitions/constants/service-types";
 import { timeUnits } from "@/database/services/services-db-interface";
 

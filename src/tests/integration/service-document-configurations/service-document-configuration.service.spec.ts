@@ -10,13 +10,13 @@ import serviceDocumentRequirementModel from "@/database/service-documents/servic
 import documentTypesModel from "@/database/document-types/document-types-db-model";
 import ServiceDocumentConfigurationModel from "@/database/service-document-configuration/service-document-configuration-db-model";
 
-import createServiceDocumentConfigurationService from "@/resources/v1/masters/service-document-configurations/services/create-service-document-configuration.service";
-import showServiceDocumentConfigurationService from "@/resources/v1/masters/service-document-configurations/services/show-service-document-configuration.service";
-import listServiceDocumentConfigurationsService from "@/resources/v1/masters/service-document-configurations/services/list-service-document-configurations.service";
-import updateServiceDocumentConfigurationService from "@/resources/v1/masters/service-document-configurations/services/update-service-document-configuration.service";
-import deleteServiceDocumentConfigurationService from "@/resources/v1/masters/service-document-configurations/services/delete-service-document-configuration.service";
-import enableServiceDocumentConfigurationService from "@/resources/v1/masters/service-document-configurations/services/enable-service-document-configuration.service";
-import disableServiceDocumentConfigurationService from "@/resources/v1/masters/service-document-configurations/services/disable-service-document-configuration.service";
+import createServiceDocumentConfigurationService from "@/resources/v1/service-document-configurations/services/create-service-document-configuration.service";
+import showServiceDocumentConfigurationService from "@/resources/v1/service-document-configurations/services/show-service-document-configuration.service";
+import listServiceDocumentConfigurationsService from "@/resources/v1/service-document-configurations/services/list-service-document-configurations.service";
+import updateServiceDocumentConfigurationService from "@/resources/v1/service-document-configurations/services/update-service-document-configuration.service";
+import deleteServiceDocumentConfigurationService from "@/resources/v1/service-document-configurations/services/delete-service-document-configuration.service";
+import enableServiceDocumentConfigurationService from "@/resources/v1/service-document-configurations/services/enable-service-document-configuration.service";
+import disableServiceDocumentConfigurationService from "@/resources/v1/service-document-configurations/services/disable-service-document-configuration.service";
 import { serviceTypes } from "@/utils/definitions/constants/service-types";
 
 describe("Service Document Configuration Master Service (Integration)", () => {

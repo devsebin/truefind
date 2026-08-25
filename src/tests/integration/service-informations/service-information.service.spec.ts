@@ -105,12 +105,12 @@ describe("Service Information Master Service (Integration & Unit Tests)", () => 
 
       expect(result.result.code).toBe(201);
       expect(result.result.success).toBe(true);
-      expect(result.result.data.service.id.toString()).toBe(testService._id.toString());
-      expect(result.result.data.how_it_works).toHaveLength(2);
-      expect(result.result.data.included_items).toHaveLength(2);
-      expect(result.result.data.insurance_coverage.enabled).toBe(true);
-      expect(result.result.data.faqs).toHaveLength(2);
-      expect(result.result.data.disclaimers).toHaveLength(1);
+      expect(result.result.data[0].result.service.id.toString()).toBe(testService._id.toString());
+      expect(result.result.data[0].result.how_it_works).toHaveLength(2);
+      expect(result.result.data[0].result.included_items).toHaveLength(2);
+      expect(result.result.data[0].result.insurance_coverage.enabled).toBe(true);
+      expect(result.result.data[0].result.faqs).toHaveLength(2);
+      expect(result.result.data[0].result.disclaimers).toHaveLength(1);
 
       const dbInfo = await ServiceInformationModel.findOne({ service_id: testService._id });
       expect(dbInfo).toBeDefined();
@@ -191,12 +191,12 @@ describe("Service Information Master Service (Integration & Unit Tests)", () => 
         );
       });
 
-      const infoId = new Types.ObjectId(createRes.result.data.id);
+      const infoId = new Types.ObjectId(createRes.result.data[0].result.id);
       const showRes: any = await showServiceInformationService.execute(infoId);
 
       expect(showRes.result.code).toBe(200);
       expect(showRes.result.success).toBe(true);
-      expect(showRes.result.data.id.toString()).toBe(infoId.toString());
+      expect(showRes.result.data[0].result.id.toString()).toBe(infoId.toString());
     });
 
     it("should retrieve service information by service_id", async () => {
@@ -215,7 +215,7 @@ describe("Service Information Master Service (Integration & Unit Tests)", () => 
 
       expect(showRes.result.code).toBe(200);
       expect(showRes.result.success).toBe(true);
-      expect(showRes.result.data.service.id.toString()).toBe(testService._id.toString());
+      expect(showRes.result.data[0].result.service.id.toString()).toBe(testService._id.toString());
     });
 
     it("should return 404 if record is not found", async () => {
@@ -247,8 +247,8 @@ describe("Service Information Master Service (Integration & Unit Tests)", () => 
       const listRes: any = await listServiceInformationsService.execute(mockReq);
 
       expect(listRes.result.code).toBe(200);
-      expect(listRes.result.data).toHaveLength(1);
-      expect(listRes.result.data[0].service.id.toString()).toBe(testService._id.toString());
+      expect(listRes.result.data[0].result).toHaveLength(1);
+      expect(listRes.result.data[0].result[0].service.id.toString()).toBe(testService._id.toString());
     });
   });
 
@@ -266,7 +266,7 @@ describe("Service Information Master Service (Integration & Unit Tests)", () => 
         );
       });
 
-      const infoId = new Types.ObjectId(createRes.result.data.id);
+      const infoId = new Types.ObjectId(createRes.result.data[0].result.id);
       const updatePayload = {
         how_it_works: [
           {
@@ -296,9 +296,9 @@ describe("Service Information Master Service (Integration & Unit Tests)", () => 
 
       expect(updateRes.result.code).toBe(200);
       expect(updateRes.result.success).toBe(true);
-      expect(updateRes.result.data.how_it_works).toHaveLength(1);
-      expect(updateRes.result.data.how_it_works[0].title).toBe("New Title 1");
-      expect(updateRes.result.data.faqs).toHaveLength(1);
+      expect(updateRes.result.data[0].result.how_it_works).toHaveLength(1);
+      expect(updateRes.result.data[0].result.how_it_works[0].title).toBe("New Title 1");
+      expect(updateRes.result.data[0].result.faqs).toHaveLength(1);
     });
 
     it("should return 409 if no changes are detected", async () => {
@@ -314,7 +314,7 @@ describe("Service Information Master Service (Integration & Unit Tests)", () => 
         );
       });
 
-      const infoId = new Types.ObjectId(createRes.result.data.id);
+      const infoId = new Types.ObjectId(createRes.result.data[0].result.id);
 
       let updateRes: any;
       await requestContext.run({ userId: testUser._id.toString() }, async () => {
@@ -344,7 +344,7 @@ describe("Service Information Master Service (Integration & Unit Tests)", () => 
         );
       });
 
-      const infoId = new Types.ObjectId(createRes.result.data.id);
+      const infoId = new Types.ObjectId(createRes.result.data[0].result.id);
 
       let delRes: any;
       await requestContext.run({ userId: testUser._id.toString() }, async () => {
@@ -374,7 +374,7 @@ describe("Service Information Master Service (Integration & Unit Tests)", () => 
         );
       });
 
-      const infoId = new Types.ObjectId(createRes.result.data.id);
+      const infoId = new Types.ObjectId(createRes.result.data[0].result.id);
 
       // Disable
       let disableRes: any;
@@ -383,7 +383,7 @@ describe("Service Information Master Service (Integration & Unit Tests)", () => 
       });
 
       expect(disableRes.result.code).toBe(200);
-      expect(disableRes.result.data.is_active).toBe(false);
+      expect(disableRes.result.data[0].result.is_active).toBe(false);
 
       // Disable again -> conflict
       let disableAgainRes: any;
@@ -399,7 +399,7 @@ describe("Service Information Master Service (Integration & Unit Tests)", () => 
       });
 
       expect(enableRes.result.code).toBe(200);
-      expect(enableRes.result.data.is_active).toBe(true);
+      expect(enableRes.result.data[0].result.is_active).toBe(true);
 
       // Enable again -> conflict
       let enableAgainRes: any;

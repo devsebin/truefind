@@ -12,6 +12,7 @@ import StatusModel from "@/database/status/status-db-model";
 import PriorityModel from "@/database/priority/priority-db-model";
 import { serviceTypes } from "@/utils/definitions/constants/service-types";
 import { requestContext } from "@/utils/context/request-context";
+import { buildSuburbPayload } from "../../factories/suburb.factory";
 import mongoose from "mongoose";
 
 describe("ListAvailableUserServicesService (Integration)", () => {
@@ -120,7 +121,7 @@ describe("ListAvailableUserServicesService (Integration)", () => {
       status_id: defaultStatus._id,
     });
 
-    suburb1 = await SuburbModel.create({
+    suburb1 = await SuburbModel.create(buildSuburbPayload({
       name: "Suburb 1",
       code: "SUB1",
       country_id: country._id,
@@ -128,9 +129,9 @@ describe("ListAvailableUserServicesService (Integration)", () => {
       district_id: districtA._id,
       post_code: "1001",
       status_id: defaultStatus._id,
-    });
+    }));
 
-    suburb2 = await SuburbModel.create({
+    suburb2 = await SuburbModel.create(buildSuburbPayload({
       name: "Suburb 2",
       code: "SUB2",
       country_id: country._id,
@@ -138,9 +139,9 @@ describe("ListAvailableUserServicesService (Integration)", () => {
       district_id: districtA._id,
       post_code: "1002",
       status_id: defaultStatus._id,
-    });
+    }));
 
-    suburb3 = await SuburbModel.create({
+    suburb3 = await SuburbModel.create(buildSuburbPayload({
       name: "Suburb 3",
       code: "SUB3",
       country_id: country._id,
@@ -148,7 +149,7 @@ describe("ListAvailableUserServicesService (Integration)", () => {
       district_id: districtA._id,
       post_code: "1003",
       status_id: defaultStatus._id,
-    });
+    }));
 
     // Seed services hierarchy
     serviceBathroomPlumbing = await ServiceModel.create({
