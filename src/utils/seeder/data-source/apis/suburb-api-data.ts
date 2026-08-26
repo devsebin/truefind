@@ -20,7 +20,6 @@ const suburbsApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 
@@ -114,6 +113,7 @@ const suburbsApiData = (): IAPI[] => [
                 datatype: datatypes.String,
                 search_type: searchTypes.Partial,
                 is_active: true,
+                is_required: false,
             },
             {
                 title: "code_like",
@@ -122,6 +122,7 @@ const suburbsApiData = (): IAPI[] => [
                 datatype: datatypes.String,
                 search_type: searchTypes.Partial,
                 is_active: true,
+                is_required: false,
             },
             {
                 title: "country_id",
@@ -130,6 +131,7 @@ const suburbsApiData = (): IAPI[] => [
                 datatype: datatypes.String,
                 search_type: searchTypes.Exact,
                 is_active: true,
+                is_required: false,
             },
             {
                 title: "region_id",
@@ -138,6 +140,7 @@ const suburbsApiData = (): IAPI[] => [
                 datatype: datatypes.String,
                 search_type: searchTypes.Exact,
                 is_active: true,
+                is_required: false,
             },
             {
                 title: "district_id",
@@ -146,9 +149,9 @@ const suburbsApiData = (): IAPI[] => [
                 datatype: datatypes.String,
                 search_type: searchTypes.Exact,
                 is_active: true,
+                is_required: false,
             },
         ],
-
         access_params: {
         },
 
@@ -169,7 +172,6 @@ const suburbsApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 
@@ -255,7 +257,6 @@ const suburbsApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 
@@ -275,7 +276,6 @@ const suburbsApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 
@@ -295,7 +295,6 @@ const suburbsApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 
@@ -315,7 +314,6 @@ const suburbsApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 
@@ -335,7 +333,6 @@ const suburbsApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 

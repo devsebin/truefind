@@ -36,6 +36,7 @@ interface CategoryQuery {
   show_inactive_services: boolean;
   remove_empty_categories: boolean;
   remove_empty_sub_category: boolean;
+  show_only_category: boolean;
 }
 class listServiceCategoryService {
   private categoryServiceModel: Model<ICategoryDocument>;
@@ -58,10 +59,36 @@ class listServiceCategoryService {
       show_inactive_services,
       remove_empty_categories,
       remove_empty_sub_category,
+      show_only_category,
     } = req.query as unknown as CategoryQuery;
 
     try {
       session.startTransaction();
+
+      if (show_only_category) {
+        const rootDocs = await this.findCategoryOnly(
+          session,
+          show_inactive_categories,
+        );
+
+        DbTransactions.push(
+          await createDbTransaction(
+            tableName.Services,
+            apiMethods.GET,
+            operationTypes.Read,
+            rootDocs,
+          ),
+        );
+
+        await session.commitTransaction();
+
+        return returnServiceSuccess(
+          "category_fetched",
+          rootDocs,
+          DbTransactions,
+        );
+      }
+
       let user_selected_service_ids: Set<string> | undefined = undefined;
       let location_active_service_ids: Set<string> | undefined = undefined;
       // Active services
@@ -116,6 +143,34 @@ class listServiceCategoryService {
   }
 
   /*------------------------ Private Methods -----------------*/
+
+  private async findCategoryOnly(
+    session: mongoose.ClientSession,
+    show_inactive_categories: boolean = true,
+  ): Promise<WithChildren[]> {
+    const rootQuery: any = { type: serviceTypes.Category };
+    if (!show_inactive_categories) {
+      rootQuery.is_active = true;
+      rootQuery.is_deleted = false;
+    }
+
+    const rootDocs = (await this.categoryServiceModel
+      .find(rootQuery)
+      .populate("icon")
+      .session(session)
+      .lean()) as WithChildren[];
+
+    if (!rootDocs || rootDocs.length === 0) {
+      throwError(
+        "no_root_categories_found",
+        ResponseBuilder.error(ErrorTypes.NOT_FOUND, {
+          message: "No root categories found",
+        }),
+      );
+    }
+
+    return rootDocs;
+  }
 
   private async findActiveServices(session: mongoose.ClientSession) {
     try {

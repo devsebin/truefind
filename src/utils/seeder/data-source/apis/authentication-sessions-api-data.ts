@@ -18,7 +18,7 @@ const authenticationSessionsApiData = (): IAPI[] => [
     status: true,
     form_params: [],
     search_params: [],
-    access_params: {
+        access_params: {
     },
     control_params: [],
     payload_params: [],
@@ -39,7 +39,7 @@ const authenticationSessionsApiData = (): IAPI[] => [
     search_params: [
       ...defaultSearchParams,
     ],
-    access_params: {
+        access_params: {
     },
     control_params: [],
     payload_params: [],

@@ -17,7 +17,7 @@ const authenticationApiData = (): IAPI[] => [
     status: true,
     form_params: [],
     search_params: [],
-    access_params: {},
+        access_params: {},
     control_params: [],
     payload_params: [
       {
@@ -82,7 +82,7 @@ const authenticationApiData = (): IAPI[] => [
     status: true,
     form_params: [],
     search_params: [],
-    access_params: {},
+        access_params: {},
     control_params: [],
     payload_params: [
       {
@@ -107,7 +107,7 @@ const authenticationApiData = (): IAPI[] => [
     status: true,
     form_params: [],
     search_params: [],
-    access_params: {},
+        access_params: {},
     control_params: [],
     payload_params: [
       {
@@ -148,7 +148,7 @@ const authenticationApiData = (): IAPI[] => [
     status: true,
     form_params: [],
     search_params: [],
-    access_params: {},
+        access_params: {},
     control_params: [],
     payload_params: [
       {
@@ -197,7 +197,7 @@ const authenticationApiData = (): IAPI[] => [
     status: true,
     form_params: [],
     search_params: [],
-    access_params: {},
+        access_params: {},
     control_params: [],
     payload_params: [
       {
@@ -246,7 +246,7 @@ const authenticationApiData = (): IAPI[] => [
     status: true,
     form_params: [],
     search_params: [],
-    access_params: {},
+        access_params: {},
     control_params: [],
     payload_params: [],
     required_authentication: true,
@@ -262,7 +262,7 @@ const authenticationApiData = (): IAPI[] => [
     status: true,
     form_params: [],
     search_params: [],
-    access_params: {},
+        access_params: {},
     control_params: [],
     payload_params: [],
     required_authentication: true,

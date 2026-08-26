@@ -111,6 +111,7 @@ const carouselsApiData = (): IAPI[] => [
                 datatype: datatypes.String,
                 search_type: searchTypes.Exact,
                 is_active: true,
+                is_required: false,
             },
             {
                 title: "title_like",
@@ -119,6 +120,7 @@ const carouselsApiData = (): IAPI[] => [
                 datatype: datatypes.String,
                 search_type: searchTypes.Partial,
                 is_active: true,
+                is_required: false,
             },
         ],
         access_params: {},

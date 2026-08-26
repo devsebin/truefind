@@ -20,7 +20,6 @@ const regionsApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 
@@ -74,6 +73,7 @@ const regionsApiData = (): IAPI[] => [
                 datatype: datatypes.String,
                 search_type: searchTypes.Partial,
                 is_active: true,
+                is_required: false,
             },
             {
                 title: "code_like",
@@ -82,6 +82,7 @@ const regionsApiData = (): IAPI[] => [
                 datatype: datatypes.String,
                 search_type: searchTypes.Partial,
                 is_active: true,
+                is_required: false,
             },
             {
                 title: "country_id",
@@ -90,6 +91,7 @@ const regionsApiData = (): IAPI[] => [
                 datatype: datatypes.String,
                 search_type: searchTypes.Exact,
                 is_active: true,
+                is_required: false,
             },
             {
                 title: "country_name_like",
@@ -98,6 +100,7 @@ const regionsApiData = (): IAPI[] => [
                 datatype: datatypes.String,
                 search_type: searchTypes.Partial,
                 is_active: true,
+                is_required: false,
             },
             {
                 title: "country_status_id",
@@ -106,6 +109,7 @@ const regionsApiData = (): IAPI[] => [
                 datatype: datatypes.String,
                 search_type: searchTypes.Exact,
                 is_active: true,
+                is_required: false,
             },
             {
                 title: "country_status_title_like",
@@ -114,9 +118,9 @@ const regionsApiData = (): IAPI[] => [
                 datatype: datatypes.String,
                 search_type: searchTypes.Partial,
                 is_active: true,
+                is_required: false,
             },
         ],
-
         access_params: {
         },
 
@@ -137,7 +141,6 @@ const regionsApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 
@@ -175,7 +178,6 @@ const regionsApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 
@@ -195,7 +197,6 @@ const regionsApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 
@@ -215,7 +216,6 @@ const regionsApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 
@@ -235,7 +235,6 @@ const regionsApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 
@@ -255,7 +254,6 @@ const regionsApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 

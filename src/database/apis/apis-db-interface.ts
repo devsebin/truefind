@@ -18,6 +18,7 @@ export interface ISearchParams {
   datatype: datatypes;
   search_type: searchTypes;
   is_active: boolean;
+  is_required: boolean;
   admin_access?: boolean;
   user_access?: boolean;
   employee_access?: boolean;

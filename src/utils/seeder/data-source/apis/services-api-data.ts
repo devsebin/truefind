@@ -5,6 +5,7 @@ import { moduleTypes } from "../../../../utils/definitions/constants/modules";
 import { activityCode, activityName } from "../../activities/service-activities";
 import { apiMethods } from "../../../../utils/definitions/constants/api-methods";
 import { datatypes } from "../../../../utils/definitions/constants/data-types";
+import { searchTypes } from "@/utils/definitions/constants/search-types";
 
 const servicesApiData = (): IAPI[] => [
     /* --- Categories --- */
@@ -175,7 +176,62 @@ const servicesApiData = (): IAPI[] => [
         url: "/api/v1/masters/services",
         status: true,
         form_params: [],
-        search_params: [],
+        search_params: [
+            {
+                title: "show_inactive_categories",
+                value: "true",
+                allowed_values: ["true", "false"],
+                datatype: datatypes.Boolean,
+                search_type: searchTypes.Exact,
+                is_active: true,
+                is_required: true,
+            },
+            {
+                title: "show_inactive_subcategories",
+                value: "true",
+                allowed_values: ["true", "false"],
+                datatype: datatypes.Boolean,
+                search_type: searchTypes.Exact,
+                is_active: true,
+                is_required: true,
+            },
+            {
+                title: "show_inactive_services",
+                value: "true",
+                allowed_values: ["true", "false"],
+                datatype: datatypes.Boolean,
+                is_active: true,
+                is_required: true,
+                search_type: searchTypes.Exact,
+            },
+            {
+                title: "remove_empty_categories",
+                value: "true",
+                allowed_values: ["true", "false"],
+                datatype: datatypes.Boolean,
+                is_active: true,
+                is_required: true,
+                search_type: searchTypes.Exact,
+            },
+            {
+                title: "remove_empty_sub_category",
+                value: "true",
+                allowed_values: ["true", "false"],
+                datatype: datatypes.Boolean,
+                is_active: true,
+                is_required: true,
+                search_type: searchTypes.Exact,
+            },
+            {
+                title: "show_only_category ",
+                value: "false",
+                allowed_values: ["true", "false"],
+                datatype: datatypes.Boolean,
+                is_active: true,
+                is_required: true,
+                search_type: searchTypes.Exact,
+            },
+        ],
         access_params: {},
         control_params: [],
         payload_params: [],

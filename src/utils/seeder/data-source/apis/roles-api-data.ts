@@ -20,7 +20,6 @@ const rolesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 
@@ -90,6 +89,7 @@ const rolesApiData = (): IAPI[] => [
                 datatype: datatypes.String,
                 search_type: searchTypes.Partial,
                 is_active: true,
+                is_required: false,
             },
             {
                 title: "label",
@@ -98,9 +98,9 @@ const rolesApiData = (): IAPI[] => [
                 datatype: datatypes.String,
                 search_type: searchTypes.Exact,
                 is_active: true,
+                is_required: false,
             },
         ],
-
         access_params: {
         },
 
@@ -121,7 +121,6 @@ const rolesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 
@@ -190,9 +189,9 @@ const rolesApiData = (): IAPI[] => [
                 datatype: datatypes.Boolean,
                 search_type: searchTypes.Exact,
                 is_active: true,
+                is_required: false,
             },
         ],
-
         access_params: {
         },
 
@@ -213,7 +212,6 @@ const rolesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 
@@ -234,7 +232,6 @@ const rolesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 
@@ -255,7 +252,6 @@ const rolesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 
@@ -276,7 +272,6 @@ const rolesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 

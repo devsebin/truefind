@@ -20,7 +20,6 @@ const countriesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 
@@ -114,6 +113,7 @@ const countriesApiData = (): IAPI[] => [
                 datatype: datatypes.String,
                 search_type: searchTypes.Partial,
                 is_active: true,
+                is_required: false,
             },
             {
                 title: "iso_code",
@@ -122,6 +122,7 @@ const countriesApiData = (): IAPI[] => [
                 datatype: datatypes.String,
                 search_type: searchTypes.Exact,
                 is_active: true,
+                is_required: false,
             },
             {
                 title: "iso_code_3",
@@ -130,9 +131,9 @@ const countriesApiData = (): IAPI[] => [
                 datatype: datatypes.String,
                 search_type: searchTypes.Exact,
                 is_active: true,
+                is_required: false,
             },
         ],
-
         access_params: {
         },
 
@@ -153,7 +154,6 @@ const countriesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 
@@ -231,7 +231,6 @@ const countriesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 
@@ -251,7 +250,6 @@ const countriesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 
@@ -271,7 +269,6 @@ const countriesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 
@@ -291,7 +288,6 @@ const countriesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 
@@ -311,7 +307,6 @@ const countriesApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 

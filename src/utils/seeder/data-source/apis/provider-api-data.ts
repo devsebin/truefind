@@ -20,7 +20,6 @@ const providerApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 
@@ -66,9 +65,9 @@ const providerApiData = (): IAPI[] => [
                 datatype: datatypes.String,
                 search_type: searchTypes.Partial,
                 is_active: true,
+                is_required: false,
             },
         ],
-
         access_params: {
         },
 
@@ -89,7 +88,6 @@ const providerApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 
@@ -127,7 +125,6 @@ const providerApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 
@@ -148,7 +145,6 @@ const providerApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 
@@ -169,7 +165,6 @@ const providerApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 
@@ -190,7 +185,6 @@ const providerApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 
@@ -211,7 +205,6 @@ const providerApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 
@@ -232,7 +225,6 @@ const providerApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 
@@ -446,7 +438,6 @@ const providerApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 
@@ -660,7 +651,6 @@ const providerApiData = (): IAPI[] => [
         status: true,
         form_params: [],
         search_params: [],
-
         access_params: {
         },
 

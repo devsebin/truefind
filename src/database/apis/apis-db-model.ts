@@ -21,6 +21,7 @@ const paramsSchema: Schema = new Schema<ISearchParams>(
     datatype: { type: String, required: true },
     search_type: { type: String, required: true },
     is_active: { type: Boolean, default: true },
+    is_required: { type: Boolean, default: false },
     admin_access: { type: Boolean, default: true },
     user_access: { type: Boolean, default: true },
     employee_access: { type: Boolean, default: true },

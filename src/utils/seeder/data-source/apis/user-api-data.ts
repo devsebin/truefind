@@ -18,8 +18,7 @@ const userApiData = (): IAPI[] => [
     status: true,
     form_params: [],
     search_params: [],
-
-    access_params: {
+        access_params: {
     },
 
     control_params: [],
@@ -157,9 +156,10 @@ const userApiData = (): IAPI[] => [
         datatype: datatypes.Boolean,
         search_type: searchTypes.Exact,
         is_active: true,
+                is_required: false,
       },
     ],
-    access_params: {
+        access_params: {
     },
     control_params: [],
     payload_params: [
@@ -193,8 +193,7 @@ const userApiData = (): IAPI[] => [
     status: true,
     form_params: [],
     search_params: [],
-
-    access_params: {
+        access_params: {
     },
 
     control_params: [],

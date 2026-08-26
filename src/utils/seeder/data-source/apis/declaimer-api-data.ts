@@ -20,8 +20,7 @@ const declaimerApiData = (): IAPI[] => [
     status: true,
     form_params: [],
     search_params: [],
-
-    access_params: {
+        access_params: {
     },
 
     control_params: [],
@@ -98,6 +97,7 @@ const declaimerApiData = (): IAPI[] => [
         datatype: datatypes.String,
         search_type: searchTypes.Exact,
         is_active: true,
+                is_required: false,
       },
       {
         title: "title_like",
@@ -106,6 +106,7 @@ const declaimerApiData = (): IAPI[] => [
         datatype: datatypes.String,
         search_type: searchTypes.Partial,
         is_active: true,
+                is_required: false,
       },
       {
         title: "language",
@@ -114,6 +115,7 @@ const declaimerApiData = (): IAPI[] => [
         datatype: datatypes.String,
         search_type: searchTypes.Exact,
         is_active: true,
+                is_required: false,
       },
       {
         title: "country",
@@ -122,10 +124,10 @@ const declaimerApiData = (): IAPI[] => [
         datatype: datatypes.String,
         search_type: searchTypes.Exact,
         is_active: true,
+                is_required: false,
       },
     ],
-
-    access_params: {
+        access_params: {
     },
 
     control_params: [],
@@ -145,8 +147,7 @@ const declaimerApiData = (): IAPI[] => [
     status: true,
     form_params: [],
     search_params: [],
-
-    access_params: {
+        access_params: {
     },
 
     control_params: [],
@@ -166,8 +167,7 @@ const declaimerApiData = (): IAPI[] => [
     status: true,
     form_params: [],
     search_params: [],
-
-    access_params: {
+        access_params: {
     },
 
     control_params: [],
@@ -219,10 +219,10 @@ const declaimerApiData = (): IAPI[] => [
         datatype: datatypes.Boolean,
         search_type: searchTypes.Exact,
         is_active: true,
+                is_required: false,
       },
     ],
-
-    access_params: {
+        access_params: {
     },
 
     control_params: [],
@@ -242,8 +242,7 @@ const declaimerApiData = (): IAPI[] => [
     status: true,
     form_params: [],
     search_params: [],
-
-    access_params: {
+        access_params: {
     },
 
     control_params: [],
@@ -263,8 +262,7 @@ const declaimerApiData = (): IAPI[] => [
     status: true,
     form_params: [],
     search_params: [],
-
-    access_params: {
+        access_params: {
     },
 
     control_params: [],
