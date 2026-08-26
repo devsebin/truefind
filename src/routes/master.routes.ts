@@ -21,12 +21,16 @@ import v1DocumentTypesRoutes from "../resources/v1/masters/document-types/docume
 import v1CarouselsRoutes from "../resources/v1/masters/carousels/carousels.routes";
 import v1ServiceInformationRoutes from "../resources/v1/masters/service-informations/service-informations.routes";
 import v1ServiceStatusesRoutes from "../resources/v1/masters/service-statuses/service-statuses.routes";
+import v1BundleStatusesRoutes from "../resources/v1/masters/bundle-statuses/bundle-statuses.routes";
+import v1BundleUserMappingStatusRoutes from "../resources/v1/masters/bundle-user-mapping-status/bundle-user-mapping-status.routes";
 import { getLocationFromCoordinates } from "@/utils/helpers/location.helper";
 
 const router = Router();
 
 router.use("/statuses", authentication, authorizationApi, v1StatusRoutes);
 router.use("/service-statuses", authentication, authorizationApi, v1ServiceStatusesRoutes);
+router.use("/bundle-statuses", authentication, authorizationApi, v1BundleStatusesRoutes);
+router.use("/bundle-user-mapping-statuses", authentication, authorizationApi, v1BundleUserMappingStatusRoutes);
 router.use("/countries", authentication, authorizationApi, v1CountryRoutes);
 router.use("/regions", authentication, authorizationApi, v1RegionRoutes);
 router.use("/districts", authentication, authorizationApi, v1DistrictRoutes);

@@ -29,5 +29,7 @@ export enum moduleTypes {
   Carousels = "carousels",
   ServiceInformations = "service_informations",
   ServiceStatuses = "service_statuses",
+  BundleStatuses = "bundle_statuses",
+  BundleUserMappingStatuses = "bundle_user_mapping_statuses",
 }
 

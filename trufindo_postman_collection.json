@@ -582,6 +582,30 @@
                   "value": "",
                   "description": "is_full_region",
                   "disabled": true
+                },
+                {
+                  "key": "service_type",
+                  "value": "",
+                  "description": "service_type",
+                  "disabled": true
+                },
+                {
+                  "key": "name_like",
+                  "value": "",
+                  "description": "name_like",
+                  "disabled": true
+                },
+                {
+                  "key": "order_by",
+                  "value": "",
+                  "description": "order_by",
+                  "disabled": true
+                },
+                {
+                  "key": "category_id",
+                  "value": "",
+                  "description": "category_id",
+                  "disabled": true
                 }
               ],
               "variable": [
@@ -5245,9 +5269,9 @@
                   "disabled": true
                 },
                 {
-                  "key": "show_only_category ",
+                  "key": "show_only_category",
                   "value": "",
-                  "description": "show_only_category ",
+                  "description": "show_only_category",
                   "disabled": true
                 }
               ]
@@ -13102,6 +13126,958 @@
               ]
             },
             "description": "**Activity Code**: `deactivate_carousel`\n\n**Module**: `carousels`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Bundle Statuses",
+      "item": [
+        {
+          "name": "Create Bundle Status",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/bundle-statuses",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "bundle-statuses"
+              ]
+            },
+            "description": "**Activity Code**: `create_bundle_status`\n\n**Module**: `bundle_statuses`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"title\",\n  \"label\": \"label\",\n  \"color\": \"color\",\n  \"is_default\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Bundle Statuses",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/bundle-statuses",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "bundle-statuses"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "id",
+                  "disabled": true
+                },
+                {
+                  "key": "is_deleted",
+                  "value": "",
+                  "description": "is_deleted",
+                  "disabled": true
+                },
+                {
+                  "key": "created_at_gte",
+                  "value": "",
+                  "description": "created_at_gte",
+                  "disabled": true
+                },
+                {
+                  "key": "created_at_lte",
+                  "value": "",
+                  "description": "created_at_lte",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_at_gte",
+                  "value": "",
+                  "description": "updated_at_gte",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_at_lte",
+                  "value": "",
+                  "description": "updated_at_lte",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_at_gte",
+                  "value": "",
+                  "description": "deleted_at_gte",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_at_lte",
+                  "value": "",
+                  "description": "deleted_at_lte",
+                  "disabled": true
+                },
+                {
+                  "key": "is_active",
+                  "value": "",
+                  "description": "is_active",
+                  "disabled": true
+                },
+                {
+                  "key": "created_by_id",
+                  "value": "",
+                  "description": "created_by_id",
+                  "disabled": true
+                },
+                {
+                  "key": "created_by_name_like",
+                  "value": "",
+                  "description": "created_by_name_like",
+                  "disabled": true
+                },
+                {
+                  "key": "created_by_role_like",
+                  "value": "",
+                  "description": "created_by_role_like",
+                  "disabled": true
+                },
+                {
+                  "key": "created_by_email_like",
+                  "value": "",
+                  "description": "created_by_email_like",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_by_id",
+                  "value": "",
+                  "description": "updated_by_id",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_by_name_like",
+                  "value": "",
+                  "description": "updated_by_name_like",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_by_role_like",
+                  "value": "",
+                  "description": "updated_by_role_like",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_by_email_like",
+                  "value": "",
+                  "description": "updated_by_email_like",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_by_id",
+                  "value": "",
+                  "description": "deleted_by_id",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_by_name_like",
+                  "value": "",
+                  "description": "deleted_by_name_like",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_by_role_like",
+                  "value": "",
+                  "description": "deleted_by_role_like",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_by_email_like",
+                  "value": "",
+                  "description": "deleted_by_email_like",
+                  "disabled": true
+                },
+                {
+                  "key": "status_id",
+                  "value": "",
+                  "description": "status_id",
+                  "disabled": true
+                },
+                {
+                  "key": "status_title_like",
+                  "value": "",
+                  "description": "status_title_like",
+                  "disabled": true
+                },
+                {
+                  "key": "title_like",
+                  "value": "",
+                  "description": "title_like",
+                  "disabled": true
+                },
+                {
+                  "key": "label",
+                  "value": "",
+                  "description": "label",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "**Activity Code**: `list_bundle_status`\n\n**Module**: `bundle_statuses`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Show Bundle Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/bundle-statuses/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "bundle-statuses",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `show_bundle_status`\n\n**Module**: `bundle_statuses`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Bundle Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/bundle-statuses/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "bundle-statuses",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `update_bundle_status`\n\n**Module**: `bundle_statuses`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"title\",\n  \"label\": \"label\",\n  \"color\": \"color\",\n  \"is_default\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Bundle Status",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/bundle-statuses/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "bundle-statuses",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `delete_bundle_status`\n\n**Module**: `bundle_statuses`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Activate Bundle Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/bundle-statuses/:id/enable",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "bundle-statuses",
+                ":id",
+                "enable"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `activate_bundle_status`\n\n**Module**: `bundle_statuses`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Deactivate Bundle Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/bundle-statuses/:id/disable",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "bundle-statuses",
+                ":id",
+                "disable"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `deactivate_bundle_status`\n\n**Module**: `bundle_statuses`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Bundle User Mapping Statuses",
+      "item": [
+        {
+          "name": "Create Bundle User Mapping Status",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/bundle-user-mapping-statuses",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "bundle-user-mapping-statuses"
+              ]
+            },
+            "description": "**Activity Code**: `create_bundle_user_mapping_status`\n\n**Module**: `bundle_user_mapping_statuses`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"title\",\n  \"label\": \"label\",\n  \"color\": \"color\",\n  \"is_default\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Bundle User Mapping Statuses",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/bundle-user-mapping-statuses",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "bundle-user-mapping-statuses"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "id",
+                  "disabled": true
+                },
+                {
+                  "key": "is_deleted",
+                  "value": "",
+                  "description": "is_deleted",
+                  "disabled": true
+                },
+                {
+                  "key": "created_at_gte",
+                  "value": "",
+                  "description": "created_at_gte",
+                  "disabled": true
+                },
+                {
+                  "key": "created_at_lte",
+                  "value": "",
+                  "description": "created_at_lte",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_at_gte",
+                  "value": "",
+                  "description": "updated_at_gte",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_at_lte",
+                  "value": "",
+                  "description": "updated_at_lte",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_at_gte",
+                  "value": "",
+                  "description": "deleted_at_gte",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_at_lte",
+                  "value": "",
+                  "description": "deleted_at_lte",
+                  "disabled": true
+                },
+                {
+                  "key": "is_active",
+                  "value": "",
+                  "description": "is_active",
+                  "disabled": true
+                },
+                {
+                  "key": "created_by_id",
+                  "value": "",
+                  "description": "created_by_id",
+                  "disabled": true
+                },
+                {
+                  "key": "created_by_name_like",
+                  "value": "",
+                  "description": "created_by_name_like",
+                  "disabled": true
+                },
+                {
+                  "key": "created_by_role_like",
+                  "value": "",
+                  "description": "created_by_role_like",
+                  "disabled": true
+                },
+                {
+                  "key": "created_by_email_like",
+                  "value": "",
+                  "description": "created_by_email_like",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_by_id",
+                  "value": "",
+                  "description": "updated_by_id",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_by_name_like",
+                  "value": "",
+                  "description": "updated_by_name_like",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_by_role_like",
+                  "value": "",
+                  "description": "updated_by_role_like",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_by_email_like",
+                  "value": "",
+                  "description": "updated_by_email_like",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_by_id",
+                  "value": "",
+                  "description": "deleted_by_id",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_by_name_like",
+                  "value": "",
+                  "description": "deleted_by_name_like",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_by_role_like",
+                  "value": "",
+                  "description": "deleted_by_role_like",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_by_email_like",
+                  "value": "",
+                  "description": "deleted_by_email_like",
+                  "disabled": true
+                },
+                {
+                  "key": "status_id",
+                  "value": "",
+                  "description": "status_id",
+                  "disabled": true
+                },
+                {
+                  "key": "status_title_like",
+                  "value": "",
+                  "description": "status_title_like",
+                  "disabled": true
+                },
+                {
+                  "key": "title_like",
+                  "value": "",
+                  "description": "title_like",
+                  "disabled": true
+                },
+                {
+                  "key": "label",
+                  "value": "",
+                  "description": "label",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "**Activity Code**: `list_bundle_user_mapping_status`\n\n**Module**: `bundle_user_mapping_statuses`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Show Bundle User Mapping Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/bundle-user-mapping-statuses/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "bundle-user-mapping-statuses",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `show_bundle_user_mapping_status`\n\n**Module**: `bundle_user_mapping_statuses`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Bundle User Mapping Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/bundle-user-mapping-statuses/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "bundle-user-mapping-statuses",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `update_bundle_user_mapping_status`\n\n**Module**: `bundle_user_mapping_statuses`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"title\",\n  \"label\": \"label\",\n  \"color\": \"color\",\n  \"is_default\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Bundle User Mapping Status",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/bundle-user-mapping-statuses/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "bundle-user-mapping-statuses",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `delete_bundle_user_mapping_status`\n\n**Module**: `bundle_user_mapping_statuses`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Activate Bundle User Mapping Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/bundle-user-mapping-statuses/:id/enable",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "bundle-user-mapping-statuses",
+                ":id",
+                "enable"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `activate_bundle_user_mapping_status`\n\n**Module**: `bundle_user_mapping_statuses`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Deactivate Bundle User Mapping Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/bundle-user-mapping-statuses/:id/disable",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "bundle-user-mapping-statuses",
+                ":id",
+                "disable"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `deactivate_bundle_user_mapping_status`\n\n**Module**: `bundle_user_mapping_statuses`\n\n**Auth Required**: `true`",
             "auth": {
               "type": "bearer",
               "bearer": [

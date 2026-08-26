@@ -41,4 +41,13 @@ export enum tableName {
   ServiceInformation = "service_information",
   ServiceReview = "service_reviews",
   Booking = "bookings",
+  Bundles = "bundles",
+  BundleServiceItems = "bundle_service_items",
+  BundleCountryConfigurations = "bundle_country_configurations",
+  BundleAreaConfigurations = "bundle_area_configurations",
+  BundleDocumentConfigurations = "bundle_document_configurations",
+  UserBundleMappings = "user_bundle_mappings",
+  UserBundleDocumentConfigurations = "user_bundle_document_configurations",
+  BundleStatuses = "bundle_statuses",
+  BundleUserMappingStatuses = "bundle_user_mapping_statuses",
 }
