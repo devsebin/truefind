@@ -31,7 +31,7 @@ bundleStatusesSchema.methods.toJSON = function () {
 };
 
 const BundleStatusesModel = mongoose.model<IBundleStatus>(
-    "BundleStatusesMaster",
+    tableName.BundleStatuses,
     bundleStatusesSchema,
     tableName.BundleStatuses,
 );

@@ -8,7 +8,7 @@ export interface IBundleDocument
     display_name: string;
     code: string;
     description?: string;
-    icon?: Types.ObjectId;
+    icon: Types.ObjectId;
     status_id: Types.ObjectId;
     is_active: boolean;
     is_deleted: boolean;

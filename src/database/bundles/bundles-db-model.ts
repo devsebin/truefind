@@ -33,7 +33,7 @@ const bundleSchema = new Schema<IBundleDocument>(
         icon: {
             type: mongoose.Schema.Types.ObjectId,
             ref: tableName.Documents,
-            required: false,
+            required: true,
         },
         status_id: {
             type: mongoose.Schema.Types.ObjectId,
@@ -57,8 +57,7 @@ const bundleSchema = new Schema<IBundleDocument>(
     { timestamps: true }
 );
 
-bundleSchema.index({ status: 1, is_active: 1 });
-bundleSchema.index({ name: 1 });
+bundleSchema.index({ status_id: 1, is_active: 1 });
 
 bundleSchema.plugin(auditPlugin);
 bundleSchema.plugin(defaultBundleStatusPlugin);
@@ -70,7 +69,7 @@ bundleSchema.pre(/^find/, function (this: mongoose.Query<any, any>) {
 });
 
 const BundleModel = mongoose.model<IBundleDocument>(
-    "Bundle",
+    tableName.Bundles,
     bundleSchema,
     tableName.Bundles
 );

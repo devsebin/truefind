@@ -19,6 +19,8 @@ export async function buildWhereClause(request: Request) {
   const where: any = { is_deleted: false, is_active: true };
   const conditions = request.query;
 
+  if (!request.originalUrl || !request.method) return where;
+
   const apiData = await api.findOne({
     url: convertParamsToId(request.originalUrl.split("?")[0]),
     activity_method: request.method.toLowerCase(),
