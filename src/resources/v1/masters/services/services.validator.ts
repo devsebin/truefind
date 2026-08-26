@@ -47,7 +47,7 @@ export const categoryParamValidation = Joi.object({
   show_inactive_services: Joi.boolean().required().default(false),
   remove_empty_categories: Joi.boolean().required().default(false),
   remove_empty_sub_category: Joi.boolean().required().default(false),
-  show_only_category: Joi.boolean().optional().default(false),
+  show_only_category: Joi.boolean().required().default(false),
 });
 
 /* Update validation schemas */

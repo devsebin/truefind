@@ -223,7 +223,7 @@ const servicesApiData = (): IAPI[] => [
                 search_type: searchTypes.Exact,
             },
             {
-                title: "show_only_category ",
+                title: "show_only_category",
                 value: "false",
                 allowed_values: ["true", "false"],
                 datatype: datatypes.Boolean,

@@ -5212,6 +5212,44 @@
                 "v1",
                 "masters",
                 "services"
+              ],
+              "query": [
+                {
+                  "key": "show_inactive_categories",
+                  "value": "",
+                  "description": "show_inactive_categories",
+                  "disabled": true
+                },
+                {
+                  "key": "show_inactive_subcategories",
+                  "value": "",
+                  "description": "show_inactive_subcategories",
+                  "disabled": true
+                },
+                {
+                  "key": "show_inactive_services",
+                  "value": "",
+                  "description": "show_inactive_services",
+                  "disabled": true
+                },
+                {
+                  "key": "remove_empty_categories",
+                  "value": "",
+                  "description": "remove_empty_categories",
+                  "disabled": true
+                },
+                {
+                  "key": "remove_empty_sub_category",
+                  "value": "",
+                  "description": "remove_empty_sub_category",
+                  "disabled": true
+                },
+                {
+                  "key": "show_only_category ",
+                  "value": "",
+                  "description": "show_only_category ",
+                  "disabled": true
+                }
               ]
             },
             "description": "**Activity Code**: `list_category`\n\n**Module**: `services`\n\n**Auth Required**: `true`",
