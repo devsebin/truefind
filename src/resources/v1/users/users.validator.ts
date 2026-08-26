@@ -94,4 +94,21 @@ export const userLocationValidation = Joi.object({
 
 export const areaValidation = Joi.object({
     is_full_region: Joi.boolean().required().default(false),
+    service_type: Joi.string()
+        .valid("all", "quick_jobs", "large_jobs")
+        .required()
+        .messages({
+            "any.required": "service_type is required",
+            "any.only": "service_type must be one of [all, quick_jobs, large_jobs]",
+        }),
+    order_by: Joi.string()
+        .valid("ascending", "descending")
+        .optional()
+        .messages({
+            "any.only": "order_by must be one of [ascending, descending]",
+        }),
+    name_like: Joi.string().optional().allow(""),
+    category_id: Joi.string().optional().custom(objectIdValidator).messages({
+        "string.custom": "category_id must be a valid MongoDB ObjectId",
+    }),
 });

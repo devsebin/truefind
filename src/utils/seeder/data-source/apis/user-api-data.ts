@@ -18,9 +18,7 @@ const userApiData = (): IAPI[] => [
     status: true,
     form_params: [],
     search_params: [],
-        access_params: {
-    },
-
+    access_params: {},
     control_params: [],
     payload_params: [
       {
@@ -156,30 +154,48 @@ const userApiData = (): IAPI[] => [
         datatype: datatypes.Boolean,
         search_type: searchTypes.Exact,
         is_active: true,
-                is_required: false,
+        is_required: false,
+      },
+      {
+        title: "service_type",
+        value: "string",
+        allowed_values: ["all", "quick_jobs", "large_jobs"],
+        datatype: datatypes.String,
+        search_type: searchTypes.Exact,
+        is_active: true,
+        is_required: true,
+      },
+      {
+        title: "name_like",
+        value: "name",
+        allowed_values: [],
+        datatype: datatypes.String,
+        search_type: searchTypes.Partial,
+        is_active: true,
+        is_required: false,
+      },
+      {
+        title: "order_by",
+        value: "name",
+        allowed_values: ["ascending", "descending"],
+        datatype: datatypes.String,
+        search_type: searchTypes.Exact,
+        is_active: true,
+        is_required: false,
+      },
+      {
+        title: "category_id",
+        value: "category_id",
+        allowed_values: [],
+        datatype: datatypes.String,
+        search_type: searchTypes.Exact,
+        is_active: true,
+        is_required: false,
       },
     ],
-        access_params: {
-    },
+    access_params: {},
     control_params: [],
-    payload_params: [
-      {
-        key: "latitude",
-        value: "string",
-        type: datatypes.String,
-        required: true,
-        parent: false,
-        parent_key: "",
-      },
-      {
-        key: "longitude",
-        value: "string",
-        type: datatypes.String,
-        required: true,
-        parent: false,
-        parent_key: "",
-      },
-    ],
+    payload_params: [],
     required_authentication: true,
     access_roles: [getRoleId("super_admin"), getRoleId("admin"), getRoleId("user"), getRoleId("employee")],
   },
@@ -193,9 +209,7 @@ const userApiData = (): IAPI[] => [
     status: true,
     form_params: [],
     search_params: [],
-        access_params: {
-    },
-
+    access_params: {},
     control_params: [],
     payload_params: [
       {

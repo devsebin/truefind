@@ -106,6 +106,91 @@ class ListAvailableUserServicesService {
         services.map((s) => [s._id.toString(), s])
       );
 
+      const service_type = (request.query.service_type as string) || "all";
+      const name_like = typeof request.query.name_like === "string" ? request.query.name_like.trim().toLowerCase() : "";
+      const order_by = request.query.order_by as string | undefined;
+
+      const convertToHours = (
+        time?: number,
+        unit?: string,
+      ): number | null => {
+        if (time === undefined || time === null || isNaN(Number(time))) {
+          return null;
+        }
+        const numericTime = Number(time);
+        const normalizedUnit = (unit || "").toLowerCase().trim();
+
+        switch (normalizedUnit) {
+          case "minute":
+          case "minutes":
+            return numericTime / 60;
+          case "hour":
+          case "hours":
+            return numericTime;
+          case "day":
+          case "days":
+            return numericTime * 24;
+          case "week":
+          case "weeks":
+            return numericTime * 24 * 7;
+          case "month":
+          case "months":
+            return numericTime * 24 * 30;
+          case "year":
+          case "years":
+            return numericTime * 24 * 365;
+          default:
+            return numericTime;
+        }
+      };
+
+      const matchesServiceType = (service: any): boolean => {
+        if (service_type === "all") {
+          return true;
+        }
+
+        const hours = convertToHours(
+          service.estimated_time,
+          service.estimated_time_unit,
+        );
+
+        if (hours === null) {
+          return false;
+        }
+
+        if (service_type === "quick_jobs") {
+          return hours < 24;
+        }
+
+        if (service_type === "large_jobs") {
+          return hours > 24;
+        }
+
+        return true;
+      };
+
+      const matchesNameLike = (service: any): boolean => {
+        if (!name_like) {
+          return true;
+        }
+        const serviceName = (service.name || "").toLowerCase();
+        return serviceName.includes(name_like);
+      };
+
+      const sortByName = (items: any[]) => {
+        if (!order_by) return;
+        items.sort((a, b) => {
+          const nameA = (a.name || "").toLowerCase();
+          const nameB = (b.name || "").toLowerCase();
+          if (order_by === "ascending") {
+            return nameA.localeCompare(nameB);
+          } else if (order_by === "descending") {
+            return nameB.localeCompare(nameA);
+          }
+          return 0;
+        });
+      };
+
       // 4. Recursive tree builder
       const buildServiceTree = (
         serviceId: string,
@@ -123,7 +208,7 @@ class ListAvailableUserServicesService {
         const nextVisited = new Set(visited);
         nextVisited.add(serviceId);
 
-        const children = (service.children ?? [])
+        let children = (service.children ?? [])
           .map((childId: any) =>
             buildServiceTree(childId.toString(), nextVisited)
           )
@@ -131,8 +216,23 @@ class ListAvailableUserServicesService {
 
         const directlyAvailable = availableServiceIds.has(serviceId);
 
-        if (!directlyAvailable && children.length === 0) {
-          return null;
+        // For leaf task (Service), check availability, service_type filter, and name_like filter
+        if (service.type === serviceTypes.Service) {
+          if (!directlyAvailable) {
+            return null;
+          }
+          if (!matchesServiceType(service)) {
+            return null;
+          }
+          if (!matchesNameLike(service)) {
+            return null;
+          }
+        } else {
+          // For Category / Subcategory: keep only if it has valid children
+          if (children.length === 0) {
+            return null;
+          }
+          sortByName(children);
         }
 
         // Prepare configuration object if exact suburb lookup
@@ -169,14 +269,20 @@ class ListAvailableUserServicesService {
         };
       };
 
-      // 5. Root services are categories
+      // 5. Root services are categories (filtered by category_id if specified)
+      const category_id = request.query.category_id as string | undefined;
+
       const rootServices = services.filter(
-        (s) => s.type === serviceTypes.Category
+        (s) =>
+          s.type === serviceTypes.Category &&
+          (!category_id || s._id.toString() === category_id)
       );
 
       const tree = rootServices
         .map((s) => buildServiceTree(s._id.toString()))
         .filter(Boolean);
+
+      sortByName(tree);
 
       DbTransactions.push(
         await createDbTransaction(
