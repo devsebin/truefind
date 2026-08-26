@@ -10,7 +10,7 @@ import { toBundleUserMappingStatusDTO } from "../dto/create-bundle-user-mapping-
 import mongoose from "mongoose";
 import { DbTransaction } from "@/utils/interfaces/activity-log.interface";
 import { bundleUserMappingStatusErrorsMessages } from "../bundle-user-mapping-status.messages";
-import { populateFields, bundleUserMappingStatusPayload } from "../bundle-user-mapping-status.helper";
+import { populateFields, bundleUserMappingStatusPayload, throwError } from "../bundle-user-mapping-status.helper";
 import createBundleUserMappingStatusHelperService from "../helpers/operations/create-bundle-user-mapping-status.helper.service";
 import { bundleUserMappingStatusResponse } from "../bundle-user-mapping-status.response";
 import BundleUserMappingStatusModel from "@/database/bundle-user-mapping-status/bundle-user-mapping-status-db-model";
@@ -19,6 +19,7 @@ import { tableName } from "@/utils/definitions/constants/table-names";
 import { apiMethods } from "@/utils/definitions/constants/api-methods";
 import { operationTypes } from "@/utils/definitions/constants/operation-types";
 import findBundleUserMappingStatusHelperService from "../helpers/validators/find-bundle-user-mapping-status.helper.service";
+import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 
 class createBundleUserMappingStatusService {
   public async execute(
@@ -44,7 +45,12 @@ class createBundleUserMappingStatusService {
 
       if (existingDuplicate) {
         if (!existingDuplicate.is_deleted && existingDuplicate.is_active) {
-          throw new Error("already_exists");
+          const response = ResponseBuilder.error(ErrorTypes.CONFLICT, {
+            message: "bundle user mapping status already exists",
+            data: body,
+            filler: { 0: existingDuplicate.title },
+          });
+          throwError("already_exists", response);
         }
 
         existingDuplicate.title = body.title;

@@ -7,12 +7,13 @@ import { SingleResponse } from "@/utils/responses/success.response";
 import mongoose from "mongoose";
 import { Request } from "express";
 import findUnitsHelperService from "../helpers/validators/find-units.helper.service";
-import { populateFields, unitsPayload } from "../units.helper";
+import { populateFields, unitsPayload, throwError } from "../units.helper";
 import { unitsErrorsMessages } from "../units.messages";
 import updateUnitsHelperService from "../helpers/operations/update-units.helper.service";
 import { IInputIUnitsPayloadStrict } from "../payloads/units-payload";
 import { unitsResponse } from "../units.response";
 import UnitsModel from "@/database/units/units-db-model";
+import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 
 class updateUnitsService {
   public async execute(
@@ -53,7 +54,12 @@ class updateUnitsService {
 
         if (existingDuplicate) {
           if (!existingDuplicate.is_deleted && existingDuplicate.is_active) {
-            throw new Error("already_exists");
+            const response = ResponseBuilder.error(ErrorTypes.CONFLICT, {
+              message: "unit already exists",
+              data: body,
+              filler: { 0: existingDuplicate.title },
+            });
+            throwError("already_exists", response);
           }
 
           existingDuplicate.title = `${existingDuplicate.title}_deleted_${Date.now()}`;

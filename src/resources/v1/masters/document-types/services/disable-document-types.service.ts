@@ -8,8 +8,9 @@ import { DbTransaction } from "@/utils/interfaces/activity-log.interface";
 import { documentTypesErrorsMessages } from "../document-types.messages";
 import findDocumentTypesHelperService from "../helpers/validators/find-document-types.helper.service";
 import deactivateDocumentTypesHelperService from "../helpers/operations/deactivate-document-types.helper.service";
-import { documentTypesPayload } from "../document-types.helper";
+import { populateFields, documentTypesPayload, throwError } from "../document-types.helper";
 import { documentTypesResponse } from "../document-types.response";
+import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 
 class disableDocumentTypesService {
   public async execute(
@@ -40,7 +41,12 @@ class disableDocumentTypesService {
       const doc = documentTypes[0];
 
       if (doc.is_default) {
-        throw new Error("cannot_disable_default");
+        const response = ResponseBuilder.error(ErrorTypes.CONFLICT, {
+          message: "Cannot disable default document type",
+          data: { _id: id },
+          filler: { 0: doc.title },
+        });
+        throwError("cannot_disable_default", response);
       }
 
       const deactivated = await deactivateDocumentTypesHelperService.execute(

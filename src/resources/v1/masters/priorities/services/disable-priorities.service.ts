@@ -8,8 +8,9 @@ import mongoose from "mongoose";
 import findPrioritiesHelperService from "../helpers/validators/find-priorities.helper.service";
 import { prioritiesErrorsMessages } from "../priorities.messages";
 import deactivatePrioritiesHelperService from "../helpers/operations/deactivate-priorities.helper.service";
-import { prioritiesPayload } from "../priorities.helper";
+import { populateFields, prioritiesPayload, throwError } from "../priorities.helper";
 import findPrioritiesStateHelperService from "../helpers/validators/find-priorities-state.helper.service";
+import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 
 class disablePrioritiesService {
   public async execute(
@@ -38,7 +39,12 @@ class disablePrioritiesService {
       );
 
       if (priority[0].is_default) {
-        throw new Error("cannot_disable_default");
+        const response = ResponseBuilder.error(ErrorTypes.CONFLICT, {
+          message: "Cannot disable default priority",
+          data: { _id: id },
+          filler: { 0: priority[0].title },
+        });
+        throwError("cannot_disable_default", response);
       }
 
       await deactivatePrioritiesHelperService.execute(

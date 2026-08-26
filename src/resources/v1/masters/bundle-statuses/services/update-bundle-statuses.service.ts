@@ -7,12 +7,13 @@ import { SingleResponse } from "@/utils/responses/success.response";
 import mongoose from "mongoose";
 import { Request } from "express";
 import findBundleStatusesHelperService from "../helpers/validators/find-bundle-statuses.helper.service";
-import { populateFields, bundleStatusesPayload } from "../bundle-statuses.helper";
+import { populateFields, bundleStatusesPayload, throwError } from "../bundle-statuses.helper";
 import { bundleStatusesErrorsMessages } from "../bundle-statuses.messages";
 import updateBundleStatusesHelperService from "../helpers/operations/update-bundle-statuses.helper.service";
 import { IInputIBundleStatusesPayloadStrict } from "../payloads/bundle-statuses-payload";
 import { bundleStatusesResponse } from "../bundle-statuses.response";
 import BundleStatusesModel from "@/database/bundle-statuses/bundle-statuses-db-model";
+import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 
 class updateBundleStatusesService {
   public async execute(
@@ -55,7 +56,13 @@ class updateBundleStatusesService {
 
         if (existingDuplicate) {
           if (!existingDuplicate.is_deleted && existingDuplicate.is_active) {
-            throw new Error("already_exists");
+            const response = ResponseBuilder.error(ErrorTypes.CONFLICT, {
+              message: "bundle status already exists",
+              data: body,
+              filler: { 0: existingDuplicate.title },
+            });
+
+            throwError("already_exists", response);
           }
 
           existingDuplicate.title = body.title ?? existingDuplicate.title;

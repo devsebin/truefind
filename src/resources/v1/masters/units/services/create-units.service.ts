@@ -11,7 +11,7 @@ import mongoose from "mongoose";
 import { DbTransaction } from "@/utils/interfaces/activity-log.interface";
 import { unitsErrorsMessages } from "../units.messages";
 import findUnitsHelperService from "../helpers/validators/find-units.helper.service";
-import { populateFields, unitsPayload } from "../units.helper";
+import { populateFields, unitsPayload, throwError } from "../units.helper";
 import createUnitsHelperService from "../helpers/operations/create-units.helper.service";
 import { unitsResponse } from "../units.response";
 import UnitsModel from "@/database/units/units-db-model";
@@ -19,6 +19,7 @@ import { createDbTransaction } from "@/utils/helpers/db-transaction.helper";
 import { tableName } from "@/utils/definitions/constants/table-names";
 import { apiMethods } from "@/utils/definitions/constants/api-methods";
 import { operationTypes } from "@/utils/definitions/constants/operation-types";
+import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 
 class createUnitsService {
   public async execute(
@@ -42,7 +43,12 @@ class createUnitsService {
 
       if (existingDuplicate) {
         if (!existingDuplicate.is_deleted && existingDuplicate.is_active) {
-          throw new Error("already_exists");
+          const response = ResponseBuilder.error(ErrorTypes.CONFLICT, {
+            message: "unit already exists",
+            data: body,
+            filler: { 0: existingDuplicate.title },
+          });
+          throwError("already_exists", response);
         }
 
         existingDuplicate.title = body.title;

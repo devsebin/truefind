@@ -7,12 +7,13 @@ import { SingleResponse } from "@/utils/responses/success.response";
 import mongoose from "mongoose";
 import { Request } from "express";
 import findPrioritiesHelperService from "../helpers/validators/find-priorities.helper.service";
-import { populateFields, prioritiesPayload } from "../priorities.helper";
+import { populateFields, prioritiesPayload, throwError } from "../priorities.helper";
 import { prioritiesErrorsMessages } from "../priorities.messages";
 import updatePrioritiesHelperService from "../helpers/operations/update-priorities.helper.service";
 import { IInputIPrioritiesPayloadStrict } from "../payloads/priorities-payload";
 import { prioritiesResponse } from "../priorities.response";
 import PrioritiesModel from "@/database/priorities/priorities-db-model";
+import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 
 class updatePrioritiesService {
   public async execute(
@@ -52,7 +53,12 @@ class updatePrioritiesService {
 
         if (existingDuplicate) {
           if (!existingDuplicate.is_deleted && existingDuplicate.is_active) {
-            throw new Error("already_exists");
+            const response = ResponseBuilder.error(ErrorTypes.CONFLICT, {
+              message: "priority already exists",
+              data: body,
+              filler: { 0: existingDuplicate.title },
+            });
+            throwError("already_exists", response);
           }
 
           existingDuplicate.title = `${existingDuplicate.title}_deleted_${Date.now()}`;

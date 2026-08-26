@@ -10,7 +10,7 @@ import { toBundleStatusesDTO } from "../dto/create-bundle-statuses.dto";
 import mongoose from "mongoose";
 import { DbTransaction } from "@/utils/interfaces/activity-log.interface";
 import { bundleStatusesErrorsMessages } from "../bundle-statuses.messages";
-import { populateFields, bundleStatusesPayload } from "../bundle-statuses.helper";
+import { populateFields, bundleStatusesPayload, throwError } from "../bundle-statuses.helper";
 import createBundleStatusesHelperService from "../helpers/operations/create-bundle-statuses.helper.service";
 import { bundleStatusesResponse } from "../bundle-statuses.response";
 import BundleStatusesModel from "@/database/bundle-statuses/bundle-statuses-db-model";
@@ -18,6 +18,7 @@ import { createDbTransaction } from "@/utils/helpers/db-transaction.helper";
 import { tableName } from "@/utils/definitions/constants/table-names";
 import { apiMethods } from "@/utils/definitions/constants/api-methods";
 import { operationTypes } from "@/utils/definitions/constants/operation-types";
+import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 
 class createBundleStatusesService {
   public async execute(
@@ -38,7 +39,13 @@ class createBundleStatusesService {
 
       if (existingDuplicate) {
         if (!existingDuplicate.is_deleted && existingDuplicate.is_active) {
-          throw new Error("already_exists");
+          const response = ResponseBuilder.error(ErrorTypes.CONFLICT, {
+            message: "bundle status already exists",
+            data: body,
+            filler: { 0: existingDuplicate.title },
+          });
+
+          throwError("already_exists", response);
         }
 
         existingDuplicate.title = body.title;

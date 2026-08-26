@@ -8,8 +8,9 @@ import mongoose from "mongoose";
 import findPrioritiesHelperService from "../helpers/validators/find-priorities.helper.service";
 import { prioritiesErrorsMessages } from "../priorities.messages";
 import deletePrioritiesHelperService from "../helpers/operations/delete-priorities.helper.service";
-import { prioritiesPayload } from "../priorities.helper";
+import { populateFields, prioritiesPayload, throwError } from "../priorities.helper";
 import findPrioritiesStateHelperService from "../helpers/validators/find-priorities-state.helper.service";
+import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 
 class deletePrioritiesService {
   constructor() { }
@@ -41,7 +42,12 @@ class deletePrioritiesService {
       );
 
       if (priority[0].is_default) {
-        throw new Error("cannot_delete_default");
+        const response = ResponseBuilder.error(ErrorTypes.CONFLICT, {
+          message: "Cannot delete default priority",
+          data: { _id: id },
+          filler: { 0: priority[0].title },
+        });
+        throwError("cannot_delete_default", response);
       }
 
       await deletePrioritiesHelperService.execute(

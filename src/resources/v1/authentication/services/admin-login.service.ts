@@ -8,7 +8,9 @@ import { DbTransaction } from "@/utils/interfaces/activity-log.interface";
 import { authenticationErrors } from "../authentication.messages";
 import {
     AuthenticationSuccessResponse,
+    throwError,
 } from "../authentication.helper";
+import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 
 import findUserHelperService from "../helpers/validators/find-user.helper.service";
 import loginOperationsHelperService from "../helpers/operations/login-operations.helper.service";
@@ -42,7 +44,10 @@ class loginAdminService {
 
             const tokens = await loginOperationsHelperService.generateTokens(user);
             if (!tokens) {
-                throw new Error("Failed to generate tokens");
+                const response = ResponseBuilder.error(ErrorTypes.INTERNAL_SERVER_ERROR, {
+                    message: "Failed to generate tokens",
+                });
+                throwError("SomethingWentWrong", response);
             }
 
             const result = {

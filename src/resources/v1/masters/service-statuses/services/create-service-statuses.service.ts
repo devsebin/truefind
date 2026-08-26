@@ -10,7 +10,7 @@ import { toServiceStatusesDTO } from "../dto/create-service-statuses.dto";
 import mongoose from "mongoose";
 import { DbTransaction } from "@/utils/interfaces/activity-log.interface";
 import { serviceStatusesErrorsMessages } from "../service-statuses.messages";
-import { populateFields, serviceStatusesPayload } from "../service-statuses.helper";
+import { populateFields, serviceStatusesPayload, throwError } from "../service-statuses.helper";
 import createServiceStatusesHelperService from "../helpers/operations/create-service-statuses.helper.service";
 import { serviceStatusesResponse } from "../service-statuses.response";
 import ServiceStatusModel from "@/database/service-status/service-status-db-model";
@@ -18,6 +18,7 @@ import { createDbTransaction } from "@/utils/helpers/db-transaction.helper";
 import { tableName } from "@/utils/definitions/constants/table-names";
 import { apiMethods } from "@/utils/definitions/constants/api-methods";
 import { operationTypes } from "@/utils/definitions/constants/operation-types";
+import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 
 class createServiceStatusesService {
   public async execute(
@@ -38,7 +39,12 @@ class createServiceStatusesService {
 
       if (existingDuplicate) {
         if (!existingDuplicate.is_deleted && existingDuplicate.is_active) {
-          throw new Error("already_exists");
+          const response = ResponseBuilder.error(ErrorTypes.CONFLICT, {
+            message: "service status already exists",
+            data: body,
+            filler: { 0: existingDuplicate.title },
+          });
+          throwError("already_exists", response);
         }
 
         existingDuplicate.title = body.title;

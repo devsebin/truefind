@@ -10,7 +10,7 @@ import { toDocumentTypesDTO } from "../dto/create-document-types.dto";
 import mongoose from "mongoose";
 import { DbTransaction } from "@/utils/interfaces/activity-log.interface";
 import { documentTypesErrorsMessages } from "../document-types.messages";
-import { populateFields, documentTypesPayload } from "../document-types.helper";
+import { populateFields, documentTypesPayload, throwError } from "../document-types.helper";
 import createDocumentTypesHelperService from "../helpers/operations/create-document-types.helper.service";
 import { documentTypesResponse } from "../document-types.response";
 import DocumentTypesModel from "@/database/document-types/document-types-db-model";
@@ -18,6 +18,7 @@ import { createDbTransaction } from "@/utils/helpers/db-transaction.helper";
 import { tableName } from "@/utils/definitions/constants/table-names";
 import { apiMethods } from "@/utils/definitions/constants/api-methods";
 import { operationTypes } from "@/utils/definitions/constants/operation-types";
+import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 
 class createDocumentTypesService {
   public async execute(
@@ -41,7 +42,12 @@ class createDocumentTypesService {
 
       if (existingDuplicate) {
         if (!existingDuplicate.is_deleted && existingDuplicate.is_active) {
-          throw new Error("already_exists");
+          const response = ResponseBuilder.error(ErrorTypes.CONFLICT, {
+            message: "document type already exists",
+            data: body,
+            filler: { 0: existingDuplicate.title },
+          });
+          throwError("already_exists", response);
         }
 
         existingDuplicate.title = body.title;

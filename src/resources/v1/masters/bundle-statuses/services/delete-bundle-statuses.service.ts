@@ -8,8 +8,9 @@ import mongoose from "mongoose";
 import findBundleStatusesHelperService from "../helpers/validators/find-bundle-statuses.helper.service";
 import { bundleStatusesErrorsMessages } from "../bundle-statuses.messages";
 import deleteBundleStatusesHelperService from "../helpers/operations/delete-bundle-statuses.helper.service";
-import { bundleStatusesPayload } from "../bundle-statuses.helper";
+import { populateFields, bundleStatusesPayload, throwError } from "../bundle-statuses.helper";
 import findBundleStatusesStateHelperService from "../helpers/validators/find-bundle-statuses-state.helper.service";
+import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 
 class deleteBundleStatusesService {
   constructor() {}
@@ -41,7 +42,12 @@ class deleteBundleStatusesService {
       );
 
       if (bundleStatus[0].is_default) {
-        throw new Error("cannot_delete_default");
+        const response = ResponseBuilder.error(ErrorTypes.CONFLICT, {
+          message: "Cannot delete default bundle status",
+          data: { _id: id },
+          filler: { 0: bundleStatus[0].title },
+        });
+        throwError("cannot_delete_default", response);
       }
 
       await deleteBundleStatusesHelperService.execute(

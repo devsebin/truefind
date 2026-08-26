@@ -7,12 +7,13 @@ import { SingleResponse } from "@/utils/responses/success.response";
 import mongoose from "mongoose";
 import { Request } from "express";
 import findServiceStatusesHelperService from "../helpers/validators/find-service-statuses.helper.service";
-import { populateFields, serviceStatusesPayload } from "../service-statuses.helper";
+import { populateFields, serviceStatusesPayload, throwError } from "../service-statuses.helper";
 import { serviceStatusesErrorsMessages } from "../service-statuses.messages";
 import updateServiceStatusesHelperService from "../helpers/operations/update-service-statuses.helper.service";
 import { IInputIServiceStatusesPayloadStrict } from "../payloads/service-statuses-payload";
 import { serviceStatusesResponse } from "../service-statuses.response";
 import ServiceStatusModel from "@/database/service-status/service-status-db-model";
+import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 
 class updateServiceStatusesService {
   public async execute(
@@ -55,7 +56,12 @@ class updateServiceStatusesService {
 
         if (existingDuplicate) {
           if (!existingDuplicate.is_deleted && existingDuplicate.is_active) {
-            throw new Error("already_exists");
+            const response = ResponseBuilder.error(ErrorTypes.CONFLICT, {
+              message: "service status already exists",
+              data: body,
+              filler: { 0: existingDuplicate.title },
+            });
+            throwError("already_exists", response);
           }
 
           existingDuplicate.title = `${existingDuplicate.title}_deleted_${Date.now()}`;

@@ -8,8 +8,9 @@ import { DbTransaction } from "@/utils/interfaces/activity-log.interface";
 import { documentTypesErrorsMessages } from "../document-types.messages";
 import findDocumentTypesHelperService from "../helpers/validators/find-document-types.helper.service";
 import deleteDocumentTypesHelperService from "../helpers/operations/delete-document-types.helper.service";
-import { documentTypesPayload } from "../document-types.helper";
+import { populateFields, documentTypesPayload, throwError } from "../document-types.helper";
 import { documentTypesResponse } from "../document-types.response";
+import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 
 class deleteDocumentTypesService {
   public async execute(
@@ -40,7 +41,12 @@ class deleteDocumentTypesService {
       const doc = documentTypes[0];
 
       if (doc.is_default) {
-        throw new Error("cannot_delete_default");
+        const response = ResponseBuilder.error(ErrorTypes.CONFLICT, {
+          message: "Cannot delete default document type",
+          data: { _id: id },
+          filler: { 0: doc.title },
+        });
+        throwError("cannot_delete_default", response);
       }
 
       const deleted = await deleteDocumentTypesHelperService.execute(

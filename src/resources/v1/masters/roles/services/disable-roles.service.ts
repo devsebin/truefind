@@ -8,8 +8,9 @@ import mongoose from "mongoose";
 import findRolesHelperService from "../helpers/validators/find-roles.helper.service";
 import { rolesErrorsMessages } from "../roles.messages";
 import deactivateRolesHelperService from "../helpers/operations/deactivate-roles.helper.service";
-import { rolesPayload } from "../roles.helper";
+import { populateFields, rolesPayload, throwError } from "../roles.helper";
 import findRolesStateHelperService from "../helpers/validators/find-roles-state.helper.service";
+import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 
 class disableRolesService {
   public async execute(
@@ -34,7 +35,12 @@ class disableRolesService {
 
       // Block disabling default role
       if (role[0].is_default) {
-        throw new Error("cannot_disable_default");
+        const response = ResponseBuilder.error(ErrorTypes.CONFLICT, {
+          message: "Cannot disable default role",
+          data: { _id: id },
+          filler: { 0: role[0].title },
+        });
+        throwError("cannot_disable_default", response);
       }
 
       await findRolesStateHelperService.isAlreadyInactive(

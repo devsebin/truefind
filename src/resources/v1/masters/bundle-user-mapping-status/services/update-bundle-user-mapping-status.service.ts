@@ -7,12 +7,13 @@ import { SingleResponse } from "@/utils/responses/success.response";
 import mongoose from "mongoose";
 import { Request } from "express";
 import findBundleUserMappingStatusHelperService from "../helpers/validators/find-bundle-user-mapping-status.helper.service";
-import { populateFields, bundleUserMappingStatusPayload } from "../bundle-user-mapping-status.helper";
+import { populateFields, bundleUserMappingStatusPayload, throwError } from "../bundle-user-mapping-status.helper";
 import { bundleUserMappingStatusErrorsMessages } from "../bundle-user-mapping-status.messages";
 import updateBundleUserMappingStatusHelperService from "../helpers/operations/update-bundle-user-mapping-status.helper.service";
 import { IInputIBundleUserMappingStatusPayloadStrict } from "../payloads/bundle-user-mapping-status-payload";
 import { bundleUserMappingStatusResponse } from "../bundle-user-mapping-status.response";
 import BundleUserMappingStatusModel from "@/database/bundle-user-mapping-status/bundle-user-mapping-status-db-model";
+import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 
 class updateBundleUserMappingStatusService {
   public async execute(
@@ -55,7 +56,12 @@ class updateBundleUserMappingStatusService {
 
         if (existingDuplicate) {
           if (!existingDuplicate.is_deleted && existingDuplicate.is_active) {
-            throw new Error("already_exists");
+            const response = ResponseBuilder.error(ErrorTypes.CONFLICT, {
+              message: "bundle user mapping status already exists",
+              data: body,
+              filler: { 0: existingDuplicate.title },
+            });
+            throwError("already_exists", response);
           }
 
           existingDuplicate.title = body.title ?? existingDuplicate.title;

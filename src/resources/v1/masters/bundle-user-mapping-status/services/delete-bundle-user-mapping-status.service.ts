@@ -8,8 +8,9 @@ import mongoose from "mongoose";
 import findBundleUserMappingStatusHelperService from "../helpers/validators/find-bundle-user-mapping-status.helper.service";
 import { bundleUserMappingStatusErrorsMessages } from "../bundle-user-mapping-status.messages";
 import deleteBundleUserMappingStatusHelperService from "../helpers/operations/delete-bundle-user-mapping-status.helper.service";
-import { bundleUserMappingStatusPayload } from "../bundle-user-mapping-status.helper";
+import { populateFields, bundleUserMappingStatusPayload, throwError } from "../bundle-user-mapping-status.helper";
 import findBundleUserMappingStatusStateHelperService from "../helpers/validators/find-bundle-user-mapping-status-state.helper.service";
+import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 
 class deleteBundleUserMappingStatusService {
   constructor() {}
@@ -41,7 +42,12 @@ class deleteBundleUserMappingStatusService {
       );
 
       if (bundleUserMappingStatus[0].is_default) {
-        throw new Error("cannot_delete_default");
+        const response = ResponseBuilder.error(ErrorTypes.CONFLICT, {
+          message: "Cannot delete default bundle user mapping status",
+          data: { _id: id },
+          filler: { 0: bundleUserMappingStatus[0].title },
+        });
+        throwError("cannot_delete_default", response);
       }
 
       await deleteBundleUserMappingStatusHelperService.execute(

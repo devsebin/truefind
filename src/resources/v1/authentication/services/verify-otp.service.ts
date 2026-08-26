@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 import { DbTransaction } from "@/utils/interfaces/activity-log.interface";
-import { AuthenticationSuccessResponse } from "../authentication.helper";
+import { AuthenticationSuccessResponse, throwError } from "../authentication.helper";
 import {
     buildErrorResult,
     ErrorResponse,
@@ -9,6 +9,7 @@ import {
 import { authenticationErrors } from "../authentication.messages";
 import { SingleResponse } from "@/utils/responses/success.response";
 import { Request } from "express";
+import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 
 import otpOperationsHelperService from "@/resources/v1/otps/helpers/otp-operations.helper.service";
 import findUserHelperService from "../helpers/validators/find-user.helper.service";
@@ -80,7 +81,10 @@ class VerifyOtpService {
             // e. create auth session and tokens 
             const tokens = await loginOperationsHelperService.generateTokens(user);
             if (!tokens) {
-                throw new Error("Failed to generate tokens");
+                const response = ResponseBuilder.error(ErrorTypes.INTERNAL_SERVER_ERROR, {
+                    message: "Failed to generate tokens",
+                });
+                throwError("SomethingWentWrong", response);
             }
 
             await loginOperationsHelperService.storeRefreshToken(

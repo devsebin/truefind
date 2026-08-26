@@ -7,12 +7,13 @@ import { SingleResponse } from "@/utils/responses/success.response";
 import mongoose from "mongoose";
 import { Request } from "express";
 import findRolesHelperService from "../helpers/validators/find-roles.helper.service";
-import { populateFields, rolesPayload } from "../roles.helper";
+import { populateFields, rolesPayload, throwError } from "../roles.helper";
 import { rolesErrorsMessages } from "../roles.messages";
 import updateRolesHelperService from "../helpers/operations/update-roles.helper.service";
 import { IInputIRolesPayloadStrict } from "../payloads/roles-payload";
 import { rolesResponse } from "../roles.response";
 import RolesModel from "@/database/roles/roles-db-model";
+import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 
 class updateRolesService {
   public async execute(
@@ -40,7 +41,7 @@ class updateRolesService {
       const body = payload ?? (request.body as Partial<IInputIRolesPayloadStrict>);
 
       const queryOr: any[] = [];
-      if (body.title && body.title !== existing[0].title) queryOr.push({ title: body.title });
+      if (body.title && body.title !== existing[0].title) queryOr.push({ title: { $regex: new RegExp(`^${body.title}$`, "i") } });
       if (body.label && body.label !== existing[0].label) queryOr.push({ label: body.label });
 
       if (queryOr.length > 0) {
@@ -52,7 +53,12 @@ class updateRolesService {
 
         if (existingDuplicate) {
           if (!existingDuplicate.is_deleted && existingDuplicate.is_active) {
-            throw new Error("already_exists");
+            const response = ResponseBuilder.error(ErrorTypes.CONFLICT, {
+              message: "role already exists",
+              data: body,
+              filler: { 0: existingDuplicate.title },
+            });
+            throwError("already_exists", response);
           }
 
           existingDuplicate.title = `${existingDuplicate.title}_deleted_${Date.now()}`;

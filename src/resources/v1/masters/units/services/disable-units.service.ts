@@ -8,8 +8,9 @@ import mongoose from "mongoose";
 import findUnitsHelperService from "../helpers/validators/find-units.helper.service";
 import { unitsErrorsMessages } from "../units.messages";
 import deactivateUnitsHelperService from "../helpers/operations/deactivate-units.helper.service";
-import { unitsPayload } from "../units.helper";
+import { populateFields, unitsPayload, throwError } from "../units.helper";
 import findUnitsStateHelperService from "../helpers/validators/find-units-state.helper.service";
+import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 
 class disableUnitsService {
   public async execute(
@@ -38,7 +39,12 @@ class disableUnitsService {
       );
 
       if (unit[0].is_default) {
-        throw new Error("cannot_disable_default");
+        const response = ResponseBuilder.error(ErrorTypes.CONFLICT, {
+          message: "Cannot disable default unit",
+          data: { _id: id },
+          filler: { 0: unit[0].title },
+        });
+        throwError("cannot_disable_default", response);
       }
 
       await deactivateUnitsHelperService.execute(

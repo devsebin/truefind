@@ -11,7 +11,7 @@ import mongoose from "mongoose";
 import { DbTransaction } from "@/utils/interfaces/activity-log.interface";
 import { prioritiesErrorsMessages } from "../priorities.messages";
 import findPrioritiesHelperService from "../helpers/validators/find-priorities.helper.service";
-import { populateFields, prioritiesPayload } from "../priorities.helper";
+import { populateFields, prioritiesPayload, throwError } from "../priorities.helper";
 import createPrioritiesHelperService from "../helpers/operations/create-priorities.helper.service";
 import { prioritiesResponse } from "../priorities.response";
 import PrioritiesModel from "@/database/priorities/priorities-db-model";
@@ -19,6 +19,7 @@ import { createDbTransaction } from "@/utils/helpers/db-transaction.helper";
 import { tableName } from "@/utils/definitions/constants/table-names";
 import { apiMethods } from "@/utils/definitions/constants/api-methods";
 import { operationTypes } from "@/utils/definitions/constants/operation-types";
+import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 
 class createPrioritiesService {
   public async execute(
@@ -42,7 +43,12 @@ class createPrioritiesService {
 
       if (existingDuplicate) {
         if (!existingDuplicate.is_deleted && existingDuplicate.is_active) {
-          throw new Error("already_exists");
+          const response = ResponseBuilder.error(ErrorTypes.CONFLICT, {
+            message: "priority already exists",
+            data: body,
+            filler: { 0: existingDuplicate.title },
+          });
+          throwError("already_exists", response);
         }
 
         existingDuplicate.title = body.title;

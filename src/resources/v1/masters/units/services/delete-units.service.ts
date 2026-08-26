@@ -8,8 +8,9 @@ import mongoose from "mongoose";
 import findUnitsHelperService from "../helpers/validators/find-units.helper.service";
 import { unitsErrorsMessages } from "../units.messages";
 import deleteUnitsHelperService from "../helpers/operations/delete-units.helper.service";
-import { unitsPayload } from "../units.helper";
+import { populateFields, unitsPayload, throwError } from "../units.helper";
 import findUnitsStateHelperService from "../helpers/validators/find-units-state.helper.service";
+import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 
 class deleteUnitsService {
   constructor() { }
@@ -41,7 +42,12 @@ class deleteUnitsService {
       );
 
       if (unit[0].is_default) {
-        throw new Error("cannot_delete_default");
+        const response = ResponseBuilder.error(ErrorTypes.CONFLICT, {
+          message: "Cannot delete default unit",
+          data: { _id: id },
+          filler: { 0: unit[0].title },
+        });
+        throwError("cannot_delete_default", response);
       }
 
       await deleteUnitsHelperService.execute(

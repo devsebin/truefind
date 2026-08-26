@@ -10,7 +10,7 @@ import { toRolesDTO } from "../dto/create-roles.dto";
 import mongoose from "mongoose";
 import { DbTransaction } from "@/utils/interfaces/activity-log.interface";
 import { rolesErrorsMessages } from "../roles.messages";
-import { populateFields, rolesPayload } from "../roles.helper";
+import { populateFields, rolesPayload, throwError } from "../roles.helper";
 import createRolesHelperService from "../helpers/operations/create-roles.helper.service";
 import { rolesResponse } from "../roles.response";
 import RolesModel from "@/database/roles/roles-db-model";
@@ -18,6 +18,7 @@ import { createDbTransaction } from "@/utils/helpers/db-transaction.helper";
 import { tableName } from "@/utils/definitions/constants/table-names";
 import { apiMethods } from "@/utils/definitions/constants/api-methods";
 import { operationTypes } from "@/utils/definitions/constants/operation-types";
+import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 
 class createRolesService {
   public async execute(
@@ -41,7 +42,12 @@ class createRolesService {
 
       if (existingDuplicate) {
         if (!existingDuplicate.is_deleted && existingDuplicate.is_active) {
-          throw new Error("already_exists");
+          const response = ResponseBuilder.error(ErrorTypes.CONFLICT, {
+            message: "role already exists",
+            data: body,
+            filler: { 0: existingDuplicate.title },
+          });
+          throwError("already_exists", response);
         }
 
         existingDuplicate.title = body.title;

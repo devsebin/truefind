@@ -8,8 +8,9 @@ import mongoose from "mongoose";
 import findServiceStatusesHelperService from "../helpers/validators/find-service-statuses.helper.service";
 import { serviceStatusesErrorsMessages } from "../service-statuses.messages";
 import deactivateServiceStatusesHelperService from "../helpers/operations/deactivate-service-statuses.helper.service";
-import { serviceStatusesPayload } from "../service-statuses.helper";
+import { populateFields, serviceStatusesPayload, throwError } from "../service-statuses.helper";
 import findServiceStatusesStateHelperService from "../helpers/validators/find-service-statuses-state.helper.service";
+import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 
 class disableServiceStatusesService {
   public async execute(
@@ -38,7 +39,12 @@ class disableServiceStatusesService {
       );
 
       if (serviceStatus[0].is_default) {
-        throw new Error("cannot_disable_default");
+        const response = ResponseBuilder.error(ErrorTypes.CONFLICT, {
+          message: "Cannot disable default service status",
+          data: { _id: id },
+          filler: { 0: serviceStatus[0].title },
+        });
+        throwError("cannot_disable_default", response);
       }
 
       await deactivateServiceStatusesHelperService.execute(

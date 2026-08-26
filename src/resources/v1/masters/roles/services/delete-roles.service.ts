@@ -8,8 +8,9 @@ import mongoose from "mongoose";
 import findRolesHelperService from "../helpers/validators/find-roles.helper.service";
 import { rolesErrorsMessages } from "../roles.messages";
 import deleteRolesHelperService from "../helpers/operations/delete-roles.helper.service";
-import { rolesPayload } from "../roles.helper";
+import { populateFields, rolesPayload, throwError } from "../roles.helper";
 import findRolesStateHelperService from "../helpers/validators/find-roles-state.helper.service";
+import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 
 class deleteRolesService {
   constructor() { }
@@ -37,7 +38,12 @@ class deleteRolesService {
 
       // Block deleting default role
       if (role[0].is_default) {
-        throw new Error("cannot_delete_default");
+        const response = ResponseBuilder.error(ErrorTypes.CONFLICT, {
+          message: "Cannot delete default role",
+          data: { _id: id },
+          filler: { 0: role[0].title },
+        });
+        throwError("cannot_delete_default", response);
       }
 
       await findRolesStateHelperService.isAlreadyDeleted(
