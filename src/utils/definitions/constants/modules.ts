@@ -31,5 +31,6 @@ export enum moduleTypes {
   ServiceStatuses = "service_statuses",
   BundleStatuses = "bundle_statuses",
   BundleUserMappingStatuses = "bundle_user_mapping_statuses",
+  Bundles = "bundles",
 }
 

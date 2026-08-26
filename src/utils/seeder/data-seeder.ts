@@ -5,7 +5,6 @@ import { seedStatus } from "./seeder-source/status-seeder";
 import { seedServiceStatus } from "./seeder-source/service-status-seeder";
 import { seedBundleStatus } from "./seeder-source/bundle-statuses-seeder";
 import { seedBundleUserMappingStatus } from "./seeder-source/bundle-user-mapping-status-seeder";
-import { seedBundle } from "./seeder-source/bundle-seeder";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -43,7 +42,6 @@ const seedDatabase = async () => {
     await seedServiceStatus();
     await seedBundleStatus();
     await seedBundleUserMappingStatus();
-    await seedBundle();
 
     console.log("Seeding complete!");
     process.exit();
