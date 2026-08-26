@@ -1,9 +1,9 @@
 import mongoose, { Schema } from "mongoose";
-import { IBundleDocument, BundleStatus } from "./bundles-db-interface";
+import { IBundleDocument } from "./bundles-db-interface";
 import { tableName } from "@/utils/definitions/constants/table-names";
 import { CommonServiceFieldsModel } from "@/utils/definitions/constants/db-constants";
-import { defaultStatusPlugin } from "@/utils/plugins/defaultStatus.plugin";
 import { auditPlugin } from "@/utils/plugins/audit.plugin";
+import { defaultBundleStatusPlugin } from "@/utils/plugins/bundle-status.plugin";
 
 const bundleSchema = new Schema<IBundleDocument>(
     {
@@ -35,10 +35,9 @@ const bundleSchema = new Schema<IBundleDocument>(
             ref: tableName.Documents,
             required: false,
         },
-        status: {
-            type: String,
-            enum: ["DRAFT", "ACTIVE", "INACTIVE", "ARCHIVED"],
-            default: "DRAFT",
+        status_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: tableName.BundleStatuses,
             index: true,
         },
         sort_order: {
@@ -61,8 +60,8 @@ const bundleSchema = new Schema<IBundleDocument>(
 bundleSchema.index({ status: 1, is_active: 1 });
 bundleSchema.index({ name: 1 });
 
-bundleSchema.plugin(defaultStatusPlugin);
 bundleSchema.plugin(auditPlugin);
+bundleSchema.plugin(defaultBundleStatusPlugin);
 
 bundleSchema.pre(/^find/, function (this: mongoose.Query<any, any>) {
     if (!this.getFilter().hasOwnProperty("is_deleted")) {

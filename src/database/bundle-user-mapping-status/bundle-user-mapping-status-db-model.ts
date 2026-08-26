@@ -3,6 +3,7 @@ import mongoose, { Model, Schema } from "mongoose";
 import { CommonServiceFieldsModel } from "@/utils/definitions/constants/db-constants";
 import { auditPlugin } from "@/utils/plugins/audit.plugin";
 import { tableName } from "@/utils/definitions/constants/table-names";
+import { defaultBundleUserMappingStatusPlugin } from "@/utils/plugins/bundle-user-mapping-status.plugin";
 
 
 const bundleUserMappingStatusSchema = new Schema<IBundleUserMappingStatus>(

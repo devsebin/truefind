@@ -1,6 +1,7 @@
 import { CommonServiceFieldsInterface } from "@/utils/definitions/constants/db-constants";
 import { Document, Types } from "mongoose";
 import { BundleDiscountType } from "../bundle-country-configuration/bundle-country-configuration-db-interface";
+import { Type } from "@aws-sdk/client-s3";
 
 export type UserBundleStatus =
     | "PENDING"
@@ -16,14 +17,14 @@ export type UserBundleStatus =
 
 export interface IUserBundleMapping
     extends CommonServiceFieldsInterface,
-        Document {
+    Document {
     user_id: Types.ObjectId;
     bundle_id: Types.ObjectId;
     country_id: Types.ObjectId;
     suburb_id: Types.ObjectId;
     bundle_country_configuration_id?: Types.ObjectId;
     bundle_area_configuration_id?: Types.ObjectId;
-    status: UserBundleStatus;
+    status_id: Types.ObjectId;
     currency_id: Types.ObjectId;
     bundle_price_minor: number;
     individual_services_total_minor: number;

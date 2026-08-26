@@ -2,8 +2,8 @@ import mongoose, { Schema } from "mongoose";
 import { IUserBundleMapping } from "./user-bundle-mappings-db-interface";
 import { tableName } from "@/utils/definitions/constants/table-names";
 import { CommonServiceFieldsModel } from "@/utils/definitions/constants/db-constants";
-import { defaultStatusPlugin } from "@/utils/plugins/defaultStatus.plugin";
 import { auditPlugin } from "@/utils/plugins/audit.plugin";
+import { defaultBundleUserMappingStatusPlugin } from "@/utils/plugins/bundle-user-mapping-status.plugin";
 
 const userBundleMappingSchema = new Schema<IUserBundleMapping>(
     {
@@ -41,21 +41,9 @@ const userBundleMappingSchema = new Schema<IUserBundleMapping>(
             ref: tableName.BundleAreaConfigurations,
             required: false,
         },
-        status: {
-            type: String,
-            enum: [
-                "PENDING",
-                "DOCUMENTS_PENDING",
-                "DOCUMENTS_SUBMITTED",
-                "UNDER_REVIEW",
-                "APPROVED",
-                "IN_PROGRESS",
-                "COMPLETED",
-                "REJECTED",
-                "CANCELLED",
-                "ON_HOLD",
-            ],
-            default: "PENDING",
+        status_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: tableName.BundleUserMappingStatuses,
             index: true,
         },
         currency_id: {
@@ -113,7 +101,7 @@ userBundleMappingSchema.index({ user_id: 1, createdAt: -1 });
 userBundleMappingSchema.index({ bundle_id: 1, status: 1 });
 userBundleMappingSchema.index({ user_id: 1, bundle_id: 1, status: 1 });
 
-userBundleMappingSchema.plugin(defaultStatusPlugin);
+userBundleMappingSchema.plugin(defaultBundleUserMappingStatusPlugin);
 userBundleMappingSchema.plugin(auditPlugin);
 
 userBundleMappingSchema.pre(/^find/, function (this: mongoose.Query<any, any>) {

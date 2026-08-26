@@ -18,6 +18,7 @@ import { createDbTransaction } from "@/utils/helpers/db-transaction.helper";
 import { tableName } from "@/utils/definitions/constants/table-names";
 import { apiMethods } from "@/utils/definitions/constants/api-methods";
 import { operationTypes } from "@/utils/definitions/constants/operation-types";
+import findBundleUserMappingStatusHelperService from "../helpers/validators/find-bundle-user-mapping-status.helper.service";
 
 class createBundleUserMappingStatusService {
   public async execute(
@@ -31,10 +32,15 @@ class createBundleUserMappingStatusService {
     try {
       session.startTransaction();
 
-      const existingDuplicate = await BundleUserMappingStatusModel.findOne({
-        $or: [{ title: body.title }, { label: body.label }],
-        is_deleted: { $in: [true, false] },
-      }).session(session);
+      const existingDuplicateCheck = await findBundleUserMappingStatusHelperService.execute(
+        {
+          $or: [{ title: body.title }, { label: body.label }],
+          is_deleted: { $in: [true, false] },
+        }, bundleUserMappingStatusErrorsMessages,
+        { throwIfExists: true, session: session, lean: true }
+      )
+      const existingDuplicate = existingDuplicateCheck[0]
+
 
       if (existingDuplicate) {
         if (!existingDuplicate.is_deleted && existingDuplicate.is_active) {
