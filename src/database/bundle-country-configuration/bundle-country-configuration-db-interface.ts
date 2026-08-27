@@ -9,7 +9,7 @@ export type BundleDiscountType =
 
 export interface IBundleCountryConfigurationDocument
     extends CommonServiceFieldsInterface,
-        Document {
+    Document {
     bundle_id: Types.ObjectId;
     country_id: Types.ObjectId;
     is_active: boolean;
@@ -26,5 +26,6 @@ export interface IBundleCountryConfigurationDocument
     individual_services_total?: number;
     bundle_discount_type?: BundleDiscountType;
     bundle_discount_value?: number;
+    status_id: Types.ObjectId;
     metadata?: Record<string, unknown>;
 }

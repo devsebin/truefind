@@ -33,6 +33,7 @@ import serviceStatusesApiData from "@/utils/seeder/data-source/apis/service-stat
 import bundleStatusesApiData from "@/utils/seeder/data-source/apis/bundle-statuses-api-data";
 import bundleUserMappingStatusApiData from "@/utils/seeder/data-source/apis/bundle-user-mapping-status-api-data";
 import bundleLocationConfigStatusesApiData from "@/utils/seeder/data-source/apis/bundle-location-config-statuses-api-data";
+import bundleCountryApiData from "@/utils/seeder/data-source/apis/bundle-country-api-data";
 import bundleApiData from "@/utils/seeder/data-source/apis/bundle-api-data";
 export const generatePostmanCollection = () => {
   (global as any).rolesCookie = [
@@ -73,6 +74,7 @@ export const generatePostmanCollection = () => {
     { name: "Bundle Statuses", data: bundleStatusesApiData() },
     { name: "Bundle User Mapping Statuses", data: bundleUserMappingStatusApiData() },
     { name: "Bundle Location Config Statuses", data: bundleLocationConfigStatusesApiData() },
+    { name: "Bundle Country Configurations", data: bundleCountryApiData() },
     { name: "Bundles", data: bundleApiData() },
   ];
 

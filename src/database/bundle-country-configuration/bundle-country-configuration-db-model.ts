@@ -2,9 +2,9 @@ import mongoose, { Schema } from "mongoose";
 import { IBundleCountryConfigurationDocument } from "./bundle-country-configuration-db-interface";
 import { tableName } from "@/utils/definitions/constants/table-names";
 import { CommonServiceFieldsModel } from "@/utils/definitions/constants/db-constants";
-import { defaultStatusPlugin } from "@/utils/plugins/defaultStatus.plugin";
 import { auditPlugin } from "@/utils/plugins/audit.plugin";
 import { timeUnits } from "../services/services-db-interface";
+import { defaultBundleLocationConfigStatusPlugin } from "@/utils/plugins/bundle-location-config-status.plugin";
 
 const bundleCountryConfigurationSchema = new Schema<IBundleCountryConfigurationDocument>(
     {
@@ -78,6 +78,11 @@ const bundleCountryConfigurationSchema = new Schema<IBundleCountryConfigurationD
             type: Number,
             default: 0,
         },
+        status_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: tableName.BundleLocationConfigStatuses,
+            required: true,
+        },
         metadata: {
             type: Schema.Types.Mixed,
             default: {},
@@ -93,8 +98,8 @@ bundleCountryConfigurationSchema.index(
 );
 bundleCountryConfigurationSchema.index({ country_id: 1, is_active: 1 });
 
-bundleCountryConfigurationSchema.plugin(defaultStatusPlugin);
 bundleCountryConfigurationSchema.plugin(auditPlugin);
+bundleCountryConfigurationSchema.plugin(defaultBundleLocationConfigStatusPlugin);
 
 bundleCountryConfigurationSchema.pre(/^find/, function (this: mongoose.Query<any, any>) {
     if (!this.getFilter().hasOwnProperty("is_deleted")) {

@@ -44,7 +44,11 @@ async function getDefaultStatusId() {
 
 
 
-export async function defaultBundleLocationConfigStatusPlugin() {
-    return await getDefaultStatusId();
+export function defaultBundleLocationConfigStatusPlugin(schema: Schema) {
+    schema.pre("validate", async function (this: any) {
+        if (!this.status_id) {
+            this.status_id = await getDefaultStatusId();
+        }
+    });
 }
 

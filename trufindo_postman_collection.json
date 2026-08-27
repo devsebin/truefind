@@ -14094,6 +14094,709 @@
       ]
     },
     {
+      "name": "Bundle Location Config Statuses",
+      "item": [
+        {
+          "name": "Create Bundle Location Config Status",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/bundle-location-config-statuses",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "bundle-location-config-statuses"
+              ]
+            },
+            "description": "**Activity Code**: `create_bundle_location_config_status`\n\n**Module**: `bundle_location_config_statuses`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"title\",\n  \"label\": \"label\",\n  \"color\": \"color\",\n  \"is_default\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Bundle Location Config Statuses",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/bundle-location-config-statuses",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "bundle-location-config-statuses"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "id",
+                  "disabled": true
+                },
+                {
+                  "key": "is_deleted",
+                  "value": "",
+                  "description": "is_deleted",
+                  "disabled": true
+                },
+                {
+                  "key": "created_at_gte",
+                  "value": "",
+                  "description": "created_at_gte",
+                  "disabled": true
+                },
+                {
+                  "key": "created_at_lte",
+                  "value": "",
+                  "description": "created_at_lte",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_at_gte",
+                  "value": "",
+                  "description": "updated_at_gte",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_at_lte",
+                  "value": "",
+                  "description": "updated_at_lte",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_at_gte",
+                  "value": "",
+                  "description": "deleted_at_gte",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_at_lte",
+                  "value": "",
+                  "description": "deleted_at_lte",
+                  "disabled": true
+                },
+                {
+                  "key": "is_active",
+                  "value": "",
+                  "description": "is_active",
+                  "disabled": true
+                },
+                {
+                  "key": "created_by_id",
+                  "value": "",
+                  "description": "created_by_id",
+                  "disabled": true
+                },
+                {
+                  "key": "created_by_name_like",
+                  "value": "",
+                  "description": "created_by_name_like",
+                  "disabled": true
+                },
+                {
+                  "key": "created_by_role_like",
+                  "value": "",
+                  "description": "created_by_role_like",
+                  "disabled": true
+                },
+                {
+                  "key": "created_by_email_like",
+                  "value": "",
+                  "description": "created_by_email_like",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_by_id",
+                  "value": "",
+                  "description": "updated_by_id",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_by_name_like",
+                  "value": "",
+                  "description": "updated_by_name_like",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_by_role_like",
+                  "value": "",
+                  "description": "updated_by_role_like",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_by_email_like",
+                  "value": "",
+                  "description": "updated_by_email_like",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_by_id",
+                  "value": "",
+                  "description": "deleted_by_id",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_by_name_like",
+                  "value": "",
+                  "description": "deleted_by_name_like",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_by_role_like",
+                  "value": "",
+                  "description": "deleted_by_role_like",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_by_email_like",
+                  "value": "",
+                  "description": "deleted_by_email_like",
+                  "disabled": true
+                },
+                {
+                  "key": "status_id",
+                  "value": "",
+                  "description": "status_id",
+                  "disabled": true
+                },
+                {
+                  "key": "status_title_like",
+                  "value": "",
+                  "description": "status_title_like",
+                  "disabled": true
+                },
+                {
+                  "key": "title_like",
+                  "value": "",
+                  "description": "title_like",
+                  "disabled": true
+                },
+                {
+                  "key": "label",
+                  "value": "",
+                  "description": "label",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "**Activity Code**: `list_bundle_location_config_status`\n\n**Module**: `bundle_location_config_statuses`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Show Bundle Location Config Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/bundle-location-config-statuses/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "bundle-location-config-statuses",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `show_bundle_location_config_status`\n\n**Module**: `bundle_location_config_statuses`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Bundle Location Config Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/bundle-location-config-statuses/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "bundle-location-config-statuses",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `update_bundle_location_config_status`\n\n**Module**: `bundle_location_config_statuses`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"title\",\n  \"label\": \"label\",\n  \"color\": \"color\",\n  \"is_default\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Bundle Location Config Status",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/bundle-location-config-statuses/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "bundle-location-config-statuses",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `delete_bundle_location_config_status`\n\n**Module**: `bundle_location_config_statuses`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Activate Bundle Location Config Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/bundle-location-config-statuses/:id/enable",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "bundle-location-config-statuses",
+                ":id",
+                "enable"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `activate_bundle_location_config_status`\n\n**Module**: `bundle_location_config_statuses`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Deactivate Bundle Location Config Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/bundle-location-config-statuses/:id/disable",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "bundle-location-config-statuses",
+                ":id",
+                "disable"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `deactivate_bundle_location_config_status`\n\n**Module**: `bundle_location_config_statuses`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Bundle Country Configurations",
+      "item": [
+        {
+          "name": "Create Bundle Country Config",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/bundle-country-configurations",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bundle-country-configurations"
+              ]
+            },
+            "description": "**Activity Code**: `create_bundle_country_config`\n\n**Module**: `bundle_country_configurations`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bundle_id\": \"64b8a1c8f1e67290bc5b4d1a\",\n  \"country_id\": \"64b8a1c8f1e67290bc5b4d1b\",\n  \"currency_id\": \"64b8a1c8f1e67290bc5b4d1c\",\n  \"unit_id\": \"64b8a1c8f1e67290bc5b4d1d\",\n  \"is_callout_bundle\": \"false\",\n  \"is_fixed_price\": \"true\",\n  \"price\": \"100\",\n  \"call_out_fee\": \"50\",\n  \"minimum_price\": \"20\",\n  \"maximum_price\": \"150\",\n  \"estimated_time\": \"60\",\n  \"estimated_time_unit\": \"minute\",\n  \"individual_services_total\": \"200\",\n  \"bundle_discount_type\": \"FIXED\",\n  \"bundle_discount_value\": \"20\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Bundle Country Config",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/bundle-country-configurations",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bundle-country-configurations"
+              ]
+            },
+            "description": "**Activity Code**: `list_bundle_country_config`\n\n**Module**: `bundle_country_configurations`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Show Bundle Country Config",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/bundle-country-configurations/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bundle-country-configurations",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `show_bundle_country_config`\n\n**Module**: `bundle_country_configurations`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Bundle Country Config",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/bundle-country-configurations/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bundle-country-configurations",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `update_bundle_country_config`\n\n**Module**: `bundle_country_configurations`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": \"120\",\n  \"is_callout_bundle\": \"false\",\n  \"is_fixed_price\": \"true\",\n  \"call_out_fee\": \"50\",\n  \"minimum_price\": \"20\",\n  \"maximum_price\": \"150\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Bundle Country Config",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/bundle-country-configurations/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bundle-country-configurations",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `delete_bundle_country_config`\n\n**Module**: `bundle_country_configurations`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
       "name": "Bundles",
       "item": [
         {
