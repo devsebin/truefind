@@ -58,7 +58,6 @@ bundleServiceItemSchema.index(
     { unique: true }
 );
 bundleServiceItemSchema.index({ bundle_id: 1, sort_order: 1 });
-bundleServiceItemSchema.index({ service_id: 1 });
 
 bundleServiceItemSchema.plugin(defaultStatusPlugin);
 bundleServiceItemSchema.plugin(auditPlugin);

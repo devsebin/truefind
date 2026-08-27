@@ -87,10 +87,11 @@ class createBundlesService {
         existingDuplicate.metadata = body.metadata;
 
         existingDuplicate.is_deleted = false;
-        existingDuplicate.is_active = true;
+        existingDuplicate.is_active = false;
         existingDuplicate.deleted_at = undefined;
         existingDuplicate.deleted_by = undefined;
         existingDuplicate.updated_by = request.user?._id;
+
 
         const saved = await existingDuplicate.save({ session });
         await saved.populate(populateFields);

@@ -52,7 +52,9 @@ const bundleSchema = new Schema<IBundleDocument>(
             type: Schema.Types.Mixed,
             default: {},
         },
+
         ...CommonServiceFieldsModel,
+        is_active: { type: Boolean, default: false },
     },
     { timestamps: true }
 );

@@ -34,4 +34,5 @@ export enum moduleTypes {
   BundleLocationConfigStatuses = "bundle_location_config_statuses",
   BundleCountryConfigurations = "bundle_country_configurations",
   Bundles = "bundles",
+  BundleServiceItems = "bundle_service_items",
 }

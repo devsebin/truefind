@@ -35,6 +35,7 @@ import bundleUserMappingStatusApiData from "@/utils/seeder/data-source/apis/bund
 import bundleLocationConfigStatusesApiData from "@/utils/seeder/data-source/apis/bundle-location-config-statuses-api-data";
 import bundleCountryApiData from "@/utils/seeder/data-source/apis/bundle-country-api-data";
 import bundleApiData from "@/utils/seeder/data-source/apis/bundle-api-data";
+import bundleServiceItemsApiData from "@/utils/seeder/data-source/apis/bundle-service-items-api-data";
 export const generatePostmanCollection = () => {
   (global as any).rolesCookie = [
     { _id: "64b8a1c8f1e67290bc5b4d1a", label: "super_admin" },
@@ -76,6 +77,7 @@ export const generatePostmanCollection = () => {
     { name: "Bundle Location Config Statuses", data: bundleLocationConfigStatusesApiData() },
     { name: "Bundle Country Configurations", data: bundleCountryApiData() },
     { name: "Bundles", data: bundleApiData() },
+    { name: "Bundle Service Items", data: bundleServiceItemsApiData() },
   ];
 
   function getSampleBodyForUrl(url: string, method: string): any {

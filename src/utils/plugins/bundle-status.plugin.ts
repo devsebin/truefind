@@ -87,6 +87,10 @@ export function defaultBundleStatusPlugin(schema: Schema) {
     });
 }
 
+export async function getDefaultBundleStatusId() {
+    return await getDefaultStatusId();
+}
+
 export async function getActiveBundleStatusId() {
     return await getActiveStatusId();
 }
