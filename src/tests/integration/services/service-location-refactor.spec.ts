@@ -290,6 +290,10 @@ describe("Service Location Config Refactor (Integration)", () => {
       createResult = await createCountryConfigurationService.execute({ body: payload } as any);
     });
 
+    if (createResult.result.code !== 201) {
+      console.error("CREATE COUNTRY CONFIG ERROR:", JSON.stringify(createResult));
+    }
+
     expect(createResult.result.code).toBe(201);
     const configId = createResult.result.data[0].result.id;
     expect(configId).toBeDefined();

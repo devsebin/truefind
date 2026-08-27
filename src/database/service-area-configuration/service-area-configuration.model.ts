@@ -62,6 +62,10 @@ const serviceAreaConfigurationSchema = new Schema<IServiceAreaConfigurationDocum
       enum: timeUnits,
       required: false,
     },
+    status_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: tableName.Status,
+    },
     ...CommonServiceFieldsModel
   },
   { timestamps: true }

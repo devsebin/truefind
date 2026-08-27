@@ -50,4 +50,5 @@ export enum tableName {
   UserBundleDocumentConfigurations = "user_bundle_document_configurations",
   BundleStatuses = "bundle_statuses",
   BundleUserMappingStatuses = "bundle_user_mapping_statuses",
+  BundleLocationConfigStatuses = "bundle_location_config_statuses",
 }

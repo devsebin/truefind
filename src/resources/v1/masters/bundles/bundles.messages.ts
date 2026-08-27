@@ -29,7 +29,7 @@ export const bundlesErrorsMessages = {
     message: "Icon document not found with id: {0}",
     status: statusCodes.NotFound,
   },
-  status_not_found: {
+  bundle_statuses_not_found: {
     message: "Bundle status not found with id: {0}",
     status: statusCodes.NotFound,
   },
@@ -60,6 +60,10 @@ export const bundlesErrorsMessages = {
   no_change_detected: {
     message: "No change detected in bundle with code: {0} and id: {1}",
     status: statusCodes.BadRequest,
+  },
+  file_not_found: {
+    message: "File not found with id: {0}",
+    status: statusCodes.NotFound,
   },
 };
 

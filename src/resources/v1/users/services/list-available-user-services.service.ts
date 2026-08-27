@@ -47,7 +47,9 @@ class ListAvailableUserServicesService {
       let suburbIds: mongoose.Types.ObjectId[] = [];
       const isExactSuburb = !!user.suburb_id;
 
-      if (user.suburb_id && !request.query.is_full_region) {
+      const queryParams = request?.query || {};
+
+      if (user.suburb_id && !queryParams.is_full_region) {
         suburbIds = [user.suburb_id];
       } else if (user.region_id) {
         const suburbs = await SuburbModel.find({
@@ -106,9 +108,9 @@ class ListAvailableUserServicesService {
         services.map((s) => [s._id.toString(), s])
       );
 
-      const service_type = (request.query.service_type as string) || "all";
-      const name_like = typeof request.query.name_like === "string" ? request.query.name_like.trim().toLowerCase() : "";
-      const order_by = request.query.order_by as string | undefined;
+      const service_type = (queryParams.service_type as string) || "all";
+      const name_like = typeof queryParams.name_like === "string" ? queryParams.name_like.trim().toLowerCase() : "";
+      const order_by = queryParams.order_by as string | undefined;
 
       const convertToHours = (
         time?: number,
@@ -270,7 +272,7 @@ class ListAvailableUserServicesService {
       };
 
       // 5. Root services are categories (filtered by category_id if specified)
-      const category_id = request.query.category_id as string | undefined;
+      const category_id = queryParams.category_id as string | undefined;
 
       const rootServices = services.filter(
         (s) =>

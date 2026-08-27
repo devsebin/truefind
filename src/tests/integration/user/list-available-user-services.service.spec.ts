@@ -297,6 +297,10 @@ describe("ListAvailableUserServicesService (Integration)", () => {
       result = await listAvailableUserServicesService.execute(user._id.toString(), mockReq);
     });
 
+    if (!result.result.success) {
+      console.error("FAIL RESULT:", JSON.stringify(result));
+    }
+
     expect(result.result.success).toBe(true);
     const tree = result.result.data[0].result;
     expect(tree.length).toBe(1); // Home Services

@@ -32,6 +32,7 @@ import serviceInformationApiData from "@/utils/seeder/data-source/apis/service-i
 import serviceStatusesApiData from "@/utils/seeder/data-source/apis/service-statuses-api-data";
 import bundleStatusesApiData from "@/utils/seeder/data-source/apis/bundle-statuses-api-data";
 import bundleUserMappingStatusApiData from "@/utils/seeder/data-source/apis/bundle-user-mapping-status-api-data";
+import bundleLocationConfigStatusesApiData from "@/utils/seeder/data-source/apis/bundle-location-config-statuses-api-data";
 import bundleApiData from "@/utils/seeder/data-source/apis/bundle-api-data";
 export const generatePostmanCollection = () => {
   (global as any).rolesCookie = [
@@ -71,7 +72,8 @@ export const generatePostmanCollection = () => {
     { name: "Carousels", data: carouselsApiData() },
     { name: "Bundle Statuses", data: bundleStatusesApiData() },
     { name: "Bundle User Mapping Statuses", data: bundleUserMappingStatusApiData() },
-    { name: "Bundle", data: bundleApiData() },
+    { name: "Bundle Location Config Statuses", data: bundleLocationConfigStatusesApiData() },
+    { name: "Bundles", data: bundleApiData() },
   ];
 
   function getSampleBodyForUrl(url: string, method: string): any {

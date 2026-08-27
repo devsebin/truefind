@@ -57,7 +57,7 @@ class updateDescendantsHelperService {
       const child = await BaseServiceModel.findById(childId).session(session);
       if (!child || child.is_deleted) continue;
 
-      if (child.is_active) {
+      if (child.is_active || (targetStatusId && child.status_id?.toString() !== targetStatusId.toString())) {
         const snapshot = child.toObject();
 
         child.is_active = false;

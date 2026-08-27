@@ -23,6 +23,7 @@ import v1ServiceInformationRoutes from "../resources/v1/masters/service-informat
 import v1ServiceStatusesRoutes from "../resources/v1/masters/service-statuses/service-statuses.routes";
 import v1BundleStatusesRoutes from "../resources/v1/masters/bundle-statuses/bundle-statuses.routes";
 import v1BundleUserMappingStatusRoutes from "../resources/v1/masters/bundle-user-mapping-status/bundle-user-mapping-status.routes";
+import v1BundleLocationConfigStatusRoutes from "../resources/v1/masters/bundle-location-config-statuses/bundle-location-config-statuses.routes";
 import v1BundleRoutes from "../resources/v1/masters/bundles/bundles.routes";
 import { getLocationFromCoordinates } from "@/utils/helpers/location.helper";
 
@@ -32,6 +33,7 @@ router.use("/statuses", authentication, authorizationApi, v1StatusRoutes);
 router.use("/service-statuses", authentication, authorizationApi, v1ServiceStatusesRoutes);
 router.use("/bundle-statuses", authentication, authorizationApi, v1BundleStatusesRoutes);
 router.use("/bundle-user-mapping-statuses", authentication, authorizationApi, v1BundleUserMappingStatusRoutes);
+router.use("/bundle-location-config-statuses", authentication, authorizationApi, v1BundleLocationConfigStatusRoutes);
 router.use("/bundles", authentication, authorizationApi, v1BundleRoutes);
 router.use("/countries", authentication, authorizationApi, v1CountryRoutes);
 router.use("/regions", authentication, authorizationApi, v1RegionRoutes);

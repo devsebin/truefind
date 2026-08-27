@@ -14092,6 +14092,494 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "Bundles",
+      "item": [
+        {
+          "name": "Create Bundle",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/bundles",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "bundles"
+              ]
+            },
+            "description": "**Activity Code**: `create_bundle`\n\n**Module**: `bundles`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"name\",\n  \"display_name\": \"display_name\",\n  \"code\": \"code\",\n  \"description\": \"description\",\n  \"icon\": \"icon\",\n  \"status_id\": \"status_id\",\n  \"sort_order\": 1,\n  \"tags\": [],\n  \"metadata\": {}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Bundles",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/bundles",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "bundles"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "id",
+                  "disabled": true
+                },
+                {
+                  "key": "is_deleted",
+                  "value": "",
+                  "description": "is_deleted",
+                  "disabled": true
+                },
+                {
+                  "key": "created_at_gte",
+                  "value": "",
+                  "description": "created_at_gte",
+                  "disabled": true
+                },
+                {
+                  "key": "created_at_lte",
+                  "value": "",
+                  "description": "created_at_lte",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_at_gte",
+                  "value": "",
+                  "description": "updated_at_gte",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_at_lte",
+                  "value": "",
+                  "description": "updated_at_lte",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_at_gte",
+                  "value": "",
+                  "description": "deleted_at_gte",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_at_lte",
+                  "value": "",
+                  "description": "deleted_at_lte",
+                  "disabled": true
+                },
+                {
+                  "key": "is_active",
+                  "value": "",
+                  "description": "is_active",
+                  "disabled": true
+                },
+                {
+                  "key": "created_by_id",
+                  "value": "",
+                  "description": "created_by_id",
+                  "disabled": true
+                },
+                {
+                  "key": "created_by_name_like",
+                  "value": "",
+                  "description": "created_by_name_like",
+                  "disabled": true
+                },
+                {
+                  "key": "created_by_role_like",
+                  "value": "",
+                  "description": "created_by_role_like",
+                  "disabled": true
+                },
+                {
+                  "key": "created_by_email_like",
+                  "value": "",
+                  "description": "created_by_email_like",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_by_id",
+                  "value": "",
+                  "description": "updated_by_id",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_by_name_like",
+                  "value": "",
+                  "description": "updated_by_name_like",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_by_role_like",
+                  "value": "",
+                  "description": "updated_by_role_like",
+                  "disabled": true
+                },
+                {
+                  "key": "updated_by_email_like",
+                  "value": "",
+                  "description": "updated_by_email_like",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_by_id",
+                  "value": "",
+                  "description": "deleted_by_id",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_by_name_like",
+                  "value": "",
+                  "description": "deleted_by_name_like",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_by_role_like",
+                  "value": "",
+                  "description": "deleted_by_role_like",
+                  "disabled": true
+                },
+                {
+                  "key": "deleted_by_email_like",
+                  "value": "",
+                  "description": "deleted_by_email_like",
+                  "disabled": true
+                },
+                {
+                  "key": "status_id",
+                  "value": "",
+                  "description": "status_id",
+                  "disabled": true
+                },
+                {
+                  "key": "status_title_like",
+                  "value": "",
+                  "description": "status_title_like",
+                  "disabled": true
+                },
+                {
+                  "key": "name_like",
+                  "value": "",
+                  "description": "name_like",
+                  "disabled": true
+                },
+                {
+                  "key": "code",
+                  "value": "",
+                  "description": "code",
+                  "disabled": true
+                },
+                {
+                  "key": "status_id",
+                  "value": "",
+                  "description": "status_id",
+                  "disabled": true
+                },
+                {
+                  "key": "is_active",
+                  "value": "",
+                  "description": "is_active",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "**Activity Code**: `list_bundles`\n\n**Module**: `bundles`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Show Bundle",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/bundles/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "bundles",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `show_bundle`\n\n**Module**: `bundles`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Bundle",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/bundles/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "bundles",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `update_bundle`\n\n**Module**: `bundles`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"name\",\n  \"display_name\": \"display_name\",\n  \"code\": \"code\",\n  \"description\": \"description\",\n  \"icon\": \"icon\",\n  \"status_id\": \"status_id\",\n  \"sort_order\": 1,\n  \"tags\": [],\n  \"metadata\": {}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Bundle",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/bundles/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "bundles",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `delete_bundle`\n\n**Module**: `bundles`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Activate Bundle",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/bundles/:id/enable",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "bundles",
+                ":id",
+                "enable"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `activate_bundle`\n\n**Module**: `bundles`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Deactivate Bundle",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/masters/bundles/:id/disable",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "masters",
+                "bundles",
+                ":id",
+                "disable"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `deactivate_bundle`\n\n**Module**: `bundles`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
     }
   ]
 }

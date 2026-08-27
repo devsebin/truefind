@@ -28,6 +28,7 @@ import serviceInformationApiData from "../data-source/apis/service-information-a
 import serviceStatusesApiData from "../data-source/apis/service-statuses-api-data";
 import bundleStatusesApiData from "../data-source/apis/bundle-statuses-api-data";
 import bundleUserMappingStatusApiData from "../data-source/apis/bundle-user-mapping-status-api-data";
+import bundleLocationConfigStatusesApiData from "../data-source/apis/bundle-location-config-statuses-api-data";
 import bundleApiData from "../data-source/apis/bundle-api-data";
 import RolesModel from "../../../database/roles/roles-db-model";
 import { defaultRoles, seedRole } from "./role-seeder";
@@ -44,6 +45,7 @@ export const seedActivity = async () => {
     ...serviceStatusesApiData(),
     ...bundleStatusesApiData(),
     ...bundleUserMappingStatusApiData(),
+    ...bundleLocationConfigStatusesApiData(),
     ...bundleApiData(),
     ...authenticationSessionsApiData(),
     ...userApiData(),

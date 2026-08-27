@@ -153,15 +153,15 @@ describe("Services Master Service (Integration)", () => {
     const serviceId = serviceResult.result.data[0].result.id;
     expect(serviceId).toBeDefined();
 
-    // 3.5. List categories with show_inactive_services: false
+    // 3.5. List categories with show_inactive_services: true
     let listResult: any;
     await requestContext.run({ userId: testUser._id.toString() }, async () => {
       listResult = await listCategoryService.execute({
         user: { role: "admin" },
         query: {
-          show_inactive_categories: false,
-          show_inactive_subcategories: false,
-          show_inactive_services: false,
+          show_inactive_categories: true,
+          show_inactive_subcategories: true,
+          show_inactive_services: true,
           remove_empty_categories: false,
           remove_empty_sub_category: false,
         },

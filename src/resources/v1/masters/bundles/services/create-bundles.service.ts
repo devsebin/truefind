@@ -39,7 +39,7 @@ class createBundlesService {
       // Validate Icon existence
       await findDocumentHelperService.execute(
         { _id: body.icon },
-        DocumentErrorMessages,
+        bundlesErrorsMessages,
         {
           throwIfNotFound: true,
           lean: true,
@@ -52,7 +52,7 @@ class createBundlesService {
       if (body.status_id) {
         await findBundleStatusesHelperService.execute(
           { _id: body.status_id },
-          bundleStatusesErrorsMessages,
+          bundlesErrorsMessages,
           {
             throwIfNotFound: true,
             lean: true,
@@ -82,9 +82,6 @@ class createBundlesService {
         existingDuplicate.code = body.code;
         existingDuplicate.description = body.description;
         existingDuplicate.icon = body.icon;
-        if (body.status_id) {
-          existingDuplicate.status_id = body.status_id;
-        }
         existingDuplicate.sort_order = body.sort_order;
         existingDuplicate.tags = body.tags;
         existingDuplicate.metadata = body.metadata;

@@ -50,7 +50,7 @@ class updateBundlesService {
       if (body.icon) {
         await findDocumentHelperService.execute(
           { _id: new mongoose.Types.ObjectId(body.icon) },
-          DocumentErrorMessages,
+          bundlesErrorsMessages,
           {
             throwIfNotFound: true,
             lean: true,
@@ -63,7 +63,7 @@ class updateBundlesService {
       if (body.status_id) {
         await findBundleStatusesHelperService.execute(
           { _id: new mongoose.Types.ObjectId(body.status_id) },
-          bundleStatusesErrorsMessages,
+          bundlesErrorsMessages,
           {
             throwIfNotFound: true,
             lean: true,
