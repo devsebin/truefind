@@ -54,7 +54,6 @@ const bundleSchema = new Schema<IBundleDocument>(
         },
 
         ...CommonServiceFieldsModel,
-        is_active: { type: Boolean, default: false },
     },
     { timestamps: true }
 );

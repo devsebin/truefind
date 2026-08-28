@@ -87,7 +87,7 @@ class createBundlesService {
         existingDuplicate.metadata = body.metadata;
 
         existingDuplicate.is_deleted = false;
-        existingDuplicate.is_active = false;
+        existingDuplicate.is_active = true;
         existingDuplicate.deleted_at = undefined;
         existingDuplicate.deleted_by = undefined;
         existingDuplicate.updated_by = request.user?._id;

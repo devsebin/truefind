@@ -33,6 +33,7 @@ import bundleCountryApiData from "../data-source/apis/bundle-country-api-data";
 import bundleApiData from "../data-source/apis/bundle-api-data";
 import RolesModel from "../../../database/roles/roles-db-model";
 import { defaultRoles, seedRole } from "./role-seeder";
+import bundleServiceItemsApiData from "../data-source/apis/bundle-service-items-api-data";
 
 export const seedActivity = async () => {
   await seedRole();
@@ -49,6 +50,7 @@ export const seedActivity = async () => {
     ...bundleLocationConfigStatusesApiData(),
     ...bundleCountryApiData(),
     ...bundleApiData(),
+    ...bundleServiceItemsApiData(),
     ...authenticationSessionsApiData(),
     ...userApiData(),
     ...countriesApiData(),

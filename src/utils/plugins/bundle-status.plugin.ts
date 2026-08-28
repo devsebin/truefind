@@ -26,8 +26,9 @@ async function getDefaultStatusId() {
 
     if (!defaultStatus) {
         const newStatus = await BundleStatusesModel.create({
-            title: "Draft",
-            label: "draft",
+            title: "Pending",
+            label: "pending",
+            description: "Bundle is waiting for service items to be added",
             color: "#808080",
             is_active: true,
             is_deleted: false,

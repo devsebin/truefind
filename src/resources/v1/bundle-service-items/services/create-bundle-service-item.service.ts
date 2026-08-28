@@ -9,6 +9,7 @@ import { DbTransaction } from "@/utils/interfaces/activity-log.interface";
 import {
   returnBundleServiceItemSuccess,
   populateFields,
+  throwBundleServiceItemError,
 } from "../bundle-service-items.helper";
 import { bundleServiceItemErrorsMessages } from "../bundle-service-items.messages";
 import findBundleServiceItemHelperService from "../helpers/validators/find-bundle-service-item.helper.service";
@@ -21,6 +22,8 @@ import findBundlesHelperService from "@/resources/v1/masters/bundles/helpers/val
 import findServiceHelperService from "@/resources/v1/masters/services/helpers/validators/find-service.helper.service";
 import { bundlesErrorsMessages } from "@/resources/v1/masters/bundles/bundles.messages";
 import { servicesErrorsMessages } from "@/resources/v1/masters/services/services.messages";
+import { serviceTypes } from "@/utils/definitions/constants/service-types";
+import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 
 class CreateBundleServiceItemService {
   public async execute(
@@ -47,12 +50,20 @@ class CreateBundleServiceItemService {
 
       // Check service exists and active
       const targetService = await findServiceHelperService.findOne(
-        { _id: body.service_id, is_deleted: false, is_active: true },
+        {
+          _id: body.service_id, is_deleted: false, is_active: true,
+          type: serviceTypes.Service
+        },
         session,
       );
 
       if (!targetService) {
-        throw new Error("service_not_found");
+        const response = ResponseBuilder.error(ErrorTypes.NOT_FOUND, {
+          message: "service_not_found",
+          data: body.service_id,
+          filler: {},
+        });
+        throwBundleServiceItemError("service_not_found", response);
       }
 
       // Check unique (bundle_id + service_id)
