@@ -85,6 +85,11 @@ const bundleAreaConfigurationSchema = new Schema<IBundleAreaConfigurationDocumen
             type: Schema.Types.Mixed,
             default: {},
         },
+        status_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: tableName.BundleAreaConfigurations,
+            required: true,
+        },
         ...CommonServiceFieldsModel,
     },
     { timestamps: true }

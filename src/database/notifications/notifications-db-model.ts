@@ -1,14 +1,15 @@
 import mongoose, { Schema } from "mongoose";
 import { INotification, NotificationType } from "./notifications-db-interface";
 import { tableName } from "@/utils/definitions/constants/table-names";
+import { moduleTypes } from "@/utils/definitions/constants/modules";
 
 const notificationSchema = new Schema<INotification>(
   {
     type: {
       type: String,
-      enum: Object.values(NotificationType),
       required: true,
-      default: NotificationType.BUNDLE_APPROVED,
+      index: true,
+      default: NotificationType.GENERAL,
     },
     title: {
       type: String,
@@ -20,9 +21,19 @@ const notificationSchema = new Schema<INotification>(
       required: true,
       trim: true,
     },
-    bundleId: {
+    module: {
+      type: String,
+      enum: Object.values(moduleTypes),
+      required: false,
+      index: true,
+    },
+    entityType: {
+      type: String,
+      required: false,
+      index: true,
+    },
+    entityId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: tableName.Bundles,
       required: false,
       index: true,
     },
@@ -38,15 +49,15 @@ const notificationSchema = new Schema<INotification>(
       required: false,
     },
     metadata: {
-      bundleName: { type: String },
-      serviceIds: [{ type: mongoose.Schema.Types.ObjectId, ref: tableName.Services }],
-      eventId: { type: String, index: true },
+      type: Schema.Types.Mixed,
+      default: {},
     },
   },
   { timestamps: true },
 );
 
-notificationSchema.index({ bundleId: 1, type: 1 });
+notificationSchema.index({ entityId: 1, entityType: 1 });
+notificationSchema.index({ module: 1, type: 1 });
 notificationSchema.index({ suburbId: 1, createdAt: -1 });
 
 const NotificationModel = mongoose.model<INotification>(

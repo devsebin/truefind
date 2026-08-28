@@ -373,7 +373,8 @@ describe("Approve Bundle & Notification Service (Integration)", () => {
 
     // 6. Verify Notifications
     const notifications = await NotificationModel.find({
-      bundleId: new mongoose.Types.ObjectId(bundleId),
+      entityId: new mongoose.Types.ObjectId(bundleId),
+      module: "bundles",
     });
     expect(notifications.length).toBe(1);
     expect(notifications[0]?.suburbId?.toString()).toBe(suburb1._id.toString());
@@ -460,7 +461,8 @@ describe("Approve Bundle & Notification Service (Integration)", () => {
     );
 
     const notifications = await NotificationModel.find({
-      bundleId: new mongoose.Types.ObjectId(bundleId),
+      entityId: new mongoose.Types.ObjectId(bundleId),
+      module: "bundles",
     });
     expect(notifications.length).toBe(1);
 

@@ -73,23 +73,25 @@ export const bundleCountryConfigCreateSchema = Joi.object({
 
   // Non-fixed/unit price
   minimum_price: Joi.number()
-    .when("is_callout_bundle", {
-      is: false,
-      then: Joi.forbidden(),
+    .when("is_fixed_price", {
+      is: true,
+      then: Joi.optional(),
       otherwise: Joi.required(),
     })
     .messages({
-      "any.unknown": "minimum_price is not allowed when is_callout_bundle is false",
+      "any.required": "minimum_price is required when is_fixed_price is false",
+      "any.unknown": "minimum_price is not allowed when is_fixed_price is true",
     }),
 
   maximum_price: Joi.number()
-    .when("is_callout_bundle", {
-      is: false,
-      then: Joi.forbidden(),
+    .when("is_fixed_price", {
+      is: true,
+      then: Joi.optional(),
       otherwise: Joi.required(),
     })
     .messages({
-      "any.unknown": "maximum_price is not allowed when is_callout_bundle is false",
+      "any.required": "maximum_price is required when is_fixed_price is false",
+      "any.unknown": "maximum_price is not allowed when is_fixed_price is true",
     }),
 
   // Time estimations

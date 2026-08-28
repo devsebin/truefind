@@ -150,7 +150,9 @@ class ApproveBundleService {
     for (const suburbId of suburbIds) {
       // Check for existing notification for this bundle, suburb, and event
       let notification = await NotificationModel.findOne({
-        bundleId,
+        module: "bundles",
+        entityType: "bundle",
+        entityId: bundleId,
         suburbId,
         type: NotificationType.BUNDLE_APPROVED,
         "metadata.eventId": eventId,
@@ -161,10 +163,13 @@ class ApproveBundleService {
           type: NotificationType.BUNDLE_APPROVED,
           title: "Bundle Approved",
           message: `The ${bundleName} bundle is now available in your area.`,
-          bundleId,
+          module: "bundles",
+          entityType: "bundle",
+          entityId: bundleId,
           suburbId,
           createdBy: adminUserId,
           metadata: {
+            bundleId,
             bundleName,
             serviceIds,
             eventId,

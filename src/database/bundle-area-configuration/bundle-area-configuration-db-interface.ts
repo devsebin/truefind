@@ -5,7 +5,7 @@ import { BundleDiscountType } from "../bundle-country-configuration/bundle-count
 
 export interface IBundleAreaConfigurationDocument
     extends CommonServiceFieldsInterface,
-        Document {
+    Document {
     bundle_id: Types.ObjectId;
     suburb_id: Types.ObjectId;
     country_configuration_id?: Types.ObjectId;
@@ -23,5 +23,6 @@ export interface IBundleAreaConfigurationDocument
     individual_services_total?: number;
     bundle_discount_type?: BundleDiscountType;
     bundle_discount_value?: number;
+    status_id: Types.ObjectId;
     metadata?: Record<string, unknown>;
 }
