@@ -7,6 +7,7 @@ export enum activityName {
   deactivateBundle = "Deactivate Bundle",
   showBundle = "Show Bundle",
   logBundle = "Log Bundle",
+  approveBundle = "Approve Bundle",
 }
 
 export enum activityCode {
@@ -18,4 +19,5 @@ export enum activityCode {
   deactivateBundle = "deactivate_bundle",
   showBundle = "show_bundle",
   logBundle = "log_bundle",
+  approveBundle = "approve_bundle",
 }

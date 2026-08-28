@@ -83,7 +83,7 @@ async function getActiveStatusId() {
 }
 
 async function getClearedStatusId() {
-    if (cachedActiveStatusId) {
+    if (cachedClearedStatusId) {
         const exists = await BundleStatusesModel.exists({
             _id: cachedClearedStatusId,
             is_deleted: false,

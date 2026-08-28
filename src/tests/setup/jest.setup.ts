@@ -4,6 +4,8 @@ process.env.TOKEN_SECRET = "test_token_secret_key";
 process.env.COOKIE_SECRET = "test_cookie_secret_key";
 
 import { connectDB, clearDB, closeDB } from "./mongo-memory";
+import "@/services/broadcasting/broadcasting.startup";
+import "@/resources/v1/masters/providers/helpers/support/handler.startup";
 
 beforeAll(async () => {
   await connectDB();

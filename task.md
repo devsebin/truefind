@@ -1,296 +1,453 @@
-User Services API – Additional Query Parameters
-1. Objective
+Bundle Approval & Notification API
+1. Bundle Approval API
 
-Extend the existing Get User Services API with additional query parameters for sorting and filtering services.
+Create a new API to allow an Admin to approve a bundle.
 
-Important: The previously defined service_type filter remains part of this API and should not be reimplemented or repeated in this requirement. This document only defines the new parameters to be added alongside the existing functionality.
+Access Control
+The API must be accessible only to users with the admin access role.
+Configure the appropriate accessRole in apiData.
+Non-admin users must not be allowed to invoke the API.
+Follow the existing API authorization and validation patterns.
+Bundle Approval
 
-2. API Endpoint
-Existing Endpoint
-{{base_url}}/api/v1/users/{{user_id}}/services
+When the Admin approves a bundle:
 
-Existing Query Parameters
+Validate that the bundle exists.
+Validate that the bundle is in an approvable state.
+Update the bundle status to the appropriate approved status.
+After the approval is successfully persisted, trigger the notification process.
 
-The API already supports:
+The notification process should not run if bundle approval fails.
 
-is_full_region
-service_type
+2. Identify Eligible Users
+
+After a bundle is successfully approved:
+
+Identify the suburb associated with the bundle.
+Fetch users belonging to that suburb.
+Fetch all services included in the approved bundle.
+For each user, verify that every service in the bundle is enabled for that user.
+Eligibility Rule
+
+A user is eligible for the notification only if:
+
+ALL services in the bundle are enabled for the user
 
 
-The new parameters defined in this document should work together with the existing parameters.
+If the bundle contains:
 
-Example
-{{base_url}}/api/v1/users/{{user_id}}/services?is_full_region=true&service_type=all&order_by=ascending&name_like=cleaning
+Service A
+Service B
+Service C
 
-3. New Query Parameters
 
-The following parameters should be added:
+User 1:
 
-Parameter	Required	Allowed Values / Format	Description
-order_by	No	ascending, descending	Controls the sorting order of services by service name
-name_like	No	String	Filters services based on their name
-4. order_by
+Service A → Enabled
+Service B → Enabled
+Service C → Enabled
+
+
+→ Eligible — send notification
+
+User 2:
+
+Service A → Enabled
+Service B → Enabled
+Service C → Disabled
+
+
+→ Not eligible — do not send notification
+
+User 3:
+
+Service A → Enabled
+Service B → Disabled
+Service C → Enabled
+
+
+→ Not eligible — do not send notification
+
+A user must not receive a notification if even one service from the bundle is not enabled.
+
+3. Message Broadcasting Service
+
+For notification broadcasting, first check whether the existing startup/service structure can be reused:
+
+import "./resources/v1/masters/providers/helpers/support/handler.startup";
+
+If reusable
+
+Reuse the existing message handling/broadcasting mechanism.
+
+If not reusable
+
+Create a new Message Broadcasting Service following the same structure and conventions as:
+
+import "./resources/v1/masters/providers/helpers/support/handler.startup";
+
+
+The service should support:
+
+Message creation
+Message broadcasting
+Recipient handling
+Error handling
+Logging
+Delivery status tracking
+Extensibility for additional notification channels
+
+The bundle approval API should invoke the broadcasting service only after successful bundle approval.
+
+4. Featuristic Notification Collections
+
+Create the following collections.
+
+4.1 notifications
+
+This collection stores the notification/event itself.
+
 Purpose
 
-order_by controls the alphabetical sorting of the returned services based on the service name.
+Represents a notification generated from a business event, such as:
 
-Allowed Values
+BUNDLE_APPROVED
 
-Only the following values should be accepted:
+Suggested schema
+{
+  _id: ObjectId,
 
-ascending
-descending
+  type: "BUNDLE_APPROVED",
 
-Behavior
-order_by=ascending
+  title: String,
 
-Return services in alphabetical order from A → Z.
+  message: String,
+
+  bundleId: ObjectId,
+
+  suburbId: ObjectId,
+
+  createdBy: ObjectId, // Admin who approved the bundle
+
+  metadata: {
+    bundleName: String,
+
+    serviceIds: [ObjectId]
+  },
+
+  createdAt: Date,
+
+  updatedAt: Date
+}
+
+Example
+{
+  _id: ObjectId("..."),
+
+  type: "BUNDLE_APPROVED",
+
+  title: "Bundle Approved",
+
+  message: "The Premium Care bundle is now available for you.",
+
+  bundleId: ObjectId("bundle-id"),
+
+  suburbId: ObjectId("suburb-id"),
+
+  createdBy: ObjectId("admin-id"),
+
+  metadata: {
+    bundleName: "Premium Care",
+    serviceIds: [
+      ObjectId("service-1"),
+      ObjectId("service-2"),
+      ObjectId("service-3")
+    ]
+  },
+
+  createdAt: ISODate("2026-08-28T..."),
+  updatedAt: ISODate("2026-08-28T...")
+}
+
+5. notificationRecipients
+
+This collection stores the users who are eligible to receive a notification.
+
+Purpose
+
+Maintain recipient-level notification state independently from the notification itself.
+
+Suggested schema
+{
+  _id: ObjectId,
+
+  notificationId: ObjectId,
+
+  userId: ObjectId,
+
+  suburbId: ObjectId,
+
+  status: "PENDING",
+
+  sentAt: Date | null,
+
+  readAt: Date | null,
+
+  failureReason: String | null,
+
+  createdAt: Date,
+
+  updatedAt: Date
+}
+
+Supported statuses
+PENDING
+SENT
+FAILED
+READ
+
 
 Example:
 
-?order_by=ascending
+{
+  _id: ObjectId("..."),
 
+  notificationId: ObjectId("notification-id"),
 
-Result:
+  userId: ObjectId("user-id"),
 
-AC Repair
-Cleaning
-Gardening
-Painting
-Plumbing
+  suburbId: ObjectId("suburb-id"),
 
-order_by=descending
+  status: "SENT",
 
-Return services in reverse alphabetical order from Z → A.
+  sentAt: ISODate("2026-08-28T..."),
 
-Example:
+  readAt: null,
 
-?order_by=descending
+  failureReason: null,
 
+  createdAt: ISODate("2026-08-28T..."),
 
-Result:
+  updatedAt: ISODate("2026-08-28T...")
+}
 
-Plumbing
-Painting
-Gardening
-Cleaning
-AC Repair
+6. notificationTemplates
 
-Default Behavior
+Create this collection if notification content needs to be reusable/configurable.
 
-order_by is optional.
-
-If order_by is not provided, the API should preserve the existing/default ordering behavior.
-
-Do not automatically apply ascending or descending ordering unless explicitly requested.
-
-Invalid Value
-
-If an unsupported value is provided:
-
-?order_by=random
-
-
-the API should return a 4xx validation error.
-
-5. name_like
 Purpose
 
-name_like filters the services based on their service name.
+Store notification templates by notification type rather than hardcoding messages in the service.
+
+Suggested schema
+{
+  _id: ObjectId,
+
+  type: "BUNDLE_APPROVED",
+
+  title: "Bundle Approved",
+
+  message: "The {{bundleName}} bundle is now available for you.",
+
+  channel: "IN_APP",
+
+  isActive: true,
+
+  createdAt: Date,
+
+  updatedAt: Date
+}
+
+Supported channels
+
+The initial implementation can support:
+
+IN_APP
+
+
+The design should allow future support for:
+
+PUSH
+EMAIL
+SMS
+
+7. Notification Processing Flow
+
+The complete flow should be:
 
-The filter should perform a partial/case-insensitive match.
+Admin
+  │
+  ▼
+Approve Bundle API
+  │
+  ├── Validate accessRole = admin
+  │
+  ├── Validate bundle
+  │
+  ├── Approve bundle
+  │
+  ▼
+Approval Successful
+  │
+  ▼
+Identify Bundle Suburb
+  │
+  ▼
+Get Bundle Services
+  │
+  ▼
+Find Users in Suburb
+  │
+  ▼
+Check User Service Eligibility
+  │
+  ├── All services enabled
+  │        │
+  │        ▼
+  │   Create Notification
+  │        │
+  │        ▼
+  │   Create Recipients
+  │        │
+  │        ▼
+  │   Message Broadcasting Service
+  │        │
+  │        ▼
+  │   Update Status
+  │
+  └── One or more services disabled
+           │
+           ▼
+      Do NOT create recipient
+      Do NOT send notification
 
-Example
+8. Important Notification Rule
 
-Request:
+The eligibility check must happen before creating the recipient record and before broadcasting the notification.
 
-?name_like=clean
+For example, if 100 users belong to the suburb but only 65 users have all services enabled:
 
+100 users in suburb
+       │
+       ▼
+Service eligibility check
+       │
+       ├── 65 eligible
+       │      │
+       │      └── Notification sent
+       │
+       └── 35 not eligible
+              │
+              └── No notification
 
-Should return services such as:
 
-Cleaning
-Deep Cleaning
-Home Cleaning
-Office Cleaning
+The notificationRecipients collection should contain only the 65 eligible users.
 
+9. Recommended Indexes
 
-It should not return unrelated services such as:
+Create indexes to support notification lookup and recipient processing.
 
-Plumbing
-Painting
-Gardening
+notifications
+type
+bundleId
+suburbId
+createdAt
 
-Case Sensitivity
 
-The search should be case-insensitive.
+Recommended compound/index combinations:
 
-For example:
+{ bundleId: 1, type: 1 }
+{ suburbId: 1, createdAt: -1 }
 
-?name_like=clean
+notificationRecipients
+notificationId
+userId
+status
+suburbId
+createdAt
 
 
-and
+Recommended indexes:
 
-?name_like=CLEAN
+{ notificationId: 1, userId: 1 }
+{ userId: 1, status: 1 }
+{ status: 1, createdAt: 1 }
 
 
-should produce the same results.
+Consider a unique index on:
 
-Partial Matching
+{ notificationId: 1, userId: 1 }
 
-The value should match any part of the service name.
 
-For example:
+to prevent duplicate recipients.
 
-?name_like=paint
+10. Idempotency / Duplicate Notification Handling
 
+The bundle approval flow must prevent duplicate notifications.
 
-can match:
+If the approval event is retried or the broadcasting service is invoked more than once:
 
-Painting
-House Painting
-Interior Painting
+Do not create duplicate notification records for the same bundle approval event.
+Do not create duplicate notificationRecipients records for the same notification/user combination.
+Use the appropriate unique index and/or business-level idempotency check.
 
-Empty Value
+A recommended approach is to maintain a unique business reference for the approval event, for example:
 
-If name_like is provided as an empty value:
+{
+  type: "BUNDLE_APPROVED",
+  bundleId: ObjectId("..."),
+  eventId: "bundle-approval-event-id"
+}
 
-?name_like=
+11. Error Handling
 
+Notification failure should be handled separately from bundle approval.
 
-the API should treat it as no name filter, or reject it through validation according to the project's existing query-parameter conventions. The behavior should be consistent with other optional string filters in the API.
+Bundle approval
 
-6. Combining Parameters
+If bundle approval fails:
 
-The new parameters must work together with each other and with the existing query parameters.
+Bundle remains unapproved
+No notification process is triggered
 
-Example 1 – Name Filter + Ascending Order
-{{base_url}}/api/v1/users/{{user_id}}/services?is_full_region=true&service_type=all&name_like=clean&order_by=ascending
+Notification failure
 
+If notification broadcasting fails after approval:
 
-Expected behavior:
+Bundle remains approved
+Recipient status becomes FAILED
+failureReason is stored
 
-Apply the existing service retrieval logic.
-Apply the name_like=clean filter.
-Sort the resulting services by name in ascending order.
-Example 2 – Name Filter + Descending Order
-{{base_url}}/api/v1/users/{{user_id}}/services?is_full_region=true&service_type=all&name_like=clean&order_by=descending
 
+The notification system should allow failed notifications to be retried without approving the bundle again.
 
-Expected behavior:
+12. API Security
 
-Apply the existing service retrieval logic.
-Apply the name_like=clean filter.
-Sort the resulting services by name in descending order.
-Example 3 – All New Parameters
-{{base_url}}/api/v1/users/{{user_id}}/services?is_full_region=true&service_type=quick_jobs&name_like=clean&order_by=ascending
+The API must enforce:
 
+accessRole = admin
 
-The API should apply all applicable filters and sorting rules together.
 
-The expected processing flow is:
+at the API configuration/apiData level and through the existing authorization middleware.
 
-Existing service query
-        ↓
-Existing service_type filtering
-        ↓
-name_like filtering
-        ↓
-order_by sorting
-        ↓
-Return response
+A request from a non-admin user should return the project's standard unauthorized/forbidden response.
 
-7. Query Parameter Validation
-order_by
-
-Valid:
-
-ascending
-descending
-
-
-Invalid:
-
-asc
-desc
-random
-123
-
-
-Invalid values should result in a 4xx validation error.
-
-name_like
-
-name_like should accept a string value.
-
-Examples:
-
-name_like=clean
-name_like=plumb
-name_like=home
-
-8. API Examples
-Without New Parameters
-{{base_url}}/api/v1/users/{{user_id}}/services?is_full_region=true&service_type=all
-
-
-Existing behavior should remain unchanged.
-
-With Ascending Sort
-{{base_url}}/api/v1/users/{{user_id}}/services?is_full_region=true&service_type=all&order_by=ascending
-
-With Descending Sort
-{{base_url}}/api/v1/users/{{user_id}}/services?is_full_region=true&service_type=all&order_by=descending
-
-With Name Filter
-{{base_url}}/api/v1/users/{{user_id}}/services?is_full_region=true&service_type=all&name_like=clean
-
-With Name Filter and Sorting
-{{base_url}}/api/v1/users/{{user_id}}/services?is_full_region=true&service_type=all&name_like=clean&order_by=ascending
-
-9. Implementation Requirements
-Add order_by as an optional query parameter.
-Add name_like as an optional query parameter.
-order_by must accept only ascending or descending.
-order_by should sort by the service's name.
-name_like should perform a case-insensitive partial match against the service name.
-Both parameters should be independently optional.
-Both parameters must be composable with the existing query parameters.
-Existing service retrieval behavior must not be changed when these parameters are omitted.
-Do not duplicate or alter the previously implemented service_type filtering logic.
-Apply filtering before sorting.
-Ensure the implementation does not introduce unnecessary in-memory filtering/sorting if the underlying database/query layer can perform these operations efficiently.
-10. Acceptance Criteria
- order_by=ascending sorts services by name A → Z.
- order_by=descending sorts services by name Z → A.
- Missing order_by preserves the existing/default ordering.
- Invalid order_by values return a 4xx validation error.
- name_like performs a partial match against the service name.
- name_like matching is case-insensitive.
- Missing name_like does not filter services.
- order_by and name_like can be used together.
- New parameters work with the existing service_type parameter.
- New parameters work with is_full_region.
- Existing API behavior is unchanged when the new parameters are not supplied.
- Unit/integration tests cover the new filtering and sorting behavior.
- Tests cover valid and invalid order_by values.
- Tests cover case-insensitive and partial name_like matching.
- Tests cover combinations of name_like and order_by.
-11. Summary
-
-The User Services API should support the following query parameters:
-
-is_full_region
-service_type
-order_by
-name_like
-
-
-The newly introduced parameters are:
-
-order_by
-name_like
-
-
-order_by controls alphabetical sorting, while name_like provides case-insensitive partial filtering by service name. Both are optional and must work seamlessly with the existing API filters.
+13. Acceptance Criteria
+ New API is created for bundle approval.
+ API is accessible only to admin users.
+ accessRole is configured correctly in apiData.
+ Bundle approval is persisted successfully before notifications are triggered.
+ Users are filtered by the bundle's suburb.
+ Bundle services are retrieved.
+ Each user's service eligibility is validated.
+ Users missing even one bundle service are excluded.
+ Notification is created for the approved bundle.
+ Recipient records are created only for eligible users.
+ Message Broadcasting Service is implemented/reused.
+ Notification delivery status is tracked.
+ Failed notifications can be identified/retried.
+ Duplicate notifications/recipients are prevented.
+ Required Featuristic collections are created.
+ Required indexes are created.
+ Bundle approval failure does not trigger notifications.
+ Notification failure does not roll back a successful bundle approval.

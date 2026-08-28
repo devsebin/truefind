@@ -51,4 +51,7 @@ export enum tableName {
   BundleStatuses = "bundle_statuses",
   BundleUserMappingStatuses = "bundle_user_mapping_statuses",
   BundleLocationConfigStatuses = "bundle_location_config_statuses",
+  Notifications = "notifications",
+  NotificationRecipients = "notification_recipients",
+  NotificationTemplates = "notification_templates",
 }

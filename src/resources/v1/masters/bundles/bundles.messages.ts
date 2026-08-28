@@ -61,6 +61,14 @@ export const bundlesErrorsMessages = {
     message: "No change detected in bundle with code: {0} and id: {1}",
     status: statusCodes.BadRequest,
   },
+  already_approved: {
+    message: "Bundle is already approved with code: {0} and id: {1}",
+    status: statusCodes.BadRequest,
+  },
+  bundle_not_approvable: {
+    message: "Bundle is not in an approvable state with code: {0} and id: {1}",
+    status: statusCodes.BadRequest,
+  },
   file_not_found: {
     message: "File not found with id: {0}",
     status: statusCodes.NotFound,
@@ -94,6 +102,10 @@ export const bundlesSuccessMessages = {
   },
   bundle_deactivate: {
     message: "Bundle deactivated successfully",
+    status: statusCodes.OK,
+  },
+  bundle_approved: {
+    message: "Bundle approved successfully",
     status: statusCodes.OK,
   },
 };

@@ -14,6 +14,7 @@ import updateBundlesService from "./services/update-bundles.service";
 import deleteBundlesService from "./services/delete-bundles.service";
 import enableBundlesService from "./services/enable-bundles.service";
 import disableBundlesService from "./services/disable-bundles.service";
+import approveBundleService from "./services/approve-bundle.service";
 
 class bundlesController {
   async Index(req: Request, res: Response): Promise<JsonResponse | void> {
@@ -168,6 +169,31 @@ class bundlesController {
       const id = new mongoose.Types.ObjectId(req.params.id as string);
       const userId = new mongoose.Types.ObjectId(String(req.user?._id));
       response = await disableBundlesService.execute(id, userId);
+      return res.status(response.result.code).json(response.result);
+    } catch (error: any) {
+      const message = (error as Error).message;
+      response = {
+        result: errorResponse(
+          errorMessages.SomethingWentWrong,
+          statusCodes.InternalServerError,
+          [message],
+        ),
+        DbTransactions: [],
+      };
+      res.status(statusCodes.InternalServerError).json(response.result);
+    } finally {
+      const end = new Date().getTime();
+      createActivityLogService.execute(req, res, start, end, response);
+    }
+  }
+
+  async Approve(req: Request, res: Response): Promise<JsonResponse | void> {
+    let response: any;
+    const start = new Date().getTime();
+    try {
+      const id = new mongoose.Types.ObjectId(req.params.id as string);
+      const userId = new mongoose.Types.ObjectId(String(req.user?._id));
+      response = await approveBundleService.execute(id, userId);
       return res.status(response.result.code).json(response.result);
     } catch (error: any) {
       const message = (error as Error).message;

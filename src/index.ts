@@ -13,6 +13,7 @@ import { geoMiddleware } from "./middlewares/user-location-fetching.middleware";
 import { COOKIE_SECRET } from "./utils/validate-env";
 import { contextMiddleware } from "./middlewares/context.middleware";
 import "./resources/v1/masters/providers/helpers/support/handler.startup";
+import "./services/broadcasting/broadcasting.startup";
 
 class Index {
     public express: Application;

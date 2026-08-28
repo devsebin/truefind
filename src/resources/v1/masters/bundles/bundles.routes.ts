@@ -45,5 +45,6 @@ router.patch(
   paramsValidator,
   bundlesController.deactivate,
 );
+router.patch("/:id/approve", paramsValidator, bundlesController.Approve);
 
 export default router;
