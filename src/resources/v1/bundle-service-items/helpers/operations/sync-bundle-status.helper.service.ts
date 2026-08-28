@@ -3,6 +3,7 @@ import BundleModel from "@/database/bundles/bundles-db-model";
 import BundleServiceItemModel from "@/database/bundle-service-items/bundle-service-items-db-model";
 import {
   getActiveBundleStatusId,
+  getClearedBundleStatusId,
   getDefaultBundleStatusId,
 } from "@/utils/plugins/bundle-status.plugin";
 import { DbTransaction } from "@/utils/interfaces/activity-log.interface";
@@ -37,8 +38,8 @@ class SyncBundleStatusHelperService {
 
     if (activeServiceCount > 0) {
       // If at least one active service exists: status -> Active, is_active -> true
-      const activeStatusId = await getActiveBundleStatusId();
-      bundle.status_id = activeStatusId;
+      const getClearedStatusId = await getClearedBundleStatusId();
+      bundle.status_id = getClearedStatusId;
       bundle.is_active = true;
     } else {
       // If no active service exists (all disabled or deleted): status -> Draft, is_active -> false

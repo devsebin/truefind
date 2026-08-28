@@ -8,6 +8,9 @@ import deleteBundlesService from "@/resources/v1/masters/bundles/services/delete
 import enableBundlesService from "@/resources/v1/masters/bundles/services/enable-bundles.service";
 import disableBundlesService from "@/resources/v1/masters/bundles/services/disable-bundles.service";
 import BundleModel from "@/database/bundles/bundles-db-model";
+import BundleServiceItemModel from "@/database/bundle-service-items/bundle-service-items-db-model";
+import { ServiceModel } from "@/database/services/services-db-model";
+import { timeUnits } from "@/database/services/services-db-interface";
 import BundleStatusesModel from "@/database/bundle-statuses/bundle-statuses-db-model";
 import DocumentModel from "@/database/documents/documents-db-model";
 import UserModel from "@/database/users/users-db-model";
@@ -136,6 +139,31 @@ describe("Bundles Master Service (Integration)", () => {
     });
     expect(duplicateResult.result.code).toBe(409);
 
+    // 1.8 Create a sample Service and BundleServiceItem for this bundle
+    const testService: any = await ServiceModel.create({
+      name: "Floor Scrubbing",
+      description: "Deep floor scrubbing",
+      icon: testIconDoc._id,
+      estimated_time: 2,
+      estimated_time_unit: timeUnits.hours,
+      status_id: defaultStatus._id,
+      is_active: true,
+      is_deleted: false,
+    });
+
+    const testServiceItem = await BundleServiceItemModel.create({
+      bundle_id: new mongoose.Types.ObjectId(bundleId),
+      service_id: testService._id,
+      sort_order: 1,
+      quantity: 2,
+      is_mandatory: true,
+      is_included: true,
+      service_name_snapshot: "Floor Scrubbing",
+      service_code_snapshot: "FLR-01",
+      is_active: true,
+      is_deleted: false,
+    });
+
     // 2. List Bundles
     const mockListReq = {
       query: { page: "1", limit: "10" },
@@ -151,6 +179,14 @@ describe("Bundles Master Service (Integration)", () => {
 
     expect(listResult.result.code).toBe(200);
     expect(listResult.result.data[0].result.items.length).toBe(1);
+    expect(listResult.result.data[0].result.items[0].services).toBeDefined();
+    expect(listResult.result.data[0].result.items[0].services.length).toBe(1);
+    expect(listResult.result.data[0].result.items[0].services[0].id.toString()).toBe(
+      testServiceItem._id.toString(),
+    );
+    expect(listResult.result.data[0].result.items[0].services[0].service.name).toBe(
+      "Floor Scrubbing",
+    );
 
     // 3. Show Bundle
     let showResult: any;
@@ -163,6 +199,14 @@ describe("Bundles Master Service (Integration)", () => {
     expect(showResult.result.code).toBe(200);
     expect(showResult.result.data[0].result.id.toString()).toBe(
       bundleId.toString(),
+    );
+    expect(showResult.result.data[0].result.services).toBeDefined();
+    expect(showResult.result.data[0].result.services.length).toBe(1);
+    expect(showResult.result.data[0].result.services[0].id.toString()).toBe(
+      testServiceItem._id.toString(),
+    );
+    expect(showResult.result.data[0].result.services[0].service.name).toBe(
+      "Floor Scrubbing",
     );
 
     // 4. Update Bundle

@@ -1,5 +1,6 @@
 import { IBundleDocument } from "@/database/bundles/bundles-db-interface";
 import BundleModel from "@/database/bundles/bundles-db-model";
+import BundleServiceItemModel from "@/database/bundle-service-items/bundle-service-items-db-model";
 import { apiMethods } from "@/utils/definitions/constants/api-methods";
 import { operationTypes } from "@/utils/definitions/constants/operation-types";
 import { tableName } from "@/utils/definitions/constants/table-names";
@@ -49,6 +50,27 @@ class listBundlesService {
         this.bundleRepository.countDocuments(where),
       ]);
 
+      const bundleIds = bundles.map((b) => b._id);
+      const bundleServiceItems = await BundleServiceItemModel.find({
+        bundle_id: { $in: bundleIds },
+        is_deleted: false,
+      })
+        .populate({
+          path: "service_id",
+          select: "name code description icon status_id is_active is_deleted",
+        })
+        .sort({ sort_order: 1, createdAt: 1 })
+        .lean();
+
+      const servicesMap: Record<string, any[]> = {};
+      for (const item of bundleServiceItems) {
+        const bId = item.bundle_id.toString();
+        if (!servicesMap[bId]) {
+          servicesMap[bId] = [];
+        }
+        servicesMap[bId].push(item);
+      }
+
       DbTransactions.push(
         await createDbTransaction(
           tableName.Bundles,
@@ -58,7 +80,7 @@ class listBundlesService {
         ),
       );
 
-      const response = bundleListResponse(bundles);
+      const response = bundleListResponse(bundles, servicesMap);
 
       return bundlesPayload(
         "bundles_listed",

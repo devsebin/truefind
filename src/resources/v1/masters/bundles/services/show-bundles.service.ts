@@ -5,6 +5,7 @@ import {
 } from "@/utils/responses/error.response";
 import { SingleResponse } from "@/utils/responses/success.response";
 import mongoose from "mongoose";
+import BundleServiceItemModel from "@/database/bundle-service-items/bundle-service-items-db-model";
 import { bundlesErrorsMessages } from "../bundles.messages";
 import findBundlesHelperService from "../helpers/validators/find-bundles.helper.service";
 import { populateFields, bundlesPayload } from "../bundles.helper";
@@ -28,9 +29,20 @@ class showBundlesService {
         },
       );
 
+      const bundleServiceItems = await BundleServiceItemModel.find({
+        bundle_id: id,
+        is_deleted: false,
+      })
+        .populate({
+          path: "service_id",
+          select: "name code description icon status_id is_active is_deleted",
+        })
+        .sort({ sort_order: 1, createdAt: 1 })
+        .lean();
+
       return bundlesPayload(
         "bundle_fetched",
-        bundleResponse(bundle[0]),
+        bundleResponse(bundle[0], bundleServiceItems),
         dbTransactions,
       );
     } catch (error) {

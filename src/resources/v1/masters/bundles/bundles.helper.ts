@@ -49,7 +49,7 @@ export const populateFields = [
   },
   {
     path: "status_id",
-    select: "title label color is_default",
+    select: "title label color description is_default",
   },
 ];
 
