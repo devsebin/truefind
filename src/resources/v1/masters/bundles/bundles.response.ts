@@ -17,6 +17,8 @@ const documentResponse = (doc: any) =>
       document_type: doc.document_type,
       file_name: doc.file_name,
       content_type: doc.content_type,
+      unsigned_urls: doc.unsigned_urls,
+      keys: doc.keys,
     }
     : doc;
 
@@ -37,15 +39,15 @@ const serviceItemResponse = (item: any) => {
 
   const service = item.service_id && typeof item.service_id === "object" && "_id" in item.service_id
     ? {
-        id: item.service_id._id,
-        name: item.service_id.name,
-        code: item.service_id.code,
-        description: item.service_id.description,
-        icon: item.service_id.icon,
-        status: item.service_id.status_id,
-        is_active: item.service_id.is_active,
-        is_deleted: item.service_id.is_deleted,
-      }
+      id: item.service_id._id,
+      name: item.service_id.name,
+      code: item.service_id.code,
+      description: item.service_id.description,
+      icon: item.service_id.icon,
+      status: item.service_id.status_id,
+      is_active: item.service_id.is_active,
+      is_deleted: item.service_id.is_deleted,
+    }
     : item.service_id;
 
   return {

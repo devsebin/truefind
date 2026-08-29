@@ -45,7 +45,7 @@ export const populateFields = [
   },
   {
     path: "icon",
-    select: "url document_type file_name content_type",
+    select: "name document_type content_type keys unsigned_urls",
   },
   {
     path: "status_id",
