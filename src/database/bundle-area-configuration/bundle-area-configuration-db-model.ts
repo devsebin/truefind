@@ -2,9 +2,10 @@ import mongoose, { Schema } from "mongoose";
 import { IBundleAreaConfigurationDocument } from "./bundle-area-configuration-db-interface";
 import { tableName } from "@/utils/definitions/constants/table-names";
 import { CommonServiceFieldsModel } from "@/utils/definitions/constants/db-constants";
-import { defaultStatusPlugin } from "@/utils/plugins/defaultStatus.plugin";
 import { auditPlugin } from "@/utils/plugins/audit.plugin";
 import { timeUnits } from "../services/services-db-interface";
+import { defaultBundleLocationConfigStatusPlugin } from "@/utils/plugins/bundle-location-config-status.plugin";
+
 
 const bundleAreaConfigurationSchema = new Schema<IBundleAreaConfigurationDocument>(
     {
@@ -87,7 +88,7 @@ const bundleAreaConfigurationSchema = new Schema<IBundleAreaConfigurationDocumen
         },
         status_id: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: tableName.BundleAreaConfigurations,
+            ref: tableName.BundleLocationConfigStatuses,
             required: true,
         },
         ...CommonServiceFieldsModel,
@@ -101,8 +102,9 @@ bundleAreaConfigurationSchema.index(
 );
 bundleAreaConfigurationSchema.index({ suburb_id: 1, is_active: 1 });
 
-bundleAreaConfigurationSchema.plugin(defaultStatusPlugin);
+bundleAreaConfigurationSchema.plugin(defaultBundleLocationConfigStatusPlugin);
 bundleAreaConfigurationSchema.plugin(auditPlugin);
+
 
 bundleAreaConfigurationSchema.pre(/^find/, function (this: mongoose.Query<any, any>) {
     if (!this.getFilter().hasOwnProperty("is_deleted")) {
@@ -111,9 +113,10 @@ bundleAreaConfigurationSchema.pre(/^find/, function (this: mongoose.Query<any, a
 });
 
 const BundleAreaConfigurationModel = mongoose.model<IBundleAreaConfigurationDocument>(
-    "BundleAreaConfiguration",
+    tableName.BundleAreaConfigurations,
     bundleAreaConfigurationSchema,
     tableName.BundleAreaConfigurations
 );
 
 export default BundleAreaConfigurationModel;
+

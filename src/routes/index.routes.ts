@@ -10,6 +10,7 @@ import v1ServiceCountryConfigRoutes from "../resources/v1/service-country-config
 import v1ServiceDocumentConfigRoutes from "../resources/v1/service-document-configurations/service-document-configurations.routes";
 import serviceUserDocumentConfigurationRoutes from "@/resources/v1/service-user-document-configuration/service-user-document-configuration.routes";
 import v1BundleCountryConfigRoutes from "../resources/v1/bundle-country-configurations/bundle-country-configurations.routes";
+import v1BundleAreaConfigRoutes from "../resources/v1/bundle-area-configurations/bundle-area-configurations.routes";
 import v1BundleServiceItemRoutes from "../resources/v1/bundle-service-items/bundle-service-items.routes";
 import authentication from "@/middlewares/authentication-validation.middleware";
 import { authorizationApi } from "@/middlewares/authorization-api.middleware";
@@ -25,7 +26,9 @@ router.use("/service-document-configurations", authentication, authorizationApi,
 router.use("/service-user-configurations", authentication, authorizationApi, serviceUserConfigurationRoutes);
 router.use("/service-user-document-configurations", authentication, authorizationApi, serviceUserDocumentConfigurationRoutes);
 router.use("/bundle-country-configurations", authentication, authorizationApi, v1BundleCountryConfigRoutes);
+router.use("/bundle-area-configurations", authentication, authorizationApi, v1BundleAreaConfigRoutes);
 router.use("/bundle-service-items", authentication, authorizationApi, v1BundleServiceItemRoutes);
 router.use("/webhooks", webhookRoutes);
 
 export default router;
+

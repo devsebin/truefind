@@ -14797,6 +14797,279 @@
       ]
     },
     {
+      "name": "Bundle Area Configurations",
+      "item": [
+        {
+          "name": "Create Bundle Area Config",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/bundle-area-configurations",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bundle-area-configurations"
+              ]
+            },
+            "description": "**Activity Code**: `create_bundle_area_config`\n\n**Module**: `bundle_area_configurations`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"country_configuration_id\": \"64b8a1c8f1e67290bc5b4d1a\",\n  \"suburb_ids\": \"[\\\"64b8a1c8f1e67290bc5b4d1b\\\", \\\"64b8a1c8f1e67290bc5b4d1c\\\"]\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Bundle Area Config",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/bundle-area-configurations",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bundle-area-configurations"
+              ]
+            },
+            "description": "**Activity Code**: `list_bundle_area_config`\n\n**Module**: `bundle_area_configurations`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Show Bundle Area Config",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/bundle-area-configurations/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bundle-area-configurations",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `show_bundle_area_config`\n\n**Module**: `bundle_area_configurations`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Bundle Area Config",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/bundle-area-configurations/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bundle-area-configurations",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `update_bundle_area_config`\n\n**Module**: `bundle_area_configurations`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": \"1200\",\n  \"is_callout_bundle\": \"false\",\n  \"is_fixed_price\": \"true\",\n  \"call_out_fee\": \"50\",\n  \"minimum_price\": \"200\",\n  \"maximum_price\": \"2500\",\n  \"estimated_time\": \"2\",\n  \"estimated_time_unit\": \"hours\",\n  \"individual_services_total\": \"1500\",\n  \"bundle_discount_type\": \"FIXED\",\n  \"bundle_discount_value\": \"300\",\n  \"unit_id\": \"64b8a1c8f1e67290bc5b4d1a\",\n  \"currency_id\": \"64b8a1c8f1e67290bc5b4d1b\",\n  \"is_active\": \"true\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Enable Bundle Area Config",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/bundle-area-configurations/:id/enable",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bundle-area-configurations",
+                ":id",
+                "enable"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `enable_bundle_area_config`\n\n**Module**: `bundle_area_configurations`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Disable Bundle Area Config",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/bundle-area-configurations/:id/disable",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bundle-area-configurations",
+                ":id",
+                "disable"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `disable_bundle_area_config`\n\n**Module**: `bundle_area_configurations`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
       "name": "Bundles",
       "item": [
         {
@@ -15135,7 +15408,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"name\",\n  \"display_name\": \"display_name\",\n  \"code\": \"code\",\n  \"description\": \"description\",\n  \"icon\": \"icon\",\n  \"status_id\": \"status_id\",\n  \"sort_order\": 1,\n  \"tags\": [],\n  \"metadata\": {}\n}",
+              "raw": "{\n  \"name\": \"name\",\n  \"display_name\": \"display_name\",\n  \"code\": \"code\",\n  \"description\": \"description\",\n  \"icon\": \"icon\",\n  \"sort_order\": 1,\n  \"tags\": [],\n  \"metadata\": {}\n}",
               "options": {
                 "raw": {
                   "language": "json"

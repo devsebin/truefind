@@ -3,28 +3,29 @@ import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 import { rethrowIfKnown } from "@/utils/responses/error.response";
 import { IBaseFindOptions } from "@/utils/interfaces/base-find-query.interface";
 import StrictFilterQuery from "@/utils/helpers/query-filter";
-import { IBundleCountryConfigurationDocument } from "@/database/bundle-country-configuration/bundle-country-configuration-db-interface";
-import BundleCountryConfigurationModel from "@/database/bundle-country-configuration/bundle-country-configuration-db-model";
-import { throwBundleCountryConfigError } from "../../bundle-country-configurations.helper";
+import { IBundleAreaConfigurationDocument } from "@/database/bundle-area-configuration/bundle-area-configuration-db-interface";
+import BundleAreaConfigurationModel from "@/database/bundle-area-configuration/bundle-area-configuration-db-model";
+import { throwBundleAreaConfigError } from "../../bundle-area-configurations.helper";
 
-export type IFindBundleCountry = StrictFilterQuery<
-  IBundleCountryConfigurationDocument & { _id: Types.ObjectId }
+export type IFindBundleArea = StrictFilterQuery<
+  IBundleAreaConfigurationDocument & { _id: Types.ObjectId }
 >;
 
-class FindBundleCountryHelperService {
-  private readonly repository: Model<IBundleCountryConfigurationDocument>;
+class FindBundleAreaHelperService {
+  private readonly repository: Model<IBundleAreaConfigurationDocument>;
 
   constructor() {
-    this.repository = BundleCountryConfigurationModel;
+    this.repository = BundleAreaConfigurationModel;
   }
 
   public async execute(
-    query: IFindBundleCountry,
+    query: IFindBundleArea,
     errorMap: Record<string, { message: string; status: number }>,
     options: IBaseFindOptions & {
       session?: mongoose.ClientSession;
+      populate?: any;
     } = {},
-  ): Promise<HydratedDocument<IBundleCountryConfigurationDocument>[]> {
+  ): Promise<HydratedDocument<IBundleAreaConfigurationDocument>[]> {
     const {
       throwIfExists = false,
       throwIfNotFound = false,
@@ -55,39 +56,35 @@ class FindBundleCountryHelperService {
       if (throwIfExists && documents.length > 0) {
         const response = ResponseBuilder.error(ErrorTypes.CONFLICT, {
           message:
-            "Country configuration already exists for this bundle and country",
+            "Bundle area configuration already exists for this bundle and suburb",
           data: query,
         });
 
-        throwBundleCountryConfigError(
-          "country_config_already_exists",
-          response,
-        );
+        throwBundleAreaConfigError("area_config_already_exists", response);
       }
 
       if (throwIfNotFound && documents.length === 0) {
         const response = ResponseBuilder.error(ErrorTypes.NOT_FOUND, {
-          message: "Country configuration not found",
+          message: "Bundle area configuration not found",
           data: query,
         });
 
-        throwBundleCountryConfigError("country_not_found", response);
+        throwBundleAreaConfigError("area_config_not_found", response);
       }
-
 
       if (!returnDocument) {
         return [];
       }
 
-      return documents as HydratedDocument<IBundleCountryConfigurationDocument>[];
+      return documents as HydratedDocument<IBundleAreaConfigurationDocument>[];
     } catch (error) {
       rethrowIfKnown(
         error,
-        "Error while finding bundle country configuration",
+        "Error while finding bundle area configuration",
         errorMap,
       );
     }
   }
 }
 
-export default new FindBundleCountryHelperService();
+export default new FindBundleAreaHelperService();

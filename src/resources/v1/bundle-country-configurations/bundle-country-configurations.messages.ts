@@ -26,6 +26,10 @@ export const bundleCountryConfigErrorsMessages = {
     message: "Unit not found.",
     status: statusCodes.NotFound,
   },
+  service_not_added: {
+    message: "Service is not added in this bundle.",
+    status: statusCodes.BadRequest,
+  },
 };
 
 export const bundleCountryConfigSuccessMessages = {

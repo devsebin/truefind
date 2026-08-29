@@ -34,6 +34,7 @@ import bundleStatusesApiData from "@/utils/seeder/data-source/apis/bundle-status
 import bundleUserMappingStatusApiData from "@/utils/seeder/data-source/apis/bundle-user-mapping-status-api-data";
 import bundleLocationConfigStatusesApiData from "@/utils/seeder/data-source/apis/bundle-location-config-statuses-api-data";
 import bundleCountryApiData from "@/utils/seeder/data-source/apis/bundle-country-api-data";
+import bundleAreaApiData from "@/utils/seeder/data-source/apis/bundle-area-api-data";
 import bundleApiData from "@/utils/seeder/data-source/apis/bundle-api-data";
 import bundleServiceItemsApiData from "@/utils/seeder/data-source/apis/bundle-service-items-api-data";
 export const generatePostmanCollection = () => {
@@ -76,9 +77,11 @@ export const generatePostmanCollection = () => {
     { name: "Bundle User Mapping Statuses", data: bundleUserMappingStatusApiData() },
     { name: "Bundle Location Config Statuses", data: bundleLocationConfigStatusesApiData() },
     { name: "Bundle Country Configurations", data: bundleCountryApiData() },
+    { name: "Bundle Area Configurations", data: bundleAreaApiData() },
     { name: "Bundles", data: bundleApiData() },
     { name: "Bundle Service Items", data: bundleServiceItemsApiData() },
   ];
+
 
   function getSampleBodyForUrl(url: string, method: string): any {
     if (url === "/api/v1/authentication/sent-otp") {

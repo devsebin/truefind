@@ -7,7 +7,8 @@ import { Request } from "express";
 import mongoose from "mongoose";
 import { DbTransaction } from "@/utils/interfaces/activity-log.interface";
 import {
-  returnBundleCountryConfigSuccess, populateFields
+  returnBundleCountryConfigSuccess, populateFields,
+  throwBundleCountryConfigError
 } from "../bundle-country-configurations.helper";
 import { bundleCountryConfigErrorsMessages } from "../bundle-country-configurations.messages";
 import findBundleCountryHelperService from "../helpers/validators/find-bundle-country.helper.service";
@@ -24,6 +25,8 @@ import { bundlesErrorsMessages } from "@/resources/v1/masters/bundles/bundles.me
 import { countryErrorsMessages } from "@/resources/v1/masters/countries/countries.messages";
 import { currenciesErrorsMessages } from "@/resources/v1/masters/currencies/currencies.messages";
 import { unitsErrorsMessages } from "@/resources/v1/masters/units/units.messages";
+import { getClearedBundleStatusId, getDefaultBundleStatusId } from "@/utils/plugins/bundle-status.plugin";
+import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 
 
 class CreateBundleCountryConfigurationService {
@@ -38,16 +41,24 @@ class CreateBundleCountryConfigurationService {
       session.startTransaction();
 
       // Check bundle exists and active
-      await findBundlesHelperService.execute(
-        { _id: body.bundle_id, is_deleted: false } as any,
+      const bundle = await findBundlesHelperService.execute(
+        { _id: body.bundle_id, is_deleted: false, is_active: true } as any,
         bundlesErrorsMessages,
         {
           throwIfNotFound: true,
-          lean: true,
-          returnDocument: false,
+          returnDocument: true,
           session,
         },
       );
+
+      if (bundle[0]?.status_id.toString() !== getClearedBundleStatusId().toString()) {
+        const response = ResponseBuilder.error(ErrorTypes.CONFLICT, {
+          message: "bundle is waiting to add services",
+          data: bundle[0],
+          filler: { 0: bundle[0].name },
+        });
+        throwBundleCountryConfigError("service_not_added", response);
+      }
 
       // Check country exists and active
       await findCountryHelperService.execute(

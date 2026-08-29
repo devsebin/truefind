@@ -108,9 +108,10 @@ bundleCountryConfigurationSchema.pre(/^find/, function (this: mongoose.Query<any
 });
 
 const BundleCountryConfigurationModel = mongoose.model<IBundleCountryConfigurationDocument>(
-    "BundleCountryConfiguration",
+    tableName.BundleCountryConfigurations,
     bundleCountryConfigurationSchema,
     tableName.BundleCountryConfigurations
 );
 
 export default BundleCountryConfigurationModel;
+
