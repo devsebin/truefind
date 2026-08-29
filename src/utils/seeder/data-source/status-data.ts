@@ -2,14 +2,10 @@ import { IStatus } from "../../..//database/status/status-db-interface";
 import User from "../../../database/users/users-db-model";
 import { getRoleId } from "../seeder-cookie";
 
-export async function generateStatusData() {
-  const user = await User.findOne({ role: getRoleId("super_admin") }); // Or adjust to your specific query to get the first user
-
-  if (!user) {
-    console.log("No users found. Please add a user first.");
-    return;
-  }
-  const statusData: IStatus[] = [
+export async function generateStatusData(): Promise<Partial<IStatus>[]> {
+  const user = await User.findOne({ role: getRoleId("super_admin") });
+  const userId = user ? user._id : undefined;
+  const statusData: Partial<IStatus>[] = [
     {
       title: "Active",
       label: "active",
@@ -17,7 +13,7 @@ export async function generateStatusData() {
       is_active: true,
       is_deleted: false,
       is_default: true,
-      created_by: user._id,
+      created_by: userId,
     },
     {
       title: "Inactive",
@@ -26,7 +22,7 @@ export async function generateStatusData() {
       is_active: true,
       is_deleted: false,
       is_default: false,
-      created_by: user._id,
+      created_by: userId,
     },
     {
       title: "Suspended",
@@ -35,7 +31,7 @@ export async function generateStatusData() {
       is_active: true,
       is_deleted: false,
       is_default: false,
-      created_by: user._id,
+      created_by: userId,
     },
     {
       title: "Deleted",
@@ -44,7 +40,7 @@ export async function generateStatusData() {
       is_active: true,
       is_deleted: false,
       deleted_at: new Date(),
-      created_by: user._id,
+      created_by: userId,
     },
     {
       title: "Pending",
@@ -53,7 +49,7 @@ export async function generateStatusData() {
       is_active: true,
       is_deleted: false,
       is_default: false,
-      created_by: user._id,
+      created_by: userId,
     },
     {
       title: "Archived",
@@ -62,7 +58,7 @@ export async function generateStatusData() {
       is_active: true,
       is_deleted: false,
       is_default: false,
-      created_by: user._id,
+      created_by: userId,
     },
     {
       title: "Draft",
@@ -71,7 +67,7 @@ export async function generateStatusData() {
       is_active: true,
       is_deleted: false,
       is_default: false,
-      created_by: user._id,
+      created_by: userId,
     },
     {
       title: "Completed",
@@ -80,7 +76,7 @@ export async function generateStatusData() {
       is_active: true,
       is_deleted: false,
       is_default: false,
-      created_by: user._id,
+      created_by: userId,
     },
     {
       title: "Cancelled",
@@ -89,7 +85,7 @@ export async function generateStatusData() {
       is_active: false,
       is_deleted: true,
       deleted_at: new Date(),
-      created_by: user._id,
+      created_by: userId,
     },
     {
       title: "Failed",
@@ -98,7 +94,7 @@ export async function generateStatusData() {
       is_active: true,
       is_deleted: false,
       deleted_at: new Date(),
-      created_by: user._id,
+      created_by: userId,
     },
     {
       title: "In Progress",
@@ -107,7 +103,7 @@ export async function generateStatusData() {
       is_active: true,
       is_deleted: false,
       is_default: false,
-      created_by: user._id,
+      created_by: userId,
     },
     {
       title: "On Hold",
@@ -116,7 +112,7 @@ export async function generateStatusData() {
       is_active: true,
       is_deleted: false,
       is_default: false,
-      created_by: user._id,
+      created_by: userId,
     },
     {
       title: "Under Review",
@@ -125,7 +121,7 @@ export async function generateStatusData() {
       is_active: true,
       is_deleted: false,
       is_default: false,
-      created_by: user._id,
+      created_by: userId,
     },
     {
       title: "Approved",
@@ -134,7 +130,7 @@ export async function generateStatusData() {
       is_active: true,
       is_deleted: false,
       is_default: false,
-      created_by: user._id,
+      created_by: userId,
     },
     {
       title: "Rejected",
@@ -143,7 +139,7 @@ export async function generateStatusData() {
       is_active: true,
       is_deleted: false,
       deleted_at: new Date(),
-      created_by: user._id,
+      created_by: userId,
     },
     {
       title: "Escalated",
@@ -152,7 +148,7 @@ export async function generateStatusData() {
       is_active: true,
       is_deleted: false,
       is_default: false,
-      created_by: user._id,
+      created_by: userId,
     },
     {
       title: "Resolved",
@@ -161,7 +157,7 @@ export async function generateStatusData() {
       is_active: true,
       is_deleted: false,
       is_default: false,
-      created_by: user._id,
+      created_by: userId,
     },
     {
       title: "Waiting for Approval",
@@ -170,7 +166,7 @@ export async function generateStatusData() {
       is_active: true,
       is_deleted: false,
       is_default: false,
-      created_by: user._id,
+      created_by: userId,
     },
     {
       title: "Waiting for Payment",
@@ -179,7 +175,7 @@ export async function generateStatusData() {
       is_active: true,
       is_deleted: false,
       is_default: false,
-      created_by: user._id,
+      created_by: userId,
     },
     {
       title: "Waiting for Confirmation",
@@ -188,7 +184,7 @@ export async function generateStatusData() {
       is_active: true,
       is_deleted: false,
       is_default: false,
-      created_by: user._id,
+      created_by: userId,
     },
     {
       title: "Waiting for Response",
@@ -197,7 +193,7 @@ export async function generateStatusData() {
       is_active: true,
       is_deleted: false,
       is_default: false,
-      created_by: user._id,
+      created_by: userId,
     },
     {
       title: "Waiting for Information",
@@ -206,7 +202,7 @@ export async function generateStatusData() {
       is_active: true,
       is_deleted: false,
       is_default: false,
-      created_by: user._id,
+      created_by: userId,
     },
     {
       title: "Waiting for Action",
@@ -215,7 +211,7 @@ export async function generateStatusData() {
       is_active: true,
       is_deleted: false,
       is_default: false,
-      created_by: user._id,
+      created_by: userId,
     },
     {
       title: "Waiting for Review",
@@ -224,7 +220,7 @@ export async function generateStatusData() {
       is_active: true,
       is_deleted: false,
       is_default: false,
-      created_by: user._id,
+      created_by: userId,
     },
     {
       title: "Waiting for Feedback",
@@ -233,7 +229,7 @@ export async function generateStatusData() {
       is_active: true,
       is_deleted: false,
       is_default: false,
-      created_by: user._id,
+      created_by: userId,
     },
     {
       title: "Waiting for Approval from Manager",
@@ -242,7 +238,7 @@ export async function generateStatusData() {
       is_active: true,
       is_deleted: false,
       is_default: false,
-      created_by: user._id,
+      created_by: userId,
     },
     {
       title: "Waiting for Approval from Client",
@@ -251,7 +247,7 @@ export async function generateStatusData() {
       is_active: true,
       is_deleted: false,
       is_default: false,
-      created_by: user._id,
+      created_by: userId,
     },
     {
       title: "Waiting for Approval from Vendor",
@@ -260,7 +256,7 @@ export async function generateStatusData() {
       is_active: true,
       is_deleted: false,
       is_default: false,
-      created_by: user._id,
+      created_by: userId,
     },
     {
       title: "Waiting for Approval from Admin",
@@ -269,7 +265,7 @@ export async function generateStatusData() {
       is_active: true,
       is_deleted: false,
       is_default: false,
-      created_by: user._id,
+      created_by: userId,
     },
     {
       title: "Waiting for Approval from Team Lead",
@@ -278,7 +274,7 @@ export async function generateStatusData() {
       is_active: true,
       is_deleted: false,
       is_default: false,
-      created_by: user._id,
+      created_by: userId,
     },
     {
       title: "Parent deleted",
@@ -287,7 +283,7 @@ export async function generateStatusData() {
       is_active: true,
       is_deleted: false,
       is_default: false,
-      created_by: user._id,
+      created_by: userId,
     },
     {
       title: "Parent disabled",
@@ -296,7 +292,7 @@ export async function generateStatusData() {
       is_active: true,
       is_deleted: false,
       is_default: false,
-      created_by: user._id,
+      created_by: userId,
     },
     {
       title: "Child deleted",
@@ -305,7 +301,7 @@ export async function generateStatusData() {
       is_active: true,
       is_deleted: false,
       is_default: false,
-      created_by: user._id,
+      created_by: userId,
     },
   ];
 

@@ -1,0 +1,111 @@
+import IUnits from "../../../database/units/units-db-interface";
+import User from "../../../database/users/users-db-model";
+import { getRoleId } from "../seeder-cookie";
+
+export async function generateUnitData(): Promise<Partial<IUnits>[]> {
+  const user = await User.findOne({ role: getRoleId("super_admin") });
+  const userId = user ? user._id : undefined;
+
+  return [
+    {
+      title: "Piece",
+      label: "piece",
+      dimension: "quantity",
+      color: "#28a745",
+      is_default: true,
+      is_active: true,
+      is_deleted: false,
+      created_by: userId,
+    },
+    {
+      title: "Hour",
+      label: "hour",
+      dimension: "time",
+      color: "#007bff",
+      is_default: false,
+      is_active: true,
+      is_deleted: false,
+      created_by: userId,
+    },
+    {
+      title: "Day",
+      label: "day",
+      dimension: "time",
+      color: "#17a2b8",
+      is_default: false,
+      is_active: true,
+      is_deleted: false,
+      created_by: userId,
+    },
+    {
+      title: "Kilogram",
+      label: "kilogram",
+      dimension: "weight",
+      color: "#6f42c1",
+      is_default: false,
+      is_active: true,
+      is_deleted: false,
+      created_by: userId,
+    },
+    {
+      title: "Meter",
+      label: "meter",
+      dimension: "length",
+      color: "#fd7e14",
+      is_default: false,
+      is_active: true,
+      is_deleted: false,
+      created_by: userId,
+    },
+    {
+      title: "Square Meter",
+      label: "sq_meter",
+      dimension: "area",
+      color: "#20c997",
+      is_default: false,
+      is_active: true,
+      is_deleted: false,
+      created_by: userId,
+    },
+    {
+      title: "Liter",
+      label: "liter",
+      dimension: "volume",
+      color: "#0dcaf0",
+      is_default: false,
+      is_active: true,
+      is_deleted: false,
+      created_by: userId,
+    },
+    {
+      title: "Box",
+      label: "box",
+      dimension: "packaging",
+      color: "#ffc107",
+      is_default: false,
+      is_active: true,
+      is_deleted: false,
+      created_by: userId,
+    },
+    {
+      title: "Package",
+      label: "package",
+      dimension: "packaging",
+      color: "#e83e8c",
+      is_default: false,
+      is_active: true,
+      is_deleted: false,
+      created_by: userId,
+    },
+    {
+      title: "Set",
+      label: "set",
+      dimension: "quantity",
+      color: "#6c757d",
+      is_default: false,
+      is_active: true,
+      is_deleted: false,
+      created_by: userId,
+    },
+  ];
+}

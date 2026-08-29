@@ -3,6 +3,10 @@ import { seedRole } from "./seeder-source/role-seeder";
 import { seedUser } from "./seeder-source/user-seeder";
 import { seedStatus } from "./seeder-source/status-seeder";
 import { seedServiceStatus } from "./seeder-source/service-status-seeder";
+import { seedPriority } from "./seeder-source/priority-seeder";
+import { seedUnit } from "./seeder-source/unit-seeder";
+import { seedCurrency } from "./seeder-source/currency-seeder";
+import { seedLocations } from "./seeder-source/location-seeder";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -30,13 +34,31 @@ const seedDatabase = async () => {
       await database.dropCollection(collection.name);
     }
 
+    console.log("Seeding Roles...");
     await seedRole();
     const RolesModel = (await import("../../database/roles/roles-db-model")).default;
     const roles = await RolesModel.find({});
     (global as any).rolesCookie = roles;
 
-    await seedUser();
+    console.log("Seeding Statuses...");
     await seedStatus();
+
+    console.log("Seeding Priorities...");
+    await seedPriority();
+
+    console.log("Seeding Users...");
+    await seedUser();
+
+    console.log("Seeding Units...");
+    await seedUnit();
+
+    console.log("Seeding Currencies...");
+    await seedCurrency();
+
+    console.log("Seeding Locations (Countries, Regions, Districts, Suburbs)...");
+    await seedLocations();
+
+    console.log("Seeding Service Statuses...");
     await seedServiceStatus();
 
     console.log("Seeding complete!");
