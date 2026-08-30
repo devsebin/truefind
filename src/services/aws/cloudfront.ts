@@ -10,7 +10,7 @@ export function generateCloudFrontSignedUrl(
   key: string,
   expiresInSeconds = 3600,
 ) {
-  const url = `https://${process.env.CLOUDFRONT_DOMAIN}/keys/${key}`;
+  const url = `https://${process.env.CLOUDFRONT_DOMAIN}/${key}`;
 
   return cloudfrontGetSignedUrl({
     url,
@@ -21,7 +21,7 @@ export function generateCloudFrontSignedUrl(
 }
 
 export function buildCloudFrontUrl(key: string) {
-  return `https://${process.env.CLOUDFRONT_DOMAIN}/keys/${key}`;
+  return `https://${process.env.CLOUDFRONT_DOMAIN}/${key}`;
 }
 
 export function safeFileName(name: string) {

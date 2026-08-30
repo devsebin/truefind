@@ -1,453 +1,1349 @@
-Bundle Approval & Notification API
-1. Bundle Approval API
+Generic Hierarchical Workflow Engine
+1. Overview
+The application contains multiple MongoDB collections where entities have relationships with other entities and their activation state depends on the state of related entities.
 
-Create a new API to allow an Admin to approve a bundle.
+A typical example is a geographical hierarchy:
 
-Access Control
-The API must be accessible only to users with the admin access role.
-Configure the appropriate accessRole in apiData.
-Non-admin users must not be allowed to invoke the API.
-Follow the existing API authorization and validation patterns.
-Bundle Approval
+Country
+   └── Region
+         └── District
+               └── Suburb
 
-When the Admin approves a bundle:
+The entities are created independently by an administrator, but their ACTIVE / INACTIVE state depends on whether their child entities satisfy configured conditions.
 
-Validate that the bundle exists.
-Validate that the bundle is in an approvable state.
-Update the bundle status to the appropriate approved status.
-After the approval is successfully persisted, trigger the notification process.
+Example:
 
-The notification process should not run if bundle approval fails.
+Country
+  → requires at least 1 ACTIVE Region
 
-2. Identify Eligible Users
+Region
+  → requires at least 1 ACTIVE District
 
-After a bundle is successfully approved:
+District
+  → requires at least 1 ACTIVE Suburb
 
-Identify the suburb associated with the bundle.
-Fetch users belonging to that suburb.
-Fetch all services included in the approved bundle.
-For each user, verify that every service in the bundle is enabled for that user.
-Eligibility Rule
+The goal is to create a generic workflow engine that can support this and future workflows without implementing separate activation logic for every collection.
 
-A user is eligible for the notification only if:
+2. Main Requirement
+The system must support:
 
-ALL services in the bundle are enabled for the user
+Multiple MongoDB collections.
+Parent-child relationships between entities.
+Configurable activation conditions.
+Automatic activation when conditions become satisfied.
+Automatic deactivation when conditions stop being satisfied.
+Cascading status changes from child → parent.
+Transaction-safe state changes.
+Generic workflow logic that does not depend on specific entity names.
+Ability to add new workflows without rewriting the workflow engine.
+Efficient status evaluation without recursively querying an entire hierarchy.
+Recovery/reconciliation when counters become inconsistent.
+3. Example Workflow
+The initial workflow is:
 
+Country
+   │
+   │ requires >= 1 active Region
+   ▼
+Region
+   │
+   │ requires >= 1 active District
+   ▼
+District
+   │
+   │ requires >= 1 active Suburb
+   ▼
+Suburb
 
-If the bundle contains:
+The rules are:
 
-Service A
-Service B
-Service C
+Entity	Parent	Child	Activation condition
+Country	None	Region	At least 1 active Region
+Region	Country	District	At least 1 active District
+District	Region	Suburb	At least 1 active Suburb
+Suburb	District	None	Own business condition
 
+4. Important Architectural Principle
+The hierarchy and workflow should be treated as two separate concepts.
 
-User 1:
+Hierarchy
+The hierarchy answers:
 
-Service A → Enabled
-Service B → Enabled
-Service C → Enabled
+Who is the parent of this entity?
 
+Example:
 
-→ Eligible — send notification
+Suburb → District → Region → Country
 
-User 2:
+Workflow
+The workflow answers:
 
-Service A → Enabled
-Service B → Enabled
-Service C → Disabled
+What condition must be satisfied for this entity to become active?
 
+Example:
 
-→ Not eligible — do not send notification
+Country:
+    active Region count >= 1
 
-User 3:
+Region:
+    active District count >= 1
 
-Service A → Enabled
-Service B → Disabled
-Service C → Enabled
+District:
+    active Suburb count >= 1
 
+Do not hard-code these concepts together.
 
-→ Not eligible — do not send notification
+This allows the same workflow engine to later support:
 
-A user must not receive a notification if even one service from the bundle is not enabled.
+Company
+   └── Department
+          └── Team
 
-3. Message Broadcasting Service
+or:
 
-For notification broadcasting, first check whether the existing startup/service structure can be reused:
+Category
+   └── Product
 
-import "./resources/v1/masters/providers/helpers/support/handler.startup";
+without changing the engine itself.
 
-If reusable
+5. Do We Need a Workflow Collection?
+Not initially.
 
-Reuse the existing message handling/broadcasting mechanism.
+If developers control the workflow definitions, keep the workflow rules in TypeScript.
 
-If not reusable
+Recommended:
 
-Create a new Message Broadcasting Service following the same structure and conventions as:
+Workflow definitions
+        ↓
+     TypeScript
 
-import "./resources/v1/masters/providers/helpers/support/handler.startup";
+Current entity state
+        ↓
+     MongoDB
 
+A MongoDB workflow_definitions collection should only be introduced if workflows need to be configured dynamically by administrators or business users.
 
-The service should support:
+For the initial implementation:
 
-Message creation
-Message broadcasting
-Recipient handling
-Error handling
-Logging
-Delivery status tracking
-Extensibility for additional notification channels
+No workflow collection required.
 
-The bundle approval API should invoke the broadcasting service only after successful bundle approval.
+6. Recommended Architecture
+                         Admin API
+                            │
+                            ▼
+                    Entity Service
+                ┌───────────┴───────────┐
+                │                       │
+             Country                 Region
+             Service                 Service
+                │                       │
+                └───────────┬───────────┘
+                            ▼
+                    Workflow Service
+                            │
+                            ▼
+                    Workflow Engine
+                            │
+             ┌──────────────┼──────────────┐
+             │              │              │
+             ▼              ▼              ▼
+          Rules          Registry       Repository
+             │              │              │
+             └──────────────┼──────────────┘
+                            ▼
+                         MongoDB
+                            │
+                            ▼
+                          Events
+                            │
+                            ▼
+                    Parent evaluation
 
-4. Featuristic Notification Collections
+7. MongoDB Data Model
+Each workflow-enabled entity should maintain its current status and activation information.
 
-Create the following collections.
+Example Country:
 
-4.1 notifications
-
-This collection stores the notification/event itself.
-
-Purpose
-
-Represents a notification generated from a business event, such as:
-
-BUNDLE_APPROVED
-
-Suggested schema
 {
-  _id: ObjectId,
+  "_id": "country-id",
+  "name": "India",
+  "status": "ACTIVE",
+  "activation": {
+    "activeChildCount": 5
+  }
+}
 
-  type: "BUNDLE_APPROVED",
+Example Region:
 
-  title: String,
+{
+  "_id": "region-id",
+  "name": "Kerala",
+  "countryId": "country-id",
+  "status": "ACTIVE",
+  "activation": {
+    "activeChildCount": 14
+  }
+}
 
-  message: String,
+Example District:
 
-  bundleId: ObjectId,
+{
+  "_id": "district-id",
+  "name": "Ernakulam",
+  "regionId": "region-id",
+  "status": "ACTIVE",
+  "activation": {
+    "activeChildCount": 8
+  }
+}
 
-  suburbId: ObjectId,
+Example Suburb:
 
-  createdBy: ObjectId, // Admin who approved the bundle
+{
+  "_id": "suburb-id",
+  "name": "Kakkanad",
+  "districtId": "district-id",
+  "status": "ACTIVE"
+}
 
-  metadata: {
-    bundleName: String,
+8. Why Use activeChildCount?
+Do not recursively query all children every time an entity's status needs to be checked.
 
-    serviceIds: [ObjectId]
+Avoid:
+
+Country
+  → query Regions
+      → query Districts
+          → query Suburbs
+
+Instead maintain:
+
+{
+  "activation": {
+    "activeChildCount": 5
+  }
+}
+
+Then activation can be evaluated using:
+
+activeChildCount >= requiredActiveChildren
+
+For example:
+
+activeChildCount = 5
+required = 1
+
+5 >= 1
+
+Therefore:
+ACTIVE
+
+This makes status evaluation very cheap.
+
+9. TypeScript Types
+Create generic workflow types.
+
+export type EntityStatus =
+  | "ACTIVE"
+  | "INACTIVE";
+
+export interface WorkflowEntity {
+  id: string;
+  type: string;
+  status: EntityStatus;
+
+  parent?: {
+    type: string;
+    id: string;
+  };
+
+  activation?: {
+    activeChildCount: number;
+  };
+}
+
+10. Workflow Condition
+Create a generic condition interface.
+
+export type ConditionOperator =
+  | "GTE"
+  | "GT"
+  | "EQ"
+  | "LTE"
+  | "LT";
+
+export interface ActiveChildCountCondition {
+  type: "ACTIVE_CHILD_COUNT";
+  operator: ConditionOperator;
+  value: number;
+}
+
+Example:
+
+const condition: ActiveChildCountCondition = {
+  type: "ACTIVE_CHILD_COUNT",
+  operator: "GTE",
+  value: 1
+};
+
+This means:
+
+active child count >= 1
+
+11. Workflow Definition
+Define workflows independently from the entity implementation.
+
+export interface WorkflowRule {
+  entityType: string;
+  childType?: string;
+  condition?: ActiveChildCountCondition;
+}
+
+Example:
+
+const locationWorkflow: WorkflowRule[] = [
+  {
+    entityType: "country",
+    childType: "region",
+    condition: {
+      type: "ACTIVE_CHILD_COUNT",
+      operator: "GTE",
+      value: 1
+    }
   },
 
-  createdAt: Date,
-
-  updatedAt: Date
-}
-
-Example
-{
-  _id: ObjectId("..."),
-
-  type: "BUNDLE_APPROVED",
-
-  title: "Bundle Approved",
-
-  message: "The Premium Care bundle is now available for you.",
-
-  bundleId: ObjectId("bundle-id"),
-
-  suburbId: ObjectId("suburb-id"),
-
-  createdBy: ObjectId("admin-id"),
-
-  metadata: {
-    bundleName: "Premium Care",
-    serviceIds: [
-      ObjectId("service-1"),
-      ObjectId("service-2"),
-      ObjectId("service-3")
-    ]
+  {
+    entityType: "region",
+    childType: "district",
+    condition: {
+      type: "ACTIVE_CHILD_COUNT",
+      operator: "GTE",
+      value: 1
+    }
   },
 
-  createdAt: ISODate("2026-08-28T..."),
-  updatedAt: ISODate("2026-08-28T...")
+  {
+    entityType: "district",
+    childType: "suburb",
+    condition: {
+      type: "ACTIVE_CHILD_COUNT",
+      operator: "GTE",
+      value: 1
+    }
+  }
+];
+
+12. Workflow Registry
+Create a registry that maps entity types to their workflow definitions.
+
+export class WorkflowRegistry {
+  private rules = new Map<string, WorkflowRule>();
+
+  register(rule: WorkflowRule) {
+    this.rules.set(rule.entityType, rule);
+  }
+
+  getRule(entityType: string) {
+    return this.rules.get(entityType);
+  }
 }
 
-5. notificationRecipients
+Registration:
 
-This collection stores the users who are eligible to receive a notification.
+registry.register({
+  entityType: "country",
+  childType: "region",
+  condition: {
+    type: "ACTIVE_CHILD_COUNT",
+    operator: "GTE",
+    value: 1
+  }
+});
 
-Purpose
+registry.register({
+  entityType: "region",
+  childType: "district",
+  condition: {
+    type: "ACTIVE_CHILD_COUNT",
+    operator: "GTE",
+    value: 1
+  }
+});
 
-Maintain recipient-level notification state independently from the notification itself.
+registry.register({
+  entityType: "district",
+  childType: "suburb",
+  condition: {
+    type: "ACTIVE_CHILD_COUNT",
+    operator: "GTE",
+    value: 1
+  }
+});
 
-Suggested schema
-{
-  _id: ObjectId,
+13. Workflow Engine
+The workflow engine is responsible for evaluating conditions and changing entity state.
 
-  notificationId: ObjectId,
+Conceptually:
 
-  userId: ObjectId,
+class WorkflowEngine {
+  async evaluate(entity: WorkflowEntity) {
+    // 1. Get workflow rule
 
-  suburbId: ObjectId,
+    // 2. Evaluate condition
 
-  status: "PENDING",
+    // 3. Determine expected status
 
-  sentAt: Date | null,
+    // 4. Change status if required
 
-  readAt: Date | null,
-
-  failureReason: String | null,
-
-  createdAt: Date,
-
-  updatedAt: Date
+    // 5. Notify parent if status changed
+  }
 }
 
-Supported statuses
-PENDING
-SENT
-FAILED
-READ
+The engine must not contain logic such as:
 
+if (entity.type === "country") {
+   ...
+}
+
+if (entity.type === "region") {
+   ...
+}
+
+Entity-specific business logic should remain in the configuration/adapter layer.
+
+14. State Transition
+All status changes should pass through one controlled function.
+
+Example:
+
+changeStatus({
+  entityType: "suburb",
+  entityId: suburbId,
+  newStatus: "ACTIVE"
+});
+
+The state transition service should:
+
+Load the current entity.
+Check current status.
+Do nothing if the status is already the requested status.
+Update the entity status.
+Update the parent's active-child count.
+Evaluate the parent.
+Continue propagation if the parent's status changes.
+15. Important State Transition Rules
+Only these transitions should modify parent counters:
+
+INACTIVE → ACTIVE
+
+Increment:
+
+parent.activeChildCount += 1
+
+And:
+
+ACTIVE → INACTIVE
+
+Decrement:
+
+parent.activeChildCount -= 1
+
+Do not change the counter for:
+
+ACTIVE → ACTIVE
+
+or:
+
+INACTIVE → INACTIVE
+
+Otherwise counters can become incorrect.
+
+16. Cascading Activation Example
+Initial state:
+
+Country   INACTIVE
+Region    INACTIVE
+District  INACTIVE
+Suburb    INACTIVE
+
+Admin activates a Suburb:
+
+Suburb ACTIVE
+
+The District counter changes:
+
+District.activeChildCount = 1
+
+District condition:
+
+activeChildCount >= 1
+
+Therefore:
+
+District ACTIVE
+
+The Region counter changes:
+
+Region.activeChildCount = 1
+
+Therefore:
+
+Region ACTIVE
+
+The Country counter changes:
+
+Country.activeChildCount = 1
+
+Therefore:
+
+Country ACTIVE
+
+Final state:
+
+Country   ACTIVE
+   ↓
+Region    ACTIVE
+   ↓
+District  ACTIVE
+   ↓
+Suburb    ACTIVE
+
+17. Cascading Deactivation
+The same mechanism must work in reverse.
+
+Suppose:
+
+Country   ACTIVE
+Region    ACTIVE
+District  ACTIVE
+Suburb    ACTIVE
+
+The only active Suburb becomes inactive.
+
+Then:
+
+Suburb ACTIVE → INACTIVE
+
+District:
+
+activeChildCount: 1 → 0
+
+District condition fails:
+
+0 >= 1
+
+Therefore:
+
+District ACTIVE → INACTIVE
+
+Then Region:
+
+activeChildCount: 1 → 0
+
+Therefore:
+
+Region ACTIVE → INACTIVE
+
+Then Country:
+
+activeChildCount: 1 → 0
+
+Therefore:
+
+Country ACTIVE → INACTIVE
+
+Final state:
+
+Country   INACTIVE
+   ↓
+Region    INACTIVE
+   ↓
+District  INACTIVE
+   ↓
+Suburb    INACTIVE
+
+18. MongoDB Transactions
+Status changes and counter changes should be performed atomically.
+
+Example:
+
+const session = await mongoose.startSession();
+
+await session.withTransaction(async () => {
+
+  // Update entity status
+
+  // Update parent activeChildCount
+
+  // Persist workflow event
+});
+
+This prevents situations where:
+
+Child status = ACTIVE
+
+but:
+
+Parent activeChildCount was not incremented
+
+19. Avoid Direct Status Updates
+Do not allow application code to freely do:
+
+await Suburb.updateOne(
+  { _id: suburbId },
+  {
+    $set: {
+      status: "ACTIVE"
+    }
+  }
+);
+
+because this bypasses:
+
+Parent counter updates.
+Parent activation.
+Parent deactivation.
+Workflow validation.
+Events.
+Instead:
+
+await workflowService.changeStatus({
+  entityType: "suburb",
+  entityId: suburbId,
+  newStatus: "ACTIVE"
+});
+
+All workflow-related status changes should go through the same service.
+
+20. Event-Based Propagation
+A status change can produce an event:
+
+interface EntityStatusChangedEvent {
+  type: "ENTITY_STATUS_CHANGED";
+
+  entityType: string;
+  entityId: string;
+
+  previousStatus: EntityStatus;
+  newStatus: EntityStatus;
+}
 
 Example:
 
 {
-  _id: ObjectId("..."),
-
-  notificationId: ObjectId("notification-id"),
-
-  userId: ObjectId("user-id"),
-
-  suburbId: ObjectId("suburb-id"),
-
-  status: "SENT",
-
-  sentAt: ISODate("2026-08-28T..."),
-
-  readAt: null,
-
-  failureReason: null,
-
-  createdAt: ISODate("2026-08-28T..."),
-
-  updatedAt: ISODate("2026-08-28T...")
+  "type": "ENTITY_STATUS_CHANGED",
+  "entityType": "suburb",
+  "entityId": "123",
+  "previousStatus": "INACTIVE",
+  "newStatus": "ACTIVE"
 }
 
-6. notificationTemplates
+The workflow engine processes the event.
 
-Create this collection if notification content needs to be reusable/configurable.
+Suburb ACTIVE
+      ↓
+ENTITY_STATUS_CHANGED
+      ↓
+Update District counter
+      ↓
+Evaluate District
+      ↓
+District ACTIVE
+      ↓
+ENTITY_STATUS_CHANGED
+      ↓
+Update Region counter
+      ↓
+Evaluate Region
+      ↓
+Region ACTIVE
+      ↓
+...
 
-Purpose
+21. Event Infrastructure
+For a small application, this can initially be implemented using an internal service:
 
-Store notification templates by notification type rather than hardcoding messages in the service.
+workflowService.changeStatus(...)
 
-Suggested schema
+As the application grows, introduce an event system.
+
+Possible technologies:
+
+MongoDB change streams.
+Redis/BullMQ.
+RabbitMQ.
+Kafka.
+An application-level event bus.
+The exact technology is not important to the workflow design.
+
+The important concept is:
+
+State change
+     ↓
+Event
+     ↓
+Workflow evaluation
+     ↓
+Parent state change
+     ↓
+Another event
+
+22. Outbox Pattern
+If external event processing is introduced, consider an outbox collection.
+
+Example:
+
+workflow_outbox
+
+Document:
+
 {
-  _id: ObjectId,
-
-  type: "BUNDLE_APPROVED",
-
-  title: "Bundle Approved",
-
-  message: "The {{bundleName}} bundle is now available for you.",
-
-  channel: "IN_APP",
-
-  isActive: true,
-
-  createdAt: Date,
-
-  updatedAt: Date
+  "_id": "...",
+  "eventType": "ENTITY_STATUS_CHANGED",
+  "payload": {
+    "entityType": "suburb",
+    "entityId": "...",
+    "previousStatus": "INACTIVE",
+    "newStatus": "ACTIVE"
+  },
+  "status": "PENDING",
+  "createdAt": "..."
 }
 
-Supported channels
+The entity update and outbox insert can be performed in the same MongoDB transaction.
 
-The initial implementation can support:
+This prevents:
 
-IN_APP
+Database updated
+but event lost
 
+23. Repository/Adapter Layer
+The workflow engine should not directly depend on individual Mongoose models.
 
-The design should allow future support for:
+Avoid:
 
-PUSH
-EMAIL
-SMS
+if (entityType === "country") {
+  CountryModel...
+}
 
-7. Notification Processing Flow
+if (entityType === "region") {
+  RegionModel...
+}
 
-The complete flow should be:
+if (entityType === "district") {
+  DistrictModel...
+}
 
-Admin
-  │
-  ▼
-Approve Bundle API
-  │
-  ├── Validate accessRole = admin
-  │
-  ├── Validate bundle
-  │
-  ├── Approve bundle
-  │
-  ▼
-Approval Successful
-  │
-  ▼
-Identify Bundle Suburb
-  │
-  ▼
-Get Bundle Services
-  │
-  ▼
-Find Users in Suburb
-  │
-  ▼
-Check User Service Eligibility
-  │
-  ├── All services enabled
-  │        │
-  │        ▼
-  │   Create Notification
-  │        │
-  │        ▼
-  │   Create Recipients
-  │        │
-  │        ▼
-  │   Message Broadcasting Service
-  │        │
-  │        ▼
-  │   Update Status
-  │
-  └── One or more services disabled
-           │
-           ▼
-      Do NOT create recipient
-      Do NOT send notification
+Instead define a generic interface.
 
-8. Important Notification Rule
+interface WorkflowRepository {
+  getById(
+    entityType: string,
+    entityId: string
+  ): Promise<WorkflowEntity | null>;
 
-The eligibility check must happen before creating the recipient record and before broadcasting the notification.
+  updateStatus(
+    entityType: string,
+    entityId: string,
+    status: EntityStatus
+  ): Promise<void>;
 
-For example, if 100 users belong to the suburb but only 65 users have all services enabled:
+  incrementActiveChildCount(
+    entityType: string,
+    entityId: string,
+    amount: number
+  ): Promise<void>;
 
-100 users in suburb
-       │
-       ▼
-Service eligibility check
-       │
-       ├── 65 eligible
-       │      │
-       │      └── Notification sent
-       │
-       └── 35 not eligible
-              │
-              └── No notification
+  getParent(
+    entity: WorkflowEntity
+  ): Promise<WorkflowEntity | null>;
+}
 
+Each entity can have an adapter behind this interface.
 
-The notificationRecipients collection should contain only the 65 eligible users.
+24. Workflow Registry + Repository Registry
+The architecture can have two registries.
 
-9. Recommended Indexes
+Workflow Registry
+Responsible for:
 
-Create indexes to support notification lookup and recipient processing.
+What is the activation rule?
 
-notifications
-type
-bundleId
-suburbId
-createdAt
+Example:
 
+country → requires active region
+region → requires active district
+district → requires active suburb
 
-Recommended compound/index combinations:
+Repository Registry
+Responsible for:
 
-{ bundleId: 1, type: 1 }
-{ suburbId: 1, createdAt: -1 }
+How do I access this entity?
 
-notificationRecipients
-notificationId
-userId
+Example:
+
+country → CountryRepository
+region → RegionRepository
+district → DistrictRepository
+suburb → SuburbRepository
+
+This separation keeps the workflow engine generic.
+
+25. Future Conditions
+The initial condition can be:
+
+ACTIVE_CHILD_COUNT >= N
+
+But the system should be designed so additional conditions can be added later.
+
+Examples:
+
+Minimum active children
+{
+  "type": "ACTIVE_CHILD_COUNT",
+  "operator": "GTE",
+  "value": 1
+}
+
+All children active
+{
+  "type": "ACTIVE_CHILD_RATIO",
+  "operator": "EQ",
+  "value": 1
+}
+
+Percentage of children
+{
+  "type": "ACTIVE_CHILD_RATIO",
+  "operator": "GTE",
+  "value": 0.8
+}
+
+Field condition
+{
+  "type": "FIELD",
+  "field": "approved",
+  "operator": "EQ",
+  "value": true
+}
+
+Multiple conditions
+{
+  "type": "AND",
+  "conditions": [
+    {
+      "type": "ACTIVE_CHILD_COUNT",
+      "operator": "GTE",
+      "value": 1
+    },
+    {
+      "type": "FIELD",
+      "field": "approved",
+      "operator": "EQ",
+      "value": true
+    }
+  ]
+}
+
+26. Example Future Workflow
+The same engine could support:
+
+Company
+   ↓
+Department
+   ↓
+Team
+
+Rules:
+
+Company:
+    at least 1 active Department
+
+Department:
+    at least 2 active Teams
+
+No workflow engine changes should be necessary.
+
+Only the workflow configuration changes:
+
+{
+  entityType: "department",
+  childType: "team",
+  condition: {
+    type: "ACTIVE_CHILD_COUNT",
+    operator: "GTE",
+    value: 2
+  }
+}
+
+27. Folder Structure
+Recommended structure:
+
+src/
+│
+├── modules/
+│   ├── country/
+│   │   ├── country.model.ts
+│   │   ├── country.repository.ts
+│   │   └── country.service.ts
+│   │
+│   ├── region/
+│   ├── district/
+│   └── suburb/
+│
+├── workflow/
+│   ├── workflow.engine.ts
+│   ├── workflow.service.ts
+│   ├── workflow.registry.ts
+│   ├── workflow.rules.ts
+│   ├── workflow.types.ts
+│   ├── workflow.repository.ts
+│   ├── workflow.events.ts
+│   └── workflow.errors.ts
+│
+├── infrastructure/
+│   ├── mongodb/
+│   └── events/
+│
+└── jobs/
+    └── workflow-reconciliation.job.ts
+
+28. Implementation Steps
+Phase 1 — Define the common state model
+Add:
+
 status
-suburbId
-createdAt
+activation.activeChildCount
 
+to workflow-enabled entities.
 
-Recommended indexes:
+Phase 2 — Define workflow types
+Create:
 
-{ notificationId: 1, userId: 1 }
-{ userId: 1, status: 1 }
-{ status: 1, createdAt: 1 }
+workflow.types.ts
 
+Define:
 
-Consider a unique index on:
+EntityStatus
+WorkflowEntity
+WorkflowRule
+WorkflowCondition
 
-{ notificationId: 1, userId: 1 }
+Phase 3 — Create workflow configuration
+Create:
 
+workflow.rules.ts
 
-to prevent duplicate recipients.
+Define the Country → Region → District → Suburb rules.
 
-10. Idempotency / Duplicate Notification Handling
+Phase 4 — Create Workflow Registry
+Create:
 
-The bundle approval flow must prevent duplicate notifications.
+workflow.registry.ts
 
-If the approval event is retried or the broadcasting service is invoked more than once:
+Responsibilities:
 
-Do not create duplicate notification records for the same bundle approval event.
-Do not create duplicate notificationRecipients records for the same notification/user combination.
-Use the appropriate unique index and/or business-level idempotency check.
+Register workflow rules.
+Retrieve rules by entity type.
+Validate workflow configuration.
+Phase 5 — Create Repository abstraction
+Create:
 
-A recommended approach is to maintain a unique business reference for the approval event, for example:
+workflow.repository.ts
+
+Responsibilities:
+
+Load entities.
+Find parents.
+Update status.
+Increment/decrement counters.
+Phase 6 — Create Condition Evaluator
+Implement:
+
+evaluateCondition(
+  condition,
+  entity
+)
+
+Initially support:
+
+ACTIVE_CHILD_COUNT
+
+with:
+
+GTE
+GT
+EQ
+LTE
+LT
+
+Phase 7 — Create State Transition Service
+Implement:
+
+changeStatus(...)
+
+Responsibilities:
+
+Load current entity.
+Check current status.
+Update status.
+Update parent counter.
+Evaluate parent.
+Propagate if necessary.
+Phase 8 — Add MongoDB Transactions
+Wrap state changes and counter updates inside:
+
+session.withTransaction(...)
+
+Phase 9 — Add Events
+Create:
+
+ENTITY_STATUS_CHANGED
+
+Use events to propagate state changes.
+
+Phase 10 — Add Outbox
+If asynchronous processing is required, create:
+
+workflow_outbox
+
+and process pending events.
+
+Phase 11 — Add Reconciliation
+Create a scheduled job that verifies:
+
+stored activeChildCount
+
+against:
+
+actual number of active children
+
+Example:
+
+Stored:
+activeChildCount = 5
+
+Actual:
+active children = 4
+
+Repair:
+activeChildCount = 4
+
+The reconciliation process should also re-evaluate affected parent statuses.
+
+29. Required MongoDB Indexes
+For the example hierarchy, create indexes on parent references and status.
+
+Examples:
+
+RegionSchema.index({
+  countryId: 1,
+  status: 1
+});
+
+DistrictSchema.index({
+  regionId: 1,
+  status: 1
+});
+
+SuburbSchema.index({
+  districtId: 1,
+  status: 1
+});
+
+These indexes are particularly useful for reconciliation and validation queries.
+
+30. Important Concurrency Consideration
+Multiple administrators may modify children at the same time.
+
+For example:
+
+Admin A activates Suburb A
+Admin B activates Suburb B
+
+Both could attempt:
+
+District.activeChildCount += 1
+
+MongoDB's atomic $inc operation should be used for counters:
 
 {
-  type: "BUNDLE_APPROVED",
-  bundleId: ObjectId("..."),
-  eventId: "bundle-approval-event-id"
+  $inc: {
+    "activation.activeChildCount": 1
+  }
 }
 
-11. Error Handling
+Do not implement counters using:
 
-Notification failure should be handled separately from bundle approval.
+const entity = await findById(id);
 
-Bundle approval
+entity.activation.activeChildCount++;
 
-If bundle approval fails:
+await entity.save();
 
-Bundle remains unapproved
-No notification process is triggered
+without considering concurrent updates.
 
-Notification failure
+Prefer atomic operations or transactions.
 
-If notification broadcasting fails after approval:
+31. Idempotency
+Workflow operations should be idempotent.
 
-Bundle remains approved
-Recipient status becomes FAILED
-failureReason is stored
+Calling:
 
+changeStatus(
+  suburbId,
+  "ACTIVE"
+);
 
-The notification system should allow failed notifications to be retried without approving the bundle again.
+twice should not produce:
 
-12. API Security
+activeChildCount += 2
 
-The API must enforce:
+It must result in:
 
-accessRole = admin
+activeChildCount += 1
 
+only once.
 
-at the API configuration/apiData level and through the existing authorization middleware.
+Therefore:
 
-A request from a non-admin user should return the project's standard unauthorized/forbidden response.
+INACTIVE → ACTIVE
 
-13. Acceptance Criteria
- New API is created for bundle approval.
- API is accessible only to admin users.
- accessRole is configured correctly in apiData.
- Bundle approval is persisted successfully before notifications are triggered.
- Users are filtered by the bundle's suburb.
- Bundle services are retrieved.
- Each user's service eligibility is validated.
- Users missing even one bundle service are excluded.
- Notification is created for the approved bundle.
- Recipient records are created only for eligible users.
- Message Broadcasting Service is implemented/reused.
- Notification delivery status is tracked.
- Failed notifications can be identified/retried.
- Duplicate notifications/recipients are prevented.
- Required Featuristic collections are created.
- Required indexes are created.
- Bundle approval failure does not trigger notifications.
- Notification failure does not roll back a successful bundle approval.
+produces an increment.
+
+But:
+
+ACTIVE → ACTIVE
+
+produces nothing.
+
+32. Deletion Handling
+Deletion must also go through the workflow system.
+
+If an active child is deleted:
+
+ACTIVE child
+     ↓
+DELETE
+
+the parent counter must be decremented.
+
+Therefore, before deleting a workflow-enabled entity, determine whether it is currently active.
+
+If:
+
+child.status === ACTIVE
+
+then:
+
+parent.activeChildCount--
+
+and the parent must be re-evaluated.
+
+Prefer soft deletion if the business requirements allow it:
+
+{
+  "deletedAt": "..."
+}
+
+This makes auditing and reconciliation easier.
+
+33. Activation vs Manual Approval
+A future requirement may distinguish:
+
+MANUALLY_APPROVED
+
+from:
+
+EFFECTIVELY_ACTIVE
+
+For example:
+
+Admin approves Suburb
+        ↓
+Suburb eligible for activation
+        ↓
+Workflow conditions evaluated
+        ↓
+Suburb ACTIVE
+
+If such a requirement appears, do not overload the single status field.
+
+Consider:
+
+approvalStatus
+workflowStatus
+
+or another explicit state model.
+
+This prevents confusion between:
+
+"Admin approved this entity"
+
+and:
+
+"This entity is currently active according to the hierarchy"
+
+34. Testing Requirements
+The workflow engine must have unit and integration tests.
+
+Basic activation
+Test:
+
+Suburb becomes active
+→ District becomes active
+
+Full cascade
+Test:
+
+Suburb ACTIVE
+→ District ACTIVE
+→ Region ACTIVE
+→ Country ACTIVE
+
+Deactivation
+Test:
+
+Suburb INACTIVE
+→ District INACTIVE
+→ Region INACTIVE
+→ Country INACTIVE
+
+Multiple children
+Example:
+
+District
+  ├── Suburb A ACTIVE
+  └── Suburb B ACTIVE
+
+Deactivate Suburb A:
+
+activeChildCount: 2 → 1
+
+District should remain:
+
+ACTIVE
+
+Deactivate Suburb B:
+
+activeChildCount: 1 → 0
+
+District should become:
+
+INACTIVE
+
+Idempotency
+Calling activation twice must not increment the counter twice.
+
+Concurrent updates
+Test multiple children becoming active concurrently.
+
+Transaction rollback
+If part of the operation fails, verify that:
+
+child status
+
+and:
+
+parent counter
+
+are not left inconsistent.
+
+Reconciliation
+Create an intentionally incorrect counter and verify that the reconciliation job fixes it.
+
+35. Final Recommended Design
+The overall design should be:
+
+                  WORKFLOW DEFINITIONS
+                         │
+                         ▼
+                  Workflow Registry
+                         │
+                         ▼
+Admin ──→ Entity Service ──→ Workflow Service
+                               │
+                               ▼
+                        Workflow Engine
+                               │
+                ┌──────────────┼──────────────┐
+                │              │              │
+                ▼              ▼              ▼
+             Rules        Repository        Events
+                │              │              │
+                └──────────────┼──────────────┘
+                               ▼
+                            MongoDB
+                               │
+                               ▼
+                       Reconciliation Job
+
+The key principle is:
+
+Workflow rules = configuration/code
+
+Entity status = MongoDB
+
+Activation counters = MongoDB
+
+State transitions = Workflow Service
+
+Propagation = Workflow Engine / Events
+
+Consistency = MongoDB Transactions + Reconciliation
+
+36. Definition of Done
+The implementation is considered complete when:
+
+ Country → Region → District → Suburb workflow works.
+ Activation propagates upward.
+ Deactivation propagates upward.
+ Multiple active children are handled correctly.
+ Counters are updated atomically.
+ Repeated activation is idempotent.
+ Direct workflow status updates are prevented.
+ MongoDB transactions are used where required.
+ Workflow rules are separated from entity implementations.
+ New entity types can be added without modifying the core workflow engine.
+ New activation conditions can be added through condition implementations.
+ Required MongoDB indexes are created.
+ Reconciliation is implemented.
+ Unit tests cover the workflow engine.
+ Integration tests cover MongoDB transactions and cascading changes.
+ Logging/auditing exists for important state transitions.
+37. Summary
+The system should not implement activation logic independently inside Country, Region, District, Suburb, etc.
+
+Instead, create one generic workflow engine.
+
+The engine receives:
+
+Entity
++
+Workflow Rule
++
+Current State
+
+and determines:
+
+Should this entity be ACTIVE or INACTIVE?
+
+When the state changes:
+
+Child state changes
+        ↓
+Parent counter changes
+        ↓
+Parent condition evaluated
+        ↓
+Parent state changes
+        ↓
+Next parent evaluated
+
+For the initial implementation, a separate workflow MongoDB collection is not required.
+
+Keep workflow definitions in TypeScript and keep runtime state/counters in the existing MongoDB collections.
+
+This provides a generic foundation that can later support much more complex workflows without coupling the workflow engine to Country, Region, District, Suburb, or any other specific collection.
+
+If you want, the next step should be turning this specification into the actual Mongoose + TypeScript implementation, starting with workflow.types.ts, workflow.registry.ts, workflow.engine.ts, and the transaction-safe changeStatus() flow.

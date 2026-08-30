@@ -10,7 +10,7 @@
     "dev": "tsc-watch --onSuccess \"node ./dist/app.js\"",
     "build": "tsc && npm run copy-templates",
     "postinstall": "npm run build",
-    "seed": "ts-node -r tsconfig-paths/register src/utils/seeder/data-seeder.ts",
+    "seed:data": "ts-node -r tsconfig-paths/register src/utils/seeder/data-seeder.ts",
     "seed:api": "ts-node -r tsconfig-paths/register src/utils/seeder/api-seeder.ts",
     "export:postman": "node dist/utils/seeder/postman-collection-generator.js",
     "copy-templates": "copyfiles -u 1 src/utils/templates/**/* dist/",
