@@ -95,6 +95,7 @@
     "@/middlewares": "dist/middlewares",
     "@/routes": "dist/routes",
     "@/services": "dist/services",
-    "@/database": "dist/database"
+    "@/database": "dist/database",
+    "@/core": "dist/core"
   }
 }

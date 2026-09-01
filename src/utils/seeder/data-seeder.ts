@@ -9,6 +9,7 @@ import { seedUnit } from "./seeder-source/unit-seeder";
 import { seedCurrency } from "./seeder-source/currency-seeder";
 import { seedLocations } from "./seeder-source/location-seeder";
 import { seedServices } from "./seeder-source/services-seeder";
+import { seedEnablementPolicies } from "./seeder-source/enablement-policy-seeder";
 dotenv.config();
 
 const MONGO_PATH = process.env.MONGO_PATH as string;
@@ -47,6 +48,11 @@ const SEEDER_MAP: Record<string, { label: string; fn: () => Promise<any> }> = {
   service: { label: "Categories, Subcategories & Services", fn: seedServices },
   categories: { label: "Categories, Subcategories & Services", fn: seedServices },
   category: { label: "Categories, Subcategories & Services", fn: seedServices },
+
+  enablement: { label: "Enablement Policies", fn: seedEnablementPolicies },
+  "enablement-policies": { label: "Enablement Policies", fn: seedEnablementPolicies },
+  policies: { label: "Enablement Policies", fn: seedEnablementPolicies },
+  policy: { label: "Enablement Policies", fn: seedEnablementPolicies },
 };
 
 const ensureRolesAndCookies = async () => {
@@ -115,6 +121,9 @@ const runSeeder = async () => {
 
       console.log("Seeding Categories, Subcategories & Services...");
       await seedServices();
+
+      console.log("Seeding Enablement Policies...");
+      await seedEnablementPolicies();
 
       console.log("Full Database Seeding complete!");
       process.exit(0);

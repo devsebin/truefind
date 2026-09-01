@@ -36,5 +36,6 @@ export enum moduleTypes {
   BundleAreaConfigurations = "bundle_area_configurations",
   Bundles = "bundles",
   BundleServiceItems = "bundle_service_items",
+  Enablement = "enablement",
 }
 

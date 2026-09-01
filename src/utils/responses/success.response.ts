@@ -25,6 +25,8 @@ export interface SingleResponse {
   DbTransaction: DbTransaction[];
 }
 
+export type SuccessResponse = SingleResponse;
+
 export const successResponse = (
   message: string,
   statusCode: number,

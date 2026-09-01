@@ -49,6 +49,10 @@ export const countryErrorsMessages = {
         message: "No change detected in country with name: {0} and id: {1}",
         status: statusCodes.BadRequest,
     },
+    not_eligible_for_enablement: {
+        message: "Country is not eligible for enablement under active policy",
+        status: statusCodes.BadRequest,
+    },
 };
 
 export const countrySuccessMessages = {

@@ -37,6 +37,7 @@ import bundleCountryApiData from "@/utils/seeder/data-source/apis/bundle-country
 import bundleAreaApiData from "@/utils/seeder/data-source/apis/bundle-area-api-data";
 import bundleApiData from "@/utils/seeder/data-source/apis/bundle-api-data";
 import bundleServiceItemsApiData from "@/utils/seeder/data-source/apis/bundle-service-items-api-data";
+import enablementApiData from "@/utils/seeder/data-source/apis/enablement-api-data";
 export const generatePostmanCollection = () => {
   (global as any).rolesCookie = [
     { _id: "64b8a1c8f1e67290bc5b4d1a", label: "super_admin" },
@@ -80,6 +81,7 @@ export const generatePostmanCollection = () => {
     { name: "Bundle Area Configurations", data: bundleAreaApiData() },
     { name: "Bundles", data: bundleApiData() },
     { name: "Bundle Service Items", data: bundleServiceItemsApiData() },
+    { name: "Enablement Policies", data: enablementApiData() },
   ];
 
 

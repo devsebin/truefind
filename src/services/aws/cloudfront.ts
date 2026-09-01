@@ -1,10 +1,14 @@
 import fs from "fs";
 import { getSignedUrl as cloudfrontGetSignedUrl } from "@aws-sdk/cloudfront-signer";
 
-const privateKey = fs.readFileSync(
-  process.env.CLOUDFRONT_PRIVATE_KEY_PATH!,
-  "utf8",
-);
+let privateKey = "";
+try {
+  if (process.env.CLOUDFRONT_PRIVATE_KEY_PATH && fs.existsSync(process.env.CLOUDFRONT_PRIVATE_KEY_PATH)) {
+    privateKey = fs.readFileSync(process.env.CLOUDFRONT_PRIVATE_KEY_PATH, "utf8");
+  }
+} catch (e) {
+  // Ignored in test/offline environments
+}
 
 export function generateCloudFrontSignedUrl(
   key: string,

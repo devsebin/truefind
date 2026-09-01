@@ -12,6 +12,7 @@ import serviceUserDocumentConfigurationRoutes from "@/resources/v1/service-user-
 import v1BundleCountryConfigRoutes from "../resources/v1/bundle-country-configurations/bundle-country-configurations.routes";
 import v1BundleAreaConfigRoutes from "../resources/v1/bundle-area-configurations/bundle-area-configurations.routes";
 import v1BundleServiceItemRoutes from "../resources/v1/bundle-service-items/bundle-service-items.routes";
+import enablementAdminRoutes from "@/resources/v1/enablement-admin/enablement-admin.routes";
 import authentication from "@/middlewares/authentication-validation.middleware";
 import { authorizationApi } from "@/middlewares/authorization-api.middleware";
 
@@ -28,6 +29,7 @@ router.use("/service-user-document-configurations", authentication, authorizatio
 router.use("/bundle-country-configurations", authentication, authorizationApi, v1BundleCountryConfigRoutes);
 router.use("/bundle-area-configurations", authentication, authorizationApi, v1BundleAreaConfigRoutes);
 router.use("/bundle-service-items", authentication, authorizationApi, v1BundleServiceItemRoutes);
+router.use("/enablement", authentication, authorizationApi, enablementAdminRoutes);
 router.use("/webhooks", webhookRoutes);
 
 export default router;

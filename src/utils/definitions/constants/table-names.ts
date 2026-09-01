@@ -54,4 +54,6 @@ export enum tableName {
   Notifications = "notifications",
   NotificationRecipients = "notification_recipients",
   NotificationTemplates = "notification_templates",
+  EnablementPolicies = "enablement_policies",
+  EnablementPolicyAudits = "enablement_policy_audits",
 }

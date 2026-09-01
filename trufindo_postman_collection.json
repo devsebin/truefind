@@ -15892,6 +15892,547 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "Enablement Policies",
+      "item": [
+        {
+          "name": "List Enablement Conditions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/enablement/conditions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "enablement",
+                "conditions"
+              ],
+              "query": [
+                {
+                  "key": "entityType",
+                  "value": "",
+                  "description": "entityType",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "**Activity Code**: `list_enablement_conditions`\n\n**Module**: `enablement`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Enablement Policy Audits",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/enablement/audits",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "enablement",
+                "audits"
+              ],
+              "query": [
+                {
+                  "key": "policyId",
+                  "value": "",
+                  "description": "policyId",
+                  "disabled": true
+                },
+                {
+                  "key": "entityType",
+                  "value": "",
+                  "description": "entityType",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "**Activity Code**: `get_enablement_policy_audits`\n\n**Module**: `enablement`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Enablement Policies",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/enablement/policies/:entityType",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "enablement",
+                "policies",
+                ":entityType"
+              ],
+              "variable": [
+                {
+                  "key": "entityType",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `get_enablement_policies`\n\n**Module**: `enablement`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Enablement Policy By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/enablement/policies/:entityType/:version",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "enablement",
+                "policies",
+                ":entityType",
+                ":version"
+              ],
+              "variable": [
+                {
+                  "key": "entityType",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                },
+                {
+                  "key": "version",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `get_enablement_policy_by_id`\n\n**Module**: `enablement`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Enablement Policy By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/enablement/policy/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "enablement",
+                "policy",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `get_enablement_policy_by_id`\n\n**Module**: `enablement`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Enablement Policy",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/enablement/policies",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "enablement",
+                "policies"
+              ]
+            },
+            "description": "**Activity Code**: `create_enablement_policy`\n\n**Module**: `enablement`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"entity_type\": \"entity_type\",\n  \"name\": \"name\",\n  \"description\": \"description\",\n  \"rules\": {},\n  \"effective_from\": \"date\",\n  \"effective_until\": \"date\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Enablement Policy",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/enablement/policies/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "enablement",
+                "policies",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `update_enablement_policy`\n\n**Module**: `enablement`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"name\",\n  \"description\": \"description\",\n  \"rules\": {},\n  \"effective_from\": \"date\",\n  \"effective_until\": \"date\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Validate Enablement Policy",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/enablement/policies/:id/validate",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "enablement",
+                "policies",
+                ":id",
+                "validate"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `validate_enablement_policy`\n\n**Module**: `enablement`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rules\": {}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Publish Enablement Policy",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/enablement/policies/:id/publish",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "enablement",
+                "policies",
+                ":id",
+                "publish"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `publish_enablement_policy`\n\n**Module**: `enablement`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Rollback Enablement Policy",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/enablement/policies/:id/rollback",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "enablement",
+                "policies",
+                ":id",
+                "rollback"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `rollback_enablement_policy`\n\n**Module**: `enablement`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Evaluate Entity Enablement",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/enablement/policies/:entityType/evaluate/:entityId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "enablement",
+                "policies",
+                ":entityType",
+                "evaluate",
+                ":entityId"
+              ],
+              "variable": [
+                {
+                  "key": "entityType",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                },
+                {
+                  "key": "entityId",
+                  "value": "",
+                  "description": "Target ID or parameter"
+                }
+              ]
+            },
+            "description": "**Activity Code**: `evaluate_entity_enablement`\n\n**Module**: `enablement`\n\n**Auth Required**: `true`",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
     }
   ]
 }

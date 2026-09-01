@@ -7,10 +7,13 @@ import { SingleResponse } from "@/utils/responses/success.response";
 import mongoose from "mongoose";
 import findCountryHelperService from "../helpers/validators/find-country.helper.service";
 import { countryErrorsMessages } from "../countries.messages";
+import { countryPayload, throwError } from "../countries.helper";
 import activateCountryHelperService from "../helpers/operations/activate-country.helper.service";
-import { countryPayload } from "../countries.helper";
 import findCountryStateHelperService from "../helpers/validators/find-state.helper.service";
 import updateRelatedEntitiesHelperService from "../helpers/operations/update-related-entities.helper.service";
+import { policyResolver } from "@/core/enablement/policy/policy-resolver";
+import { ruleEngine } from "@/core/enablement/engine/rule-engine";
+import { ResponseBuilder, ErrorTypes } from "@/utils/helpers/response-builder";
 
 class enableCountryService {
   public async execute(
@@ -37,6 +40,29 @@ class enableCountryService {
         country[0],
         countryErrorsMessages,
       );
+
+      // Check runtime enablement policy for COUNTRY
+      const activePolicy = await policyResolver.getActivePolicy("COUNTRY");
+      if (activePolicy) {
+        const evaluation = await ruleEngine.evaluate(
+          activePolicy.rules,
+          country[0],
+          {
+            policyId: activePolicy._id.toString(),
+            policyVersion: activePolicy.version,
+          }
+        );
+
+        if (!evaluation.passed) {
+          throwError(
+            "not_eligible_for_enablement",
+            ResponseBuilder.error(ErrorTypes.BAD_REQUEST, {
+              message: "Country is not eligible for enablement under active policy",
+              data: evaluation,
+            })
+          );
+        }
+      }
 
       await activateCountryHelperService.execute(
         country[0],

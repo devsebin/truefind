@@ -104,3 +104,5 @@ export const ProviderModel = mongoose.model<IProvider>(
     tableName.Providers,
     ProviderSchema,
 );
+
+export default ProviderModel;

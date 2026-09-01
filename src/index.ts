@@ -14,6 +14,9 @@ import { COOKIE_SECRET } from "./utils/validate-env";
 import { contextMiddleware } from "./middlewares/context.middleware";
 import "./resources/v1/masters/providers/helpers/support/handler.startup";
 import "./services/broadcasting/broadcasting.startup";
+import { registerCountryConditions } from "./resources/v1/masters/countries/enablement/register-country-conditions";
+
+registerCountryConditions();
 
 class Index {
     public express: Application;
@@ -49,6 +52,9 @@ class Index {
     }
 
     private initializeDatabaseConnection(): void {
+        if (mongoose.connection.readyState !== 0) {
+            return;
+        }
         mongoose.set("strictQuery", false);
         mongoose.connect(process.env.MONGO_PATH as string, {
             readPreference: "primary",

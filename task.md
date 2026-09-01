@@ -1,1349 +1,1364 @@
-Generic Hierarchical Workflow Engine
+
+
+Runtime Configurable Enablement Rules — Requirements Specification
 1. Overview
-The application contains multiple MongoDB collections where entities have relationships with other entities and their activation state depends on the state of related entities.
 
-A typical example is a geographical hierarchy:
+Implement a generic, runtime-configurable enablement/eligibility rule engine for a Node.js + TypeScript application.
 
-Country
-   └── Region
-         └── District
-               └── Suburb
+The system must allow administrators to configure the conditions under which documents/entities in different collections can be considered eligible for enablement, without requiring a code deployment for changes to rule configuration.
 
-The entities are created independently by an administrator, but their ACTIVE / INACTIVE state depends on whether their child entities satisfy configured conditions.
-
-Example:
+The system must be generic enough to support multiple entity/collection types such as:
 
 Country
-  → requires at least 1 ACTIVE Region
-
 Region
-  → requires at least 1 ACTIVE District
+SMS Provider
+Configuration
+Other future collections/entities
 
-District
-  → requires at least 1 ACTIVE Suburb
+The rule engine itself must remain controlled by application code. Administrators may configure which supported conditions are applied, their parameters, and how conditions are logically combined, but must not be able to execute arbitrary JavaScript/TypeScript or database queries.
 
-The goal is to create a generic workflow engine that can support this and future workflows without implementing separate activation logic for every collection.
+2. Core Concepts
 
-2. Main Requirement
-The system must support:
+The system consists of four primary concepts:
 
-Multiple MongoDB collections.
-Parent-child relationships between entities.
-Configurable activation conditions.
-Automatic activation when conditions become satisfied.
-Automatic deactivation when conditions stop being satisfied.
-Cascading status changes from child → parent.
-Transaction-safe state changes.
-Generic workflow logic that does not depend on specific entity names.
-Ability to add new workflows without rewriting the workflow engine.
-Efficient status evaluation without recursively querying an entire hierarchy.
-Recovery/reconciliation when counters become inconsistent.
-3. Example Workflow
-The initial workflow is:
+Condition
+Rule
+Policy
+Rule Engine
+2.1 Condition
 
-Country
-   │
-   │ requires >= 1 active Region
-   ▼
-Region
-   │
-   │ requires >= 1 active District
-   ▼
-District
-   │
-   │ requires >= 1 active Suburb
-   ▼
-Suburb
-
-The rules are:
-
-Entity	Parent	Child	Activation condition
-Country	None	Region	At least 1 active Region
-Region	Country	District	At least 1 active District
-District	Region	Suburb	At least 1 active Suburb
-Suburb	District	None	Own business condition
-
-4. Important Architectural Principle
-The hierarchy and workflow should be treated as two separate concepts.
-
-Hierarchy
-The hierarchy answers:
-
-Who is the parent of this entity?
-
-Example:
-
-Suburb → District → Region → Country
-
-Workflow
-The workflow answers:
-
-What condition must be satisfied for this entity to become active?
-
-Example:
-
-Country:
-    active Region count >= 1
-
-Region:
-    active District count >= 1
-
-District:
-    active Suburb count >= 1
-
-Do not hard-code these concepts together.
-
-This allows the same workflow engine to later support:
-
-Company
-   └── Department
-          └── Team
-
-or:
-
-Category
-   └── Product
-
-without changing the engine itself.
-
-5. Do We Need a Workflow Collection?
-Not initially.
-
-If developers control the workflow definitions, keep the workflow rules in TypeScript.
-
-Recommended:
-
-Workflow definitions
-        ↓
-     TypeScript
-
-Current entity state
-        ↓
-     MongoDB
-
-A MongoDB workflow_definitions collection should only be introduced if workflows need to be configured dynamically by administrators or business users.
-
-For the initial implementation:
-
-No workflow collection required.
-
-6. Recommended Architecture
-                         Admin API
-                            │
-                            ▼
-                    Entity Service
-                ┌───────────┴───────────┐
-                │                       │
-             Country                 Region
-             Service                 Service
-                │                       │
-                └───────────┬───────────┘
-                            ▼
-                    Workflow Service
-                            │
-                            ▼
-                    Workflow Engine
-                            │
-             ┌──────────────┼──────────────┐
-             │              │              │
-             ▼              ▼              ▼
-          Rules          Registry       Repository
-             │              │              │
-             └──────────────┼──────────────┘
-                            ▼
-                         MongoDB
-                            │
-                            ▼
-                          Events
-                            │
-                            ▼
-                    Parent evaluation
-
-7. MongoDB Data Model
-Each workflow-enabled entity should maintain its current status and activation information.
-
-Example Country:
-
-{
-  "_id": "country-id",
-  "name": "India",
-  "status": "ACTIVE",
-  "activation": {
-    "activeChildCount": 5
-  }
-}
-
-Example Region:
-
-{
-  "_id": "region-id",
-  "name": "Kerala",
-  "countryId": "country-id",
-  "status": "ACTIVE",
-  "activation": {
-    "activeChildCount": 14
-  }
-}
-
-Example District:
-
-{
-  "_id": "district-id",
-  "name": "Ernakulam",
-  "regionId": "region-id",
-  "status": "ACTIVE",
-  "activation": {
-    "activeChildCount": 8
-  }
-}
-
-Example Suburb:
-
-{
-  "_id": "suburb-id",
-  "name": "Kakkanad",
-  "districtId": "district-id",
-  "status": "ACTIVE"
-}
-
-8. Why Use activeChildCount?
-Do not recursively query all children every time an entity's status needs to be checked.
-
-Avoid:
-
-Country
-  → query Regions
-      → query Districts
-          → query Suburbs
-
-Instead maintain:
-
-{
-  "activation": {
-    "activeChildCount": 5
-  }
-}
-
-Then activation can be evaluated using:
-
-activeChildCount >= requiredActiveChildren
-
-For example:
-
-activeChildCount = 5
-required = 1
-
-5 >= 1
-
-Therefore:
-ACTIVE
-
-This makes status evaluation very cheap.
-
-9. TypeScript Types
-Create generic workflow types.
-
-export type EntityStatus =
-  | "ACTIVE"
-  | "INACTIVE";
-
-export interface WorkflowEntity {
-  id: string;
-  type: string;
-  status: EntityStatus;
-
-  parent?: {
-    type: string;
-    id: string;
-  };
-
-  activation?: {
-    activeChildCount: number;
-  };
-}
-
-10. Workflow Condition
-Create a generic condition interface.
-
-export type ConditionOperator =
-  | "GTE"
-  | "GT"
-  | "EQ"
-  | "LTE"
-  | "LT";
-
-export interface ActiveChildCountCondition {
-  type: "ACTIVE_CHILD_COUNT";
-  operator: ConditionOperator;
-  value: number;
-}
-
-Example:
-
-const condition: ActiveChildCountCondition = {
-  type: "ACTIVE_CHILD_COUNT",
-  operator: "GTE",
-  value: 1
-};
-
-This means:
-
-active child count >= 1
-
-11. Workflow Definition
-Define workflows independently from the entity implementation.
-
-export interface WorkflowRule {
-  entityType: string;
-  childType?: string;
-  condition?: ActiveChildCountCondition;
-}
-
-Example:
-
-const locationWorkflow: WorkflowRule[] = [
-  {
-    entityType: "country",
-    childType: "region",
-    condition: {
-      type: "ACTIVE_CHILD_COUNT",
-      operator: "GTE",
-      value: 1
-    }
-  },
-
-  {
-    entityType: "region",
-    childType: "district",
-    condition: {
-      type: "ACTIVE_CHILD_COUNT",
-      operator: "GTE",
-      value: 1
-    }
-  },
-
-  {
-    entityType: "district",
-    childType: "suburb",
-    condition: {
-      type: "ACTIVE_CHILD_COUNT",
-      operator: "GTE",
-      value: 1
-    }
-  }
-];
-
-12. Workflow Registry
-Create a registry that maps entity types to their workflow definitions.
-
-export class WorkflowRegistry {
-  private rules = new Map<string, WorkflowRule>();
-
-  register(rule: WorkflowRule) {
-    this.rules.set(rule.entityType, rule);
-  }
-
-  getRule(entityType: string) {
-    return this.rules.get(entityType);
-  }
-}
-
-Registration:
-
-registry.register({
-  entityType: "country",
-  childType: "region",
-  condition: {
-    type: "ACTIVE_CHILD_COUNT",
-    operator: "GTE",
-    value: 1
-  }
-});
-
-registry.register({
-  entityType: "region",
-  childType: "district",
-  condition: {
-    type: "ACTIVE_CHILD_COUNT",
-    operator: "GTE",
-    value: 1
-  }
-});
-
-registry.register({
-  entityType: "district",
-  childType: "suburb",
-  condition: {
-    type: "ACTIVE_CHILD_COUNT",
-    operator: "GTE",
-    value: 1
-  }
-});
-
-13. Workflow Engine
-The workflow engine is responsible for evaluating conditions and changing entity state.
-
-Conceptually:
-
-class WorkflowEngine {
-  async evaluate(entity: WorkflowEntity) {
-    // 1. Get workflow rule
-
-    // 2. Evaluate condition
-
-    // 3. Determine expected status
-
-    // 4. Change status if required
-
-    // 5. Notify parent if status changed
-  }
-}
-
-The engine must not contain logic such as:
-
-if (entity.type === "country") {
-   ...
-}
-
-if (entity.type === "region") {
-   ...
-}
-
-Entity-specific business logic should remain in the configuration/adapter layer.
-
-14. State Transition
-All status changes should pass through one controlled function.
-
-Example:
-
-changeStatus({
-  entityType: "suburb",
-  entityId: suburbId,
-  newStatus: "ACTIVE"
-});
-
-The state transition service should:
-
-Load the current entity.
-Check current status.
-Do nothing if the status is already the requested status.
-Update the entity status.
-Update the parent's active-child count.
-Evaluate the parent.
-Continue propagation if the parent's status changes.
-15. Important State Transition Rules
-Only these transitions should modify parent counters:
-
-INACTIVE → ACTIVE
-
-Increment:
-
-parent.activeChildCount += 1
-
-And:
-
-ACTIVE → INACTIVE
-
-Decrement:
-
-parent.activeChildCount -= 1
-
-Do not change the counter for:
-
-ACTIVE → ACTIVE
-
-or:
-
-INACTIVE → INACTIVE
-
-Otherwise counters can become incorrect.
-
-16. Cascading Activation Example
-Initial state:
-
-Country   INACTIVE
-Region    INACTIVE
-District  INACTIVE
-Suburb    INACTIVE
-
-Admin activates a Suburb:
-
-Suburb ACTIVE
-
-The District counter changes:
-
-District.activeChildCount = 1
-
-District condition:
-
-activeChildCount >= 1
-
-Therefore:
-
-District ACTIVE
-
-The Region counter changes:
-
-Region.activeChildCount = 1
-
-Therefore:
-
-Region ACTIVE
-
-The Country counter changes:
-
-Country.activeChildCount = 1
-
-Therefore:
-
-Country ACTIVE
-
-Final state:
-
-Country   ACTIVE
-   ↓
-Region    ACTIVE
-   ↓
-District  ACTIVE
-   ↓
-Suburb    ACTIVE
-
-17. Cascading Deactivation
-The same mechanism must work in reverse.
-
-Suppose:
-
-Country   ACTIVE
-Region    ACTIVE
-District  ACTIVE
-Suburb    ACTIVE
-
-The only active Suburb becomes inactive.
-
-Then:
-
-Suburb ACTIVE → INACTIVE
-
-District:
-
-activeChildCount: 1 → 0
-
-District condition fails:
-
-0 >= 1
-
-Therefore:
-
-District ACTIVE → INACTIVE
-
-Then Region:
-
-activeChildCount: 1 → 0
-
-Therefore:
-
-Region ACTIVE → INACTIVE
-
-Then Country:
-
-activeChildCount: 1 → 0
-
-Therefore:
-
-Country ACTIVE → INACTIVE
-
-Final state:
-
-Country   INACTIVE
-   ↓
-Region    INACTIVE
-   ↓
-District  INACTIVE
-   ↓
-Suburb    INACTIVE
-
-18. MongoDB Transactions
-Status changes and counter changes should be performed atomically.
-
-Example:
-
-const session = await mongoose.startSession();
-
-await session.withTransaction(async () => {
-
-  // Update entity status
-
-  // Update parent activeChildCount
-
-  // Persist workflow event
-});
-
-This prevents situations where:
-
-Child status = ACTIVE
-
-but:
-
-Parent activeChildCount was not incremented
-
-19. Avoid Direct Status Updates
-Do not allow application code to freely do:
-
-await Suburb.updateOne(
-  { _id: suburbId },
-  {
-    $set: {
-      status: "ACTIVE"
-    }
-  }
-);
-
-because this bypasses:
-
-Parent counter updates.
-Parent activation.
-Parent deactivation.
-Workflow validation.
-Events.
-Instead:
-
-await workflowService.changeStatus({
-  entityType: "suburb",
-  entityId: suburbId,
-  newStatus: "ACTIVE"
-});
-
-All workflow-related status changes should go through the same service.
-
-20. Event-Based Propagation
-A status change can produce an event:
-
-interface EntityStatusChangedEvent {
-  type: "ENTITY_STATUS_CHANGED";
-
-  entityType: string;
-  entityId: string;
-
-  previousStatus: EntityStatus;
-  newStatus: EntityStatus;
-}
-
-Example:
-
-{
-  "type": "ENTITY_STATUS_CHANGED",
-  "entityType": "suburb",
-  "entityId": "123",
-  "previousStatus": "INACTIVE",
-  "newStatus": "ACTIVE"
-}
-
-The workflow engine processes the event.
-
-Suburb ACTIVE
-      ↓
-ENTITY_STATUS_CHANGED
-      ↓
-Update District counter
-      ↓
-Evaluate District
-      ↓
-District ACTIVE
-      ↓
-ENTITY_STATUS_CHANGED
-      ↓
-Update Region counter
-      ↓
-Evaluate Region
-      ↓
-Region ACTIVE
-      ↓
-...
-
-21. Event Infrastructure
-For a small application, this can initially be implemented using an internal service:
-
-workflowService.changeStatus(...)
-
-As the application grows, introduce an event system.
-
-Possible technologies:
-
-MongoDB change streams.
-Redis/BullMQ.
-RabbitMQ.
-Kafka.
-An application-level event bus.
-The exact technology is not important to the workflow design.
-
-The important concept is:
-
-State change
-     ↓
-Event
-     ↓
-Workflow evaluation
-     ↓
-Parent state change
-     ↓
-Another event
-
-22. Outbox Pattern
-If external event processing is introduced, consider an outbox collection.
-
-Example:
-
-workflow_outbox
-
-Document:
-
-{
-  "_id": "...",
-  "eventType": "ENTITY_STATUS_CHANGED",
-  "payload": {
-    "entityType": "suburb",
-    "entityId": "...",
-    "previousStatus": "INACTIVE",
-    "newStatus": "ACTIVE"
-  },
-  "status": "PENDING",
-  "createdAt": "..."
-}
-
-The entity update and outbox insert can be performed in the same MongoDB transaction.
-
-This prevents:
-
-Database updated
-but event lost
-
-23. Repository/Adapter Layer
-The workflow engine should not directly depend on individual Mongoose models.
-
-Avoid:
-
-if (entityType === "country") {
-  CountryModel...
-}
-
-if (entityType === "region") {
-  RegionModel...
-}
-
-if (entityType === "district") {
-  DistrictModel...
-}
-
-Instead define a generic interface.
-
-interface WorkflowRepository {
-  getById(
-    entityType: string,
-    entityId: string
-  ): Promise<WorkflowEntity | null>;
-
-  updateStatus(
-    entityType: string,
-    entityId: string,
-    status: EntityStatus
-  ): Promise<void>;
-
-  incrementActiveChildCount(
-    entityType: string,
-    entityId: string,
-    amount: number
-  ): Promise<void>;
-
-  getParent(
-    entity: WorkflowEntity
-  ): Promise<WorkflowEntity | null>;
-}
-
-Each entity can have an adapter behind this interface.
-
-24. Workflow Registry + Repository Registry
-The architecture can have two registries.
-
-Workflow Registry
-Responsible for:
-
-What is the activation rule?
-
-Example:
-
-country → requires active region
-region → requires active district
-district → requires active suburb
-
-Repository Registry
-Responsible for:
-
-How do I access this entity?
-
-Example:
-
-country → CountryRepository
-region → RegionRepository
-district → DistrictRepository
-suburb → SuburbRepository
-
-This separation keeps the workflow engine generic.
-
-25. Future Conditions
-The initial condition can be:
-
-ACTIVE_CHILD_COUNT >= N
-
-But the system should be designed so additional conditions can be added later.
+A condition is a developer-defined, executable business capability.
 
 Examples:
 
-Minimum active children
+HAS_ACTIVE_REGION
+HAS_SMS_PROVIDER
+HAS_CONFIGURATION
+IS_ACTIVE
+HAS_ACTIVE_CHILDREN
+HAS_VALID_CREDENTIALS
+
+The implementation of a condition exists in TypeScript.
+
+Example:
+
+HAS_ACTIVE_REGION
+
+
+may mean:
+
+The entity must have at least N active and enabled regions.
+
+Administrators must never define the implementation of a condition.
+
+2.2 Rule
+
+A rule is a configured instance of a condition.
+
+Example:
+
 {
-  "type": "ACTIVE_CHILD_COUNT",
-  "operator": "GTE",
-  "value": 1
+  "kind": "CONDITION",
+  "type": "HAS_ACTIVE_REGION",
+  "params": {
+    "minimum": 1
+  }
 }
 
-All children active
-{
-  "type": "ACTIVE_CHILD_RATIO",
-  "operator": "EQ",
-  "value": 1
-}
 
-Percentage of children
-{
-  "type": "ACTIVE_CHILD_RATIO",
-  "operator": "GTE",
-  "value": 0.8
-}
+The administrator controls:
 
-Field condition
-{
-  "type": "FIELD",
-  "field": "approved",
-  "operator": "EQ",
-  "value": true
-}
+Which condition is used
+Condition parameters
+Logical composition with other conditions
+2.3 Policy
 
-Multiple conditions
+A policy is the complete enablement definition for an entity type.
+
+Example:
+
+Country Enablement Policy
+
+ALL:
+  - Has at least 1 active region
+  - Has at least 1 SMS provider
+  - Has valid configuration
+
+
+Each entity type may have its own enablement policy.
+
+Examples:
+
+CountryEnablementPolicy
+RegionEnablementPolicy
+SmsProviderEnablementPolicy
+
+2.4 Rule Engine
+
+The rule engine is responsible for:
+
+Loading the applicable policy
+Evaluating the policy against an entity
+Evaluating nested rule groups
+Executing registered condition implementations
+Returning detailed evaluation results
+Reporting failed conditions and their reasons
+
+The rule engine must be generic and must not contain entity-specific business logic.
+
+3. Primary Business Requirement
+
+An entity should only be considered eligible for enablement when all required conditions defined by the currently active policy are satisfied.
+
+For example, a Country may require:
+
+Country is eligible when:
+
+1. At least 1 active and enabled Region exists
+2. At least 1 SMS Provider is linked to the Country
+3. At least 1 valid configuration exists
+
+
+The rules must be configurable by administrators.
+
+An administrator should be able to change:
+
+At least 1 active region
+
+
+to:
+
+At least 2 active regions
+
+
+without requiring a code deployment.
+
+4. Important Architectural Principle
+
+The system must separate:
+
+Developer-controlled logic
+
+
+from:
+
+Admin-controlled configuration
+
+Developer controls
+Available condition types
+Condition implementation
+Condition validation
+Data access required by a condition
+Allowed parameters
+Parameter types
+Parameter ranges
+Security constraints
+Administrator controls
+Which conditions are enabled in a policy
+Condition parameter values
+AND / OR / NOT composition
+Policy activation
+Policy version publishing
+
+Administrators must NOT be allowed to provide arbitrary executable code.
+
+5. Generic Rule Model
+
+The rule model must support nested logical expressions.
+
+At minimum, support:
+
+AND
+OR
+NOT
+CONDITION
+
+Example:
+
 {
-  "type": "AND",
-  "conditions": [
+  "kind": "GROUP",
+  "operator": "AND",
+  "children": [
     {
-      "type": "ACTIVE_CHILD_COUNT",
-      "operator": "GTE",
-      "value": 1
+      "kind": "CONDITION",
+      "type": "HAS_ACTIVE_REGION",
+      "params": {
+        "minimum": 1
+      }
     },
     {
-      "type": "FIELD",
-      "field": "approved",
-      "operator": "EQ",
-      "value": true
+      "kind": "CONDITION",
+      "type": "HAS_SMS_PROVIDER",
+      "params": {
+        "minimum": 1
+      }
     }
   ]
 }
 
-26. Example Future Workflow
-The same engine could support:
 
-Company
-   ↓
-Department
-   ↓
-Team
+The rule model must support arbitrary nesting.
 
-Rules:
+Example:
 
-Company:
-    at least 1 active Department
+AND
+├── HAS_ACTIVE_REGION
+├── HAS_SMS_PROVIDER
+└── OR
+    ├── HAS_TWILIO_PROVIDER
+    └── HAS_VONAGE_PROVIDER
 
-Department:
-    at least 2 active Teams
 
-No workflow engine changes should be necessary.
+This represents:
 
-Only the workflow configuration changes:
+HAS_ACTIVE_REGION
+AND
+HAS_SMS_PROVIDER
+AND
+(
+    HAS_TWILIO_PROVIDER
+    OR
+    HAS_VONAGE_PROVIDER
+)
+
+6. TypeScript Rule Types
+
+A recommended model is:
+
+type RuleNode =
+  | ConditionNode
+  | GroupNode;
+
+interface ConditionNode {
+  kind: 'CONDITION';
+
+  type: ConditionType;
+
+  params?: Record<string, unknown>;
+}
+
+interface GroupNode {
+  kind: 'GROUP';
+
+  operator: 'AND' | 'OR';
+
+  children: RuleNode[];
+}
+
+
+ConditionType must be a controlled set of developer-defined condition identifiers.
+
+Example:
+
+type ConditionType =
+  | 'HAS_ACTIVE_REGION'
+  | 'HAS_SMS_PROVIDER'
+  | 'HAS_CONFIGURATION'
+  | 'IS_ACTIVE';
+
+
+The implementation should make adding new conditions straightforward.
+
+7. Condition Evaluator Interface
+
+Each condition must implement a common interface.
+
+Recommended structure:
+
+interface ConditionEvaluator<T> {
+  type: ConditionType;
+
+  evaluate(
+    entity: T,
+    params: Record<string, unknown>,
+  ): Promise<ConditionResult>;
+}
+
+
+Example:
+
+interface ConditionResult {
+  passed: boolean;
+
+  metadata?: Record<string, unknown>;
+
+  message?: string;
+}
+
+
+A condition should have a single responsibility.
+
+Example:
+
+HasActiveRegionEvaluator
+
+
+must only be responsible for determining whether the entity has the required number of active/enabled regions.
+
+8. Condition Registry
+
+The application must provide a registry for available condition evaluators.
+
+Conceptually:
+
+ConditionRegistry
+    |
+    +-- HAS_ACTIVE_REGION
+    |
+    +-- HAS_SMS_PROVIDER
+    |
+    +-- HAS_CONFIGURATION
+    |
+    +-- IS_ACTIVE
+
+
+The rule engine must resolve conditions through the registry.
+
+The rule engine must not contain large if/else or switch statements for every condition.
+
+Example:
+
+registry.register(
+  new HasActiveRegionEvaluator(...)
+);
+
+registry.register(
+  new HasSmsProviderEvaluator(...)
+);
+
+
+The registry must reject unknown condition types.
+
+9. Condition Metadata
+
+The backend should expose metadata describing available conditions so the admin UI can dynamically construct a rule builder.
+
+Example API:
+
+GET /enablement/conditions?entityType=COUNTRY
+
+
+Example response:
+
+[
+  {
+    "type": "HAS_ACTIVE_REGION",
+    "label": "Has active region",
+    "description": "Requires at least N active and enabled regions",
+    "parameters": {
+      "minimum": {
+        "type": "number",
+        "default": 1,
+        "minimum": 1
+      }
+    }
+  },
+  {
+    "type": "HAS_SMS_PROVIDER",
+    "label": "Has SMS provider",
+    "description": "Requires at least N SMS providers",
+    "parameters": {
+      "minimum": {
+        "type": "number",
+        "default": 1,
+        "minimum": 1
+      }
+    }
+  }
+]
+
+
+This metadata allows the frontend to build a generic rule configuration UI.
+
+10. Parameter Validation
+
+Every condition must validate its parameters.
+
+For example:
 
 {
-  entityType: "department",
-  childType: "team",
-  condition: {
-    type: "ACTIVE_CHILD_COUNT",
-    operator: "GTE",
-    value: 2
+  "type": "HAS_ACTIVE_REGION",
+  "params": {
+    "minimum": -10
   }
 }
 
-27. Folder Structure
-Recommended structure:
+
+must be rejected.
+
+Similarly:
+
+{
+  "type": "UNKNOWN_CONDITION"
+}
+
+
+must be rejected.
+
+Condition definitions should describe:
+
+Parameter name
+Parameter type
+Required/optional status
+Default value
+Minimum/maximum values where applicable
+Allowed enum values where applicable
+
+Validation must occur before a policy can be published.
+
+11. Policy Database Model
+
+Create a persistent policy model/table/collection.
+
+Recommended fields:
+
+id
+entityType
+name
+version
+status
+rules
+effectiveFrom
+effectiveUntil
+createdBy
+createdAt
+updatedBy
+updatedAt
+
+
+Where:
+
+status =
+    DRAFT
+    PUBLISHED
+    ARCHIVED
+
+
+The rules field should contain the rule tree.
+
+If using PostgreSQL, JSONB is recommended for storing the rule tree.
+
+If using MongoDB, store the rule tree as a nested document.
+
+12. Policy Versioning
+
+Policies must be versioned.
+
+Example:
+
+Country Policy
+
+v1 - ARCHIVED
+v2 - PUBLISHED
+v3 - DRAFT
+
+
+Published policies must be immutable.
+
+If an administrator modifies a published policy:
+
+DO NOT modify v2
+
+
+Instead:
+
+v2 -> create v3
+
+
+The new policy remains DRAFT until explicitly published.
+
+This provides:
+
+Auditability
+Rollback
+Change history
+Safe configuration
+Clear production behavior
+13. Policy Lifecycle
+
+Recommended lifecycle:
+
+DRAFT
+  |
+  | publish
+  v
+PUBLISHED
+  |
+  | replaced by newer version
+  v
+ARCHIVED
+
+
+Only one policy version for a given entity type should normally be active at a time.
+
+Publishing a new policy should:
+
+Validate the entire rule tree
+Validate all condition types
+Validate all condition parameters
+Verify the policy applies to the requested entity type
+Archive/supersede the previous published policy
+Publish the new version
+Record the administrator who performed the action
+14. Optional Effective Dates
+
+Policies should support optional effective dates.
+
+Example:
+
+Country Policy v5
+
+Status:
+PUBLISHED
+
+Effective From:
+2026-10-01 00:00:00
+
+
+This allows administrators to prepare future rule changes without immediately changing current behavior.
+
+The policy resolver must select the policy based on:
+
+Entity type
+Current time
+Policy status
+Effective date
+15. Rule Evaluation Result
+
+The engine must return more than a boolean.
+
+Recommended result:
+
+interface RuleEvaluationResult {
+  passed: boolean;
+
+  policyId: string;
+
+  policyVersion: number;
+
+  result: RuleResult;
+}
+
+
+Nested results should preserve the structure of the evaluated rule tree.
+
+Example:
+
+{
+  "passed": false,
+  "policyVersion": 3,
+  "result": {
+    "operator": "AND",
+    "children": [
+      {
+        "type": "HAS_ACTIVE_REGION",
+        "passed": true,
+        "metadata": {
+          "actual": 2,
+          "required": 1
+        }
+      },
+      {
+        "type": "HAS_SMS_PROVIDER",
+        "passed": false,
+        "metadata": {
+          "actual": 0,
+          "required": 1
+        }
+      }
+    ]
+  }
+}
+
+
+This information should be usable by:
+
+Admin UI
+API responses
+Logging
+Monitoring
+Debugging
+Support tools
+16. Failure Reasons
+
+Every failed condition should provide a meaningful machine-readable code and human-readable message.
+
+Example:
+
+{
+  "passed": false,
+  "code": "HAS_SMS_PROVIDER",
+  "message": "Country must have at least one SMS provider",
+  "metadata": {
+    "actual": 0,
+    "required": 1
+  }
+}
+
+
+The frontend should be able to display:
+
+Cannot enable Country
+
+✓ Active regions
+  2 found, minimum 1
+
+✗ SMS provider
+  0 found, minimum 1
+
+17. Enablement vs Entity Status
+
+The system must distinguish between:
+
+Manually configured entity status
+Calculated eligibility
+
+Do not make the persisted enabled flag the only source of truth when eligibility depends on other entities.
+
+Recommended conceptual model:
+
+interface Entity {
+  id: string;
+
+  manuallyEnabled: boolean;
+}
+
+
+Then:
+
+eligible =
+    all configured rules pass
+
+finalEnabled =
+    manuallyEnabled
+    AND
+    eligible
+
+
+This prevents stale states such as:
+
+Country.enabled = true
+
+
+while:
+
+Country has no active regions
+Country has no SMS provider
+
+18. Validation vs Enablement vs Authorization
+
+These concerns must remain separate.
+
+Validation
+
+Determines whether an entity can be created/updated.
+
+Example:
+
+Country name is required
+ISO code must be valid
+ISO code must be unique
+
+Enablement
+
+Determines whether an entity satisfies business conditions for enablement.
+
+Example:
+
+At least one active region
+At least one SMS provider
+Valid configuration
+
+Authorization
+
+Determines whether the current user is allowed to perform the operation.
+
+Example:
+
+User must have COUNTRY_ADMIN permission
+
+
+Do not combine these concerns into a single rule system unless there is a strong architectural reason.
+
+19. Admin Rule Builder
+
+The admin UI should provide a visual rule builder.
+
+Example:
+
+Enable Country when
+
+┌──────────────────────────────────────┐
+│ ALL                                  │
+│                                      │
+│ Has active region       >= [1]       │
+│                                      │
+│ Has SMS provider        >= [1]       │
+│                                      │
+│ Has configuration        [Yes]       │
+│                                      │
+│ [+ Add condition]                    │
+└──────────────────────────────────────┘
+
+                [Save Draft]
+                [Publish]
+
+
+For nested expressions:
+
+ALL
+├── Has active region >= 1
+├── Has SMS provider >= 1
+└── ANY
+    ├── Has Twilio provider
+    └── Has Vonage provider
+
+
+The UI should not need to know the implementation details of each condition.
+
+It should use condition metadata returned by the backend.
+
+20. Admin APIs
+
+At minimum, provide APIs conceptually equivalent to:
+
+GET    /enablement/conditions
+GET    /enablement/policies/:entityType
+GET    /enablement/policies/:entityType/:version
+
+POST   /enablement/policies
+PUT    /enablement/policies/:id
+
+POST   /enablement/policies/:id/validate
+POST   /enablement/policies/:id/publish
+
+POST   /enablement/policies/:entityType/evaluate/:entityId
+
+
+Exact URL conventions may be adapted to the existing project's API standards.
+
+21. Policy Validation API
+
+Administrators should be able to validate a policy before publishing it.
+
+Example:
+
+POST /enablement/policies/:id/validate
+
+
+Response:
+
+{
+  "valid": false,
+  "errors": [
+    {
+      "path": "children[1].params.minimum",
+      "code": "INVALID_PARAMETER",
+      "message": "minimum must be greater than or equal to 1"
+    }
+  ]
+}
+
+
+Validation should detect:
+
+Unknown conditions
+Unsupported conditions for an entity type
+Missing required parameters
+Invalid parameter types
+Invalid parameter values
+Invalid logical groups
+Empty groups
+Invalid nesting
+Circular references if references are introduced later
+22. Security Requirements
+
+The rule configuration must NEVER allow arbitrary executable code.
+
+Do not support configuration such as:
+
+eval(...)
+
+
+or:
+
+JavaScript expression
+
+
+or arbitrary SQL:
+
+SELECT ...
+
+
+The database must contain a controlled rule DSL.
+
+For example:
+
+{
+  "type": "HAS_ACTIVE_REGION",
+  "params": {
+    "minimum": 2
+  }
+}
+
+
+The application determines what HAS_ACTIVE_REGION means.
+
+The administrator only controls how it is configured.
+
+23. Performance Requirements
+
+Rule evaluation may require database queries.
+
+Avoid an architecture where evaluating many entities causes an uncontrolled number of database queries.
+
+For example:
+
+10,000 countries
+x
+5 rules
+=
+50,000 database queries
+
+
+The implementation should:
+
+Avoid unnecessary queries
+Reuse data where possible
+Use efficient count/existence queries
+Prefer EXISTS where only existence matters
+Consider batching for bulk evaluation
+Avoid N+1 query patterns
+Consider caching policy configuration
+Consider caching static condition metadata
+
+For individual enablement operations, normal rule evaluation is acceptable.
+
+For bulk operations, provide a separate optimized evaluation strategy where necessary.
+
+24. Policy Caching
+
+Published policies are generally read much more frequently than they are changed.
+
+The application should consider caching the currently published policy.
+
+Possible cache layers:
+
+Application memory
+Redis
+Other existing project cache
+
+
+When a policy is published:
+
+Invalidate old policy cache
+Load/cache new policy
+
+
+Caching must not compromise correctness when policy changes.
+
+25. Audit Requirements
+
+All policy changes must be auditable.
+
+Record:
+
+Policy ID
+Entity type
+Version
+Action
+User/admin ID
+Timestamp
+Previous version
+New version
+Rule configuration
+
+Actions should include at minimum:
+
+CREATED
+UPDATED
+VALIDATED
+PUBLISHED
+ARCHIVED
+ROLLED_BACK
+
+
+The audit log must be immutable.
+
+26. Rollback
+
+The system should support rollback to a previous policy version.
+
+Example:
+
+v1 ARCHIVED
+v2 ARCHIVED
+v3 PUBLISHED
+
+
+If v3 causes problems:
+
+Rollback v3 -> v2
+
+
+This should create a new version rather than mutating historical data.
+
+For example:
+
+v4 = copy of v2
+v4 = PUBLISHED
+
+
+Do not change v2 itself.
+
+27. Testing Requirements
+
+Every condition evaluator must have unit tests.
+
+Example:
+
+HasActiveRegionEvaluator
+
+✓ passes when region count >= minimum
+✓ fails when region count < minimum
+✓ fails when all regions are inactive
+✓ fails when all regions are disabled
+✓ validates minimum parameter
+✓ handles missing parameters correctly
+
+
+The rule engine must have tests for:
+
+✓ AND
+✓ OR
+✓ nested AND
+✓ nested OR
+✓ NOT
+✓ deeply nested expressions
+✓ unknown condition
+✓ invalid rule
+✓ condition failure propagation
+
+
+Policy tests should cover:
+
+✓ draft policy
+✓ publish policy
+✓ versioning
+✓ replacing published policy
+✓ effective dates
+✓ rollback
+✓ invalid policy cannot be published
+
+28. Observability
+
+Rule evaluation should be observable.
+
+Useful information to log/measure:
+
+entityType
+entityId
+policyId
+policyVersion
+evaluationDuration
+passed
+failedConditionCodes
+
+
+Avoid logging sensitive entity data or credentials.
+
+Metrics should ideally include:
+
+rule_evaluation_total
+rule_evaluation_failed_total
+rule_evaluation_duration
+policy_publish_total
+
+29. Extensibility
+
+Adding a new condition should require minimal changes.
+
+For example, adding:
+
+HAS_ACTIVE_CONFIGURATION
+
+
+should involve:
+
+Implement evaluator
+Register evaluator
+Add condition metadata
+Add tests
+
+It should NOT require modifying the core rule engine.
+
+Similarly, adding a new entity type should involve:
+
+New entity
+    +
+New policy
+    +
+Applicable conditions
+
+
+without rewriting the engine.
+
+30. Example: Country Policy
+
+Initial policy:
+
+{
+  "entityType": "COUNTRY",
+  "version": 1,
+  "rules": {
+    "kind": "GROUP",
+    "operator": "AND",
+    "children": [
+      {
+        "kind": "CONDITION",
+        "type": "HAS_ACTIVE_REGION",
+        "params": {
+          "minimum": 1
+        }
+      },
+      {
+        "kind": "CONDITION",
+        "type": "HAS_SMS_PROVIDER",
+        "params": {
+          "minimum": 1
+        }
+      }
+    ]
+  }
+}
+
+
+The country is eligible only when:
+
+active/enabled regions >= 1
+AND
+SMS providers >= 1
+
+31. Example: More Complex Country Policy
+{
+  "entityType": "COUNTRY",
+  "version": 2,
+  "rules": {
+    "kind": "GROUP",
+    "operator": "AND",
+    "children": [
+      {
+        "kind": "CONDITION",
+        "type": "HAS_ACTIVE_REGION",
+        "params": {
+          "minimum": 2
+        }
+      },
+      {
+        "kind": "CONDITION",
+        "type": "HAS_SMS_PROVIDER",
+        "params": {
+          "minimum": 1
+        }
+      },
+      {
+        "kind": "GROUP",
+        "operator": "OR",
+        "children": [
+          {
+            "kind": "CONDITION",
+            "type": "HAS_TWILIO_PROVIDER"
+          },
+          {
+            "kind": "CONDITION",
+            "type": "HAS_VONAGE_PROVIDER"
+          }
+        ]
+      }
+    ]
+  }
+}
+
+
+Equivalent business logic:
+
+Country is eligible when:
+
+active regions >= 2
+
+AND
+
+SMS providers >= 1
+
+AND
+
+(
+    Twilio provider exists
+    OR
+    Vonage provider exists
+)
+
+32. Recommended Project Structure
+
+Recommended structure for a Node.js + TypeScript project:
 
 src/
+├── core/
+│   └── enablement/
+│       ├── types/
+│       │   ├── rule-node.ts
+│       │   ├── rule-result.ts
+│       │   └── condition.ts
+│       │
+│       ├── engine/
+│       │   └── rule-engine.ts
+│       │
+│       ├── registry/
+│       │   └── condition-registry.ts
+│       │
+│       ├── policy/
+│       │   ├── policy-resolver.ts
+│       │   └── policy-validator.ts
+│       │
+│       └── operators/
+│           ├── all-of.ts
+│           ├── any-of.ts
+│           └── not.ts
 │
 ├── modules/
 │   ├── country/
-│   │   ├── country.model.ts
-│   │   ├── country.repository.ts
-│   │   └── country.service.ts
+│   │   └── enablement/
+│   │       ├── country-enableable-policy.ts
+│   │       └── conditions/
+│   │           ├── has-active-region.ts
+│   │           ├── has-sms-provider.ts
+│   │           └── has-configuration.ts
 │   │
 │   ├── region/
-│   ├── district/
-│   └── suburb/
+│   │   └── enablement/
+│   │       └── conditions/
+│   │
+│   └── provider/
+│       └── enablement/
+│           └── conditions/
 │
-├── workflow/
-│   ├── workflow.engine.ts
-│   ├── workflow.service.ts
-│   ├── workflow.registry.ts
-│   ├── workflow.rules.ts
-│   ├── workflow.types.ts
-│   ├── workflow.repository.ts
-│   ├── workflow.events.ts
-│   └── workflow.errors.ts
-│
-├── infrastructure/
-│   ├── mongodb/
-│   └── events/
-│
-└── jobs/
-    └── workflow-reconciliation.job.ts
+└── modules/
+    └── enablement-admin/
+        ├── controller/
+        ├── service/
+        ├── dto/
+        └── repository/
 
-28. Implementation Steps
-Phase 1 — Define the common state model
-Add:
 
-status
-activation.activeChildCount
+The exact structure may be adapted to the existing application's architecture.
 
-to workflow-enabled entities.
+33. Recommended Runtime Flow
 
-Phase 2 — Define workflow types
-Create:
+When an entity is being enabled:
 
-workflow.types.ts
+1. Request received
+        |
+        v
+2. Authorization check
+        |
+        v
+3. Load entity
+        |
+        v
+4. Resolve active policy
+        |
+        v
+5. Validate/load policy
+        |
+        v
+6. Evaluate rule tree
+        |
+        v
+7. Collect evaluation result
+        |
+        +---- FAILED ----> Return enablement failure
+        |
+        v
+8. All rules passed
+        |
+        v
+9. Enable entity
 
-Define:
-
-EntityStatus
-WorkflowEntity
-WorkflowRule
-WorkflowCondition
-
-Phase 3 — Create workflow configuration
-Create:
-
-workflow.rules.ts
-
-Define the Country → Region → District → Suburb rules.
-
-Phase 4 — Create Workflow Registry
-Create:
-
-workflow.registry.ts
-
-Responsibilities:
-
-Register workflow rules.
-Retrieve rules by entity type.
-Validate workflow configuration.
-Phase 5 — Create Repository abstraction
-Create:
-
-workflow.repository.ts
-
-Responsibilities:
-
-Load entities.
-Find parents.
-Update status.
-Increment/decrement counters.
-Phase 6 — Create Condition Evaluator
-Implement:
-
-evaluateCondition(
-  condition,
-  entity
-)
-
-Initially support:
-
-ACTIVE_CHILD_COUNT
-
-with:
-
-GTE
-GT
-EQ
-LTE
-LT
-
-Phase 7 — Create State Transition Service
-Implement:
-
-changeStatus(...)
-
-Responsibilities:
-
-Load current entity.
-Check current status.
-Update status.
-Update parent counter.
-Evaluate parent.
-Propagate if necessary.
-Phase 8 — Add MongoDB Transactions
-Wrap state changes and counter updates inside:
-
-session.withTransaction(...)
-
-Phase 9 — Add Events
-Create:
-
-ENTITY_STATUS_CHANGED
-
-Use events to propagate state changes.
-
-Phase 10 — Add Outbox
-If asynchronous processing is required, create:
-
-workflow_outbox
-
-and process pending events.
-
-Phase 11 — Add Reconciliation
-Create a scheduled job that verifies:
-
-stored activeChildCount
-
-against:
-
-actual number of active children
 
 Example:
 
-Stored:
-activeChildCount = 5
+const policy =
+  await policyResolver.getActivePolicy('COUNTRY');
 
-Actual:
-active children = 4
+const result =
+  await ruleEngine.evaluate(
+    policy.rules,
+    country,
+  );
 
-Repair:
-activeChildCount = 4
+if (!result.passed) {
+  throw new EnablementError(result);
+}
 
-The reconciliation process should also re-evaluate affected parent statuses.
+await countryRepository.enable(country.id);
 
-29. Required MongoDB Indexes
-For the example hierarchy, create indexes on parent references and status.
+34. Important Design Constraints
 
-Examples:
+The implementation must follow these constraints:
 
-RegionSchema.index({
-  countryId: 1,
-  status: 1
-});
+Must
+Be generic across entity/collection types
+Support runtime configuration
+Support nested logical expressions
+Support AND / OR / NOT
+Return detailed failure information
+Validate policies before publishing
+Version published policies
+Keep published policies immutable
+Support audit history
+Prevent arbitrary code execution
+Separate enablement from validation
+Separate enablement from authorization
+Allow new conditions to be added without modifying the core rule engine
+Be testable
+Avoid N+1 queries
+Support future policy caching
+Should
+Support effective dates
+Support rollback
+Expose condition metadata for dynamic admin UI
+Support policy preview/testing
+Provide evaluation metrics
+Support bulk evaluation optimization
+Must Not
+Execute arbitrary JavaScript from database configuration
+Execute arbitrary SQL from rule configuration
+Hard-code all conditions into the rule engine
+Modify published policies in place
+Make enabled status the sole source of truth when eligibility depends on related entities
+Couple the rule engine to a specific ORM/database
+Put entity-specific business logic into the generic engine
+35. Recommended Initial Scope
 
-DistrictSchema.index({
-  regionId: 1,
-  status: 1
-});
+The first implementation should focus on:
 
-SuburbSchema.index({
-  districtId: 1,
-  status: 1
-});
+Core
+RuleNode
+ConditionNode
+GroupNode
+AND
+OR
+NOT
+ConditionEvaluator
+ConditionRegistry
+RuleEngine
+RuleResult
+Policy
+Policy persistence
+Entity type
+Version
+Draft/published/archived status
+Rule JSON
+Policy resolver
+Policy validator
+Admin
+List available conditions
+Create/update draft policy
+Validate policy
+Publish policy
+View policy versions
+View audit history
+Conditions
 
-These indexes are particularly useful for reconciliation and validation queries.
-
-30. Important Concurrency Consideration
-Multiple administrators may modify children at the same time.
+Initially implement only the conditions actually required by the application.
 
 For example:
 
-Admin A activates Suburb A
-Admin B activates Suburb B
+HAS_ACTIVE_REGION
+HAS_SMS_PROVIDER
+HAS_CONFIGURATION
 
-Both could attempt:
 
-District.activeChildCount += 1
-
-MongoDB's atomic $inc operation should be used for counters:
-
-{
-  $inc: {
-    "activation.activeChildCount": 1
-  }
-}
-
-Do not implement counters using:
-
-const entity = await findById(id);
-
-entity.activation.activeChildCount++;
-
-await entity.save();
-
-without considering concurrent updates.
-
-Prefer atomic operations or transactions.
-
-31. Idempotency
-Workflow operations should be idempotent.
-
-Calling:
-
-changeStatus(
-  suburbId,
-  "ACTIVE"
-);
-
-twice should not produce:
-
-activeChildCount += 2
-
-It must result in:
-
-activeChildCount += 1
-
-only once.
-
-Therefore:
-
-INACTIVE → ACTIVE
-
-produces an increment.
-
-But:
-
-ACTIVE → ACTIVE
-
-produces nothing.
-
-32. Deletion Handling
-Deletion must also go through the workflow system.
-
-If an active child is deleted:
-
-ACTIVE child
-     ↓
-DELETE
-
-the parent counter must be decremented.
-
-Therefore, before deleting a workflow-enabled entity, determine whether it is currently active.
-
-If:
-
-child.status === ACTIVE
-
-then:
-
-parent.activeChildCount--
-
-and the parent must be re-evaluated.
-
-Prefer soft deletion if the business requirements allow it:
-
-{
-  "deletedAt": "..."
-}
-
-This makes auditing and reconciliation easier.
-
-33. Activation vs Manual Approval
-A future requirement may distinguish:
-
-MANUALLY_APPROVED
-
-from:
-
-EFFECTIVELY_ACTIVE
-
-For example:
-
-Admin approves Suburb
-        ↓
-Suburb eligible for activation
-        ↓
-Workflow conditions evaluated
-        ↓
-Suburb ACTIVE
-
-If such a requirement appears, do not overload the single status field.
-
-Consider:
-
-approvalStatus
-workflowStatus
-
-or another explicit state model.
-
-This prevents confusion between:
-
-"Admin approved this entity"
-
-and:
-
-"This entity is currently active according to the hierarchy"
-
-34. Testing Requirements
-The workflow engine must have unit and integration tests.
-
-Basic activation
-Test:
-
-Suburb becomes active
-→ District becomes active
-
-Full cascade
-Test:
-
-Suburb ACTIVE
-→ District ACTIVE
-→ Region ACTIVE
-→ Country ACTIVE
-
-Deactivation
-Test:
-
-Suburb INACTIVE
-→ District INACTIVE
-→ Region INACTIVE
-→ Country INACTIVE
-
-Multiple children
-Example:
-
-District
-  ├── Suburb A ACTIVE
-  └── Suburb B ACTIVE
-
-Deactivate Suburb A:
-
-activeChildCount: 2 → 1
-
-District should remain:
-
-ACTIVE
-
-Deactivate Suburb B:
-
-activeChildCount: 1 → 0
-
-District should become:
-
-INACTIVE
-
-Idempotency
-Calling activation twice must not increment the counter twice.
-
-Concurrent updates
-Test multiple children becoming active concurrently.
-
-Transaction rollback
-If part of the operation fails, verify that:
-
-child status
-
-and:
-
-parent counter
-
-are not left inconsistent.
-
-Reconciliation
-Create an intentionally incorrect counter and verify that the reconciliation job fixes it.
-
-35. Final Recommended Design
-The overall design should be:
-
-                  WORKFLOW DEFINITIONS
-                         │
-                         ▼
-                  Workflow Registry
-                         │
-                         ▼
-Admin ──→ Entity Service ──→ Workflow Service
-                               │
-                               ▼
-                        Workflow Engine
-                               │
-                ┌──────────────┼──────────────┐
-                │              │              │
-                ▼              ▼              ▼
-             Rules        Repository        Events
-                │              │              │
-                └──────────────┼──────────────┘
-                               ▼
-                            MongoDB
-                               │
-                               ▼
-                       Reconciliation Job
-
-The key principle is:
-
-Workflow rules = configuration/code
-
-Entity status = MongoDB
-
-Activation counters = MongoDB
-
-State transitions = Workflow Service
-
-Propagation = Workflow Engine / Events
-
-Consistency = MongoDB Transactions + Reconciliation
+Do not build a huge generic condition language prematurely.
 
 36. Definition of Done
-The implementation is considered complete when:
 
- Country → Region → District → Suburb workflow works.
- Activation propagates upward.
- Deactivation propagates upward.
- Multiple active children are handled correctly.
- Counters are updated atomically.
- Repeated activation is idempotent.
- Direct workflow status updates are prevented.
- MongoDB transactions are used where required.
- Workflow rules are separated from entity implementations.
- New entity types can be added without modifying the core workflow engine.
- New activation conditions can be added through condition implementations.
- Required MongoDB indexes are created.
- Reconciliation is implemented.
- Unit tests cover the workflow engine.
- Integration tests cover MongoDB transactions and cascading changes.
- Logging/auditing exists for important state transitions.
-37. Summary
-The system should not implement activation logic independently inside Country, Region, District, Suburb, etc.
+The feature is considered complete when:
 
-Instead, create one generic workflow engine.
+An administrator can create a Country enablement policy.
+An administrator can configure multiple conditions.
+An administrator can configure condition parameters.
+An administrator can combine conditions using AND/OR/NOT.
+Invalid conditions cannot be saved/published.
+Unknown condition types are rejected.
+Invalid parameters are rejected.
+Policies support draft and published states.
+Published policies are versioned and immutable.
+A new policy can replace an existing published policy.
+The application automatically uses the currently active policy.
+No application deployment is required when only rule configuration changes.
+Rule evaluation returns detailed pass/fail information.
+The API/UI can explain why an entity is not eligible.
+Conditions are implemented in TypeScript and registered with the condition registry.
+Arbitrary code cannot be executed through policy configuration.
+Unit tests cover individual conditions.
+Unit/integration tests cover rule composition and policy lifecycle.
+Evaluation does not introduce uncontrolled N+1 database queries.
+Audit information is recorded for administrative policy changes.
+37. Architectural Summary
 
-The engine receives:
+The final architecture should follow this principle:
 
-Entity
-+
-Workflow Rule
-+
-Current State
+                 ADMIN
+                   |
+                   v
+          Policy Configuration
+                   |
+                   v
+              Database
+                   |
+                   v
+            Policy Resolver
+                   |
+                   v
+              Rule Engine
+                   |
+          +--------+--------+
+          |                 |
+          v                 v
+    Rule Composition   Condition Registry
+    AND / OR / NOT           |
+                              |
+               +--------------+--------------+
+               |              |              |
+               v              v              v
+          Region Rule    SMS Rule      Config Rule
+               |              |              |
+               v              v              v
+          Repositories / Domain Services
 
-and determines:
 
-Should this entity be ACTIVE or INACTIVE?
+The central architectural boundary is:
 
-When the state changes:
+                 CODE
+                  |
+      "What conditions exist?"
+                  |
+                  v
+        Condition Implementations
+                  |
+                  |
+==================+==================
+                  |
+                  v
+              DATABASE
+                  |
+      "How are they configured?"
+                  |
+                  v
+          Policy / Rule Tree
 
-Child state changes
-        ↓
-Parent counter changes
-        ↓
-Parent condition evaluated
-        ↓
-Parent state changes
-        ↓
-Next parent evaluated
 
-For the initial implementation, a separate workflow MongoDB collection is not required.
+This provides runtime flexibility for administrators while keeping the system secure, type-safe, testable, maintainable, and extensible.
 
-Keep workflow definitions in TypeScript and keep runtime state/counters in the existing MongoDB collections.
-
-This provides a generic foundation that can later support much more complex workflows without coupling the workflow engine to Country, Region, District, Suburb, or any other specific collection.
-
-If you want, the next step should be turning this specification into the actual Mongoose + TypeScript implementation, starting with workflow.types.ts, workflow.registry.ts, workflow.engine.ts, and the transaction-safe changeStatus() flow.
+This should work well as a requirements/spec document for an AI coding agent. If you give it your existing project structure as additional context, the agent should be able to implement the framework without having to invent the architectural direction.
