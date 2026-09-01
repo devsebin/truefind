@@ -3,9 +3,6 @@ import { tableName } from "./table-names";
 
 export const CommonServiceFieldsModel = {
   is_active: { type: Boolean, default: true, index: true },
-  is_verified: { type: Boolean, default: false, index: true },
-  is_approved: { type: Boolean, default: false, index: true },
-  is_test: { type: Boolean, default: false, index: true },
   is_deleted: { type: Boolean, default: false, index: true },
   deleted_at: { type: Date, default: null },
   created_by: {
@@ -27,9 +24,6 @@ export const CommonServiceFieldsModel = {
 
 export interface CommonServiceFieldsInterface {
   is_active: boolean;
-  is_verified: boolean;
-  is_approved: boolean;
-  is_test: boolean;
   is_deleted: boolean;
   deleted_at?: Date;
   created_by: mongoose.Types.ObjectId;

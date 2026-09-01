@@ -53,6 +53,11 @@ const ServiceReviewSchema =
                 type: mongoose.Schema.Types.ObjectId,
                 ref: tableName.User,
             },
+            is_verified: {
+                type: Boolean,
+                default: false,
+                index: true,
+            },
             status_id: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: tableName.Status,
