@@ -46,11 +46,6 @@ const ServiceReviewSchema =
                 default: "pending",
                 index: true,
             },
-            is_verified: {
-                type: Boolean,
-                default: false,
-                index: true,
-            },
             moderated_at: {
                 type: Date,
             },
